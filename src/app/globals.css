@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,6 +41,29 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --primary-main: var(--primary-main);
+  --primary-mid: var(--primary-mid);
+  --primary-light: var(--primary-light);
+  --secondary-main: var(--secondary-main);
+  --secondary-mid: var(--secondary-mid);
+  --secondary-light: var(--secondary-light);
+  --accent-main: var(--accent-main);
+  --accent-mid: var(--accent-mid);
+  --accent-light: var(--accent-light);
+  --error-main: var(--error-main);
+  --error-mid: var(--error-mid);
+  --error-light: var(--error-light);
+  --warning-main: var(--warning-main);
+  --warning-mid: var(--warning-mid);
+  --warning-light: var(--warning-light);
+  --success-main: var(--success-main);
+  --success-mid: var(--success-mid);
+  --success-light: var(--success-light);
+  --neutral-text: var(--neutral-text);
+  --neutral-main: var(--neutral-main);
+  --neutral-mid: var(--neutral-mid);
+  --neutral-light: var(--neutral-light);
+  --neutral-background: var(--neutral-background);
 }
 
 :root {
@@ -76,6 +99,89 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --primary-main: #350f9d;
+  --primary-mid: #8771c5;
+  --primary-light: #dad3ed;
+  --secondary-main: #4a60e6;
+  --secondary-mid: #94a1f0;
+  --secondary-light: #dee2fa;
+  --accent-main: #71c7ec;
+  --accent-mid: #abdef4;
+  --accent-light: #e5f5fb;
+  --error-main: #f20000;
+  --error-mid: #f76868;
+  --error-light: #fdd0d0;
+  --warning-main: #fff615;
+  --warning-mid: #fffa74;
+  --warning-light: #fffdd4;
+  --success-main: #00e309;
+  --success-mid: #68ee6d;
+  --success-light: #d0fad2;
+  --neutral-text: #0b090a;
+  --neutral-main: #2b2b2b;
+  --neutral-mid: #aaaaaa;
+  --neutral-light: #f6f6f6;
+  --neutral-background: #ffffff;
+}
+
+body {
+  font-family: var(--font-poppins);
+}
+
+.font-inter {
+  font-family: var(--font-inter) !important;
+}
+
+/* Fallback font size/line-height utility classes (if needed outside Tailwind) */
+.heading-1 {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 700;
+}
+.heading-2 {
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 700;
+}
+.heading-3 {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 700;
+}
+.heading-4 {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+}
+.heading-5 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+}
+.body-lg {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+}
+.body {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+.body-sm {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.caption {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.caption-xs {
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 400;
 }
 
 .dark {
@@ -110,6 +216,29 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --primary-main: #350f9d;
+  --primary-mid: #8771c5;
+  --primary-light: #dad3ed;
+  --secondary-main: #4a60e6;
+  --secondary-mid: #94a1f0;
+  --secondary-light: #dee2fa;
+  --accent-main: #71c7ec;
+  --accent-mid: #abdef4;
+  --accent-light: #e5f5fb;
+  --error-main: #f20000;
+  --error-mid: #f76868;
+  --error-light: #fdd0d0;
+  --warning-main: #fff615;
+  --warning-mid: #fffa74;
+  --warning-light: #fffdd4;
+  --success-main: #00e309;
+  --success-mid: #68ee6d;
+  --success-light: #d0fad2;
+  --neutral-text: #0b090a;
+  --neutral-main: #2b2b2b;
+  --neutral-mid: #aaaaaa;
+  --neutral-light: #f6f6f6;
+  --neutral-background: #ffffff;
 }
 
 @layer base {
