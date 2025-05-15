@@ -29,7 +29,7 @@ export function Container({
   return (
     <div id={id} style={style} className={`relative ${className}`}>
       <div
-        className={`container mx-auto px-8 md:px-5 text-neutral-text flex py-10 lg:py-20 flex-col justify-center items-center`}
+        className={`container max-w-[1300px] mx-auto px-8 md:px-5 text-neutral-text flex py-10 lg:py-20 flex-col justify-center items-center`}
       >
         {children}
       </div>

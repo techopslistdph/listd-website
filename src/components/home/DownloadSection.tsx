@@ -26,13 +26,13 @@ export default function DownloadSection() {
               alt='QR Code'
               width={80}
               height={80}
-              className='w-20 h-20 object-contain md:w-48 md:h-48'
+              className='w-16 h-16 object-contain md:w-48 md:h-48'
               priority
             />
           </div>
         </div>
         {/* Right: Phone Image */}
-        <div className='md:w-1/2 flex justify-center items-center'>
+        <div className='md:w-1/2 flex justify-center items-center mt-14'>
           <div className='hidden md:block relative w-[500px] h-96 mx-auto'>
             <Image
               src={phone}

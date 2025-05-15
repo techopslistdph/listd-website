@@ -19,26 +19,27 @@ export default function ValuationCards({
     <Container className='bg-[#f5f8fd]'>
       <div className='flex flex-col md:flex-row gap-10 w-full justify-center'>
         {cards.map((card, idx) => (
-          <div key={idx} className='grid grid-cols-1 xl:grid-cols-2 w-full'>
-            <div className='relative w-full h-48 md:h-auto '>
+          <div key={idx} className='flex flex-col md:flex-row w-full gap-5'>
+            <div className='relative w-full  md:w-1/2'>
               <Image
                 src={card.image}
                 alt={card.title}
-                fill
-                className='object-cover'
+                className='object-cover min-w-[181px] min-h-[156px] max-h-[156px] md:h-full w-full'
                 priority={idx === 0}
+                height={156}
+                width={181}
               />
             </div>
-            <div className='flex flex-col justify-center p-6 w-full'>
-              <h3 className='font-bold text-xl md:text-2xl text-neutral-text mb-2'>
+            <div className='flex flex-col justify-center w-full'>
+              <h3 className='font-bold text-xl text-[var(--neutral-text)] mb-2'>
                 {card.title}
               </h3>
-              <p className='text-body text-neutral-mid mb-6'>
+              <p className=' text-sm text-[var(--neutral-mid)] mb-4'>
                 {card.description}
               </p>
               <Button
                 variant='primary'
-                className='rounded-full px-8 py-3 font-bold w-fit'
+                className='rounded-full px-6 py-2 font-bold w-fit'
               >
                 {card.button}
               </Button>

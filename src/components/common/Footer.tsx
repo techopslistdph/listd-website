@@ -25,7 +25,7 @@ export default function Footer({
 }: FooterProps) {
   return (
     <footer className='bg-white border-t border-gray-200 pt-16'>
-      <div className='container mx-auto  px-8 md:px-5 '>
+      <div className='container max-w-[1300px] mx-auto  px-8 md:px-5 '>
         {/* Logo and Brand */}
         <div className='flex flex-col gap-8 '>
           <div className='flex items-center gap-3'>
@@ -35,15 +35,15 @@ export default function Footer({
         </div>
         <div className=' mx-auto py-10 flex flex-col md:flex-row md:justify-between md:items-start gap-12 '>
           {/* Navigation Columns */}
-          <div className='grid grid-cols-2 md:grid-cols-3 gap-12 justify-between w-full md:w-2/4 '>
+          <div className='grid grid-cols-2 md:grid-cols-3 gap-10 lg:gap-12 justify-between w-full lg:min-w-[600px]'>
             {/* Render navigation sections */}
             {footerLinks.map((section) => (
               <div
                 key={section.section}
-                className={`flex flex-col gap-4 min-w-[150px]`}
+                className={`flex flex-col gap-4 md:min-w-[150px]`}
               >
-                <h4 className='font-bold text-gray-900 '>{section.section}</h4>
-                <ul className='space-y-1 text-gray-600'>
+                <h4 className='font-bold text-[#0F172A]'>{section.section}</h4>
+                <ul className='space-y-4 text-[#0F172A]'>
                   {section.links.map((link) => (
                     <li key={link.label}>
                       <a
