@@ -26,12 +26,13 @@ export default function FeatureCards({ cards }: { cards: FeatureCardData[] }) {
               <Image
                 src={card.image}
                 alt={card.title}
-                fill
                 className='object-cover'
                 priority={idx === 0}
+                height={386}
+                width={870}
               />
             </div>
-            <div className='bg-white border-[#E0E0E0] border rounded-2xl p-4 md:p-6 w-full md:w-1/2 relative z-10 -mt-32 md:-mt-56 md:-ml-32 md:-mr-32'>
+            <div className='bg-white border-[#E0E0E0] border rounded-2xl p-4 md:p-6 w-full md:w-1/2 relative z-10 -mt-40 md:-mt-56 md:-ml-32 md:-mr-32'>
               <div className='flex flex-col mb-3 md:mb-4'>
                 <span className='w-10 md:w-12'>
                   <Image src={Icon} alt='' />

@@ -21,7 +21,7 @@ export default function PropertySlider({
   propertySliderCards: PropertySliderCard[];
 }) {
   return (
-    <section className='container mx-auto px-8 md:px-5 py-10 lg:py-20 '>
+    <section className='container max-w-[1300px] mx-auto px-8 md:px-5 py-10 lg:py-20 '>
       <div className='flex flex-col md:flex-row gap-3 justify-between items-start md:items-center  mb-10 md:mb-4'>
         <div>
           <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--neutral-text)] md:mb-2'>
@@ -48,9 +48,9 @@ export default function PropertySlider({
         className='property-swiper pb-8'
       >
         {propertySliderCards.map((card, idx) => (
-          <SwiperSlide key={idx}>
+          <SwiperSlide key={idx} className='max-w-[350px] '>
             <div className='bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col h-full mb-10 cursor-grab'>
-              <div className='relative w-full h-60 md:h-64'>
+              <div className='relative w-full min-w-[250px] min-h-[250px] md:min-w-[350px] md:min-h-[350px]'>
                 <Image
                   src={card.image}
                   alt={card.title}
@@ -59,10 +59,12 @@ export default function PropertySlider({
                 />
               </div>
               <div className='p-6 flex flex-col flex-1'>
-                <div className='text-[var(--primary-main)] font-extrabold text-2xl mb-2'>
+                <div className='text-[var(--primary-main)] font-extrabold text-xl md:text-2xl mb-2'>
                   {card.price}
                 </div>
-                <div className='font-semibold text-lg mb-1'>{card.title}</div>
+                <div className='font-semibold text-base md:text-lg mb-1'>
+                  {card.title}
+                </div>
                 <div className='flex items-center text-gray-500 text-sm'>
                   <FaMapMarkerAlt className='mr-2 text-[var(--primary-main)]' />
                   {card.location}
