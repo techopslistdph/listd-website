@@ -249,3 +249,42 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* custom css */
+input[type='checkbox'] {
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  border: 2.5px solid #757575;
+  background: #fff;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+input[type='checkbox']:checked {
+  background: var(--primary-main);
+  border-color: var(--primary-main);
+}
+
+/* Checkmark inside checked box */
+input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 35%;
+  top: 10%;
+  width: 5px;
+  height: 14px;
+  border: solid white;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+  box-sizing: border-box;
+}
+
+.iframe-div > iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
