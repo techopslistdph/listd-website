@@ -1,17 +1,32 @@
 'use client';
 
-import { useState } from 'react';
-import { Stepper } from '@/components/listing/Stepper';
-import { PropertyDetailsStep } from '@/components/listing/PropertyDetailsStep';
-import { TitleDescriptionStep } from '@/components/listing/TitleDescriptionStep';
-import { PaymentStep } from '@/components/listing/PaymentStep';
-import { ResultsStep } from '@/components/listing/ResultsStep';
-import { Step, FormData, initialFormData } from '@/components/listing/types';
-import backgroundImage from '@/../public/sample-background.png';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Stepper } from '@/components/listing/form/Stepper';
+import { PropertyDetailsStep } from '@/components/listing/form/PropertyDetailsStep';
+import { TitleDescriptionStep } from '@/components/listing/form/TitleDescriptionStep';
+import { PaymentStep } from '@/components/listing/form/PaymentStep';
+import { ResultsStep } from '@/components/listing/form/ResultsStep';
+import {
+  Step,
+  FormData,
+  initialFormData,
+  PropertyType,
+} from '@/components/listing/types';
+import condominium from '@/../public/images/condominium-bg.png';
+import warehouse from '@/../public/images/warehouse-bg.png';
+import houseAndLot from '@/../public/images/house-and-lot-bg.png';
+import land from '@/../public/images/land-bg.png';
+
 import Image from 'next/image';
+
 export default function PostListingMultiStep() {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>(0);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<FormData>({
+    ...initialFormData,
+    propertyType: (searchParams.get('type') as PropertyType) || 'Condominium',
+  });
 
   const handleChange = (field: keyof FormData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -25,13 +40,43 @@ export default function PostListingMultiStep() {
   };
   const handleHome = () => {
     // TODO: Redirect to home
-    alert('Back to Home');
+    setStep(0);
+  };
+
+  // Update form data when URL parameter changes
+  useEffect(() => {
+    const type = searchParams.get('type') as PropertyType;
+    if (
+      type &&
+      ['condominium', 'warehouse', 'house and lot', 'land'].includes(
+        type.toLowerCase()
+      )
+    ) {
+      setFormData((prev) => ({ ...prev, propertyType: type }));
+    }
+  }, [searchParams]);
+
+  const backgroundImage = () => {
+    if (formData.propertyType.toLowerCase() === 'condominium') {
+      return condominium;
+    }
+    if (formData.propertyType.toLowerCase() === 'warehouse') {
+      return warehouse;
+    }
+    if (formData.propertyType.toLowerCase() === 'house and lot') {
+      return houseAndLot;
+    }
+    if (formData.propertyType.toLowerCase() === 'land') {
+      return land;
+    }
+
+    return condominium; // fallback
   };
 
   return (
     <div className='container mx-auto relative mb-10'>
       <Image
-        src={backgroundImage}
+        src={backgroundImage()}
         alt='Background'
         width={1300}
         height={700}
@@ -69,7 +114,12 @@ export default function PostListingMultiStep() {
             onDraft={handleDraft}
           />
         )}
-        {step === 3 && <ResultsStep onHome={handleHome} />}
+        {step === 3 && (
+          <ResultsStep
+            onHome={handleHome}
+            propertyType={formData.propertyType}
+          />
+        )}
       </div>
     </div>
   );

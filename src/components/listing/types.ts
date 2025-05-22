@@ -1,14 +1,25 @@
 export type Step = 0 | 1 | 2 | 3;
 
+export type PropertyType =
+  | 'condominium'
+  | 'warehouse'
+  | 'house and lot'
+  | 'land';
+
 export type FormData = {
   // Step 1
+  propertyType: PropertyType;
   buildingName: string;
   state: string;
   city: string;
   barangay: string;
   street: string;
+  zipCode: string;
   floorNo: string;
   floorArea: string;
+  lotSize: string;
+  lotType: string[];
+  ceilingHeight: string;
   bedrooms: number;
   bathrooms: number;
   parking: number;
@@ -16,6 +27,7 @@ export type FormData = {
   facingWest: boolean;
   amenities: string[];
   features: string[];
+  security: string[];
   images: File[];
   // Step 2
   title: string;
@@ -32,13 +44,18 @@ export type FormData = {
 };
 
 export const initialFormData: FormData = {
+  propertyType: 'condominium',
   buildingName: '',
   state: '',
   city: '',
   barangay: '',
   street: '',
+  zipCode: '',
   floorNo: '',
   floorArea: '',
+  lotSize: '',
+  lotType: [],
+  ceilingHeight: '',
   bedrooms: 0,
   bathrooms: 0,
   parking: 0,
@@ -46,6 +63,7 @@ export const initialFormData: FormData = {
   facingWest: false,
   amenities: [],
   features: [],
+  security: [],
   images: [],
   title: '',
   description: '',

@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
-import { Step, FormData } from './types';
+import { Check } from 'lucide-react';
+import { Step, FormData } from '../types';
 
 const steps = [
   'Property Details',
@@ -35,7 +36,9 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
           <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-5'>
             <button
               className={`px-4 py-1 rounded-lg text-sm font-semibold ${
-                data.forSale ? 'bg-purple-700 text-white' : 'text-gray-700'
+                data.forSale
+                  ? 'bg-[var(--primary-main)] text-white'
+                  : 'text-gray-700'
               }`}
               onClick={() => onChange('forSale', true)}
               type='button'
@@ -44,7 +47,9 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
             </button>
             <button
               className={`px-4 py-1 rounded-lg text-sm font-semibold ${
-                !data.forSale ? 'bg-purple-700 text-white' : 'text-gray-700'
+                !data.forSale
+                  ? 'bg-[var(--primary-main)] text-white'
+                  : 'text-gray-700'
               }`}
               onClick={() => onChange('forSale', false)}
               type='button'
@@ -75,7 +80,11 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
                   : 'bg-[var(--primary-light)] border-4 border-gray-200 text-gray-200 opacity-60'
               }
               rounded-full transition-colors duration-200`}
-            ></div>
+            >
+              {idx < step && (
+                <Check className='w-3 h-3 text-white' strokeWidth={3} />
+              )}
+            </div>
             <span
               className={`text-base font-medium mt-1
               ${idx === step ? 'text-[var(--primary-main)]' : 'text-gray-400'}`}
