@@ -1,13 +1,16 @@
 import { ArrowLeft } from 'lucide-react';
 import { Check } from 'lucide-react';
 import { Step, FormData } from '../types';
+import { usePathname } from 'next/navigation';
 
-const steps = [
+const defaultSteps = [
   'Property Details',
   'Title and Description',
   'Payment',
   'Results',
 ];
+
+const valuationSteps = ['Property Details', 'Result'];
 
 interface StepperProps {
   step: Step;
@@ -17,25 +20,28 @@ interface StepperProps {
 }
 
 export function Stepper({ step, onBack, data, onChange }: StepperProps) {
+  const pathname = usePathname();
+  const steps = pathname.includes('/valuation') ? valuationSteps : defaultSteps;
+
   return (
     <div>
-      <div className='flex justify-between items-center'>
+      <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0'>
         <div
-          className='flex items-center gap-2 mb-5 cursor-pointer'
+          className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
           onClick={onBack}
         >
           <ArrowLeft
-            className='w-5 h-5 text-[var(--primary-main)]'
+            className='w-4 h-4 sm:w-5 sm:h-5 text-[var(--primary-main)]'
             strokeWidth={3}
           />
-          <span className='font-semibold text-lg text-[var(--primary-main)]'>
+          <span className='font-semibold text-base sm:text-lg text-[var(--primary-main)]'>
             Back
           </span>
         </div>
-        {step === 1 && (
-          <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-5'>
+        {steps.length === 4 && step === 1 && (
+          <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
             <button
-              className={`px-4 py-1 rounded-lg text-sm font-semibold ${
+              className={`px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
                 data.forSale
                   ? 'bg-[var(--primary-main)] text-white'
                   : 'text-gray-700'
@@ -46,7 +52,7 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
               For sale
             </button>
             <button
-              className={`px-4 py-1 rounded-lg text-sm font-semibold ${
+              className={`px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
                 !data.forSale
                   ? 'bg-[var(--primary-main)] text-white'
                   : 'text-gray-700'
@@ -59,7 +65,7 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
           </div>
         )}
       </div>
-      <div className='relative flex items-center justify-between mb-8 w-full '>
+      <div className='relative flex items-center justify-between mb-6 sm:mb-8 w-full'>
         {/* Horizontal line */}
         <div
           className='absolute top-3 left-0 right-0 h-1 bg-gray-100 z-0'
@@ -71,7 +77,7 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
             className='relative z-10 flex-1 flex flex-col items-center'
           >
             <div
-              className={`w-5 h-5 flex items-center justify-center mb-2
+              className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center mb-1 sm:mb-2
               ${
                 idx === step
                   ? 'border-4 border-[var(--primary-main)] bg-white text-[var(--primary-main)]'
@@ -82,11 +88,14 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
               rounded-full transition-colors duration-200`}
             >
               {idx < step && (
-                <Check className='w-3 h-3 text-white' strokeWidth={3} />
+                <Check
+                  className='w-2 h-2 sm:w-3 sm:h-3 text-white'
+                  strokeWidth={3}
+                />
               )}
             </div>
             <span
-              className={`text-base font-medium mt-1
+              className={`text-[10px] xs:text-xs sm:text-sm lg:text-base font-medium mt-1 text-center
               ${idx === step ? 'text-[var(--primary-main)]' : 'text-gray-400'}`}
             >
               {label}

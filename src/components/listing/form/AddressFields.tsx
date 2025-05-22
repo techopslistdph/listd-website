@@ -9,7 +9,7 @@ interface AddressFieldsProps {
 
 export function AddressFields({ data, onChange }: AddressFieldsProps) {
   return (
-    <div className='grid grid-cols-2 gap-4 mb-6'>
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
       <div className='space-y-4'>
         <Label>State/Region</Label>
         <Input

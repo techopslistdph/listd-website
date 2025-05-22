@@ -8,7 +8,7 @@ interface ActionButtonsProps {
 
 export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
   return (
-    <div className='flex justify-end gap-4 mt-8'>
+    <div className='flex flex-col md:flex-row items-center justify-end gap-4 mt-8'>
       {onBack && (
         <Button
           variant='outline'

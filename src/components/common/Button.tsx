@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses = {
   primary:
-    'bg-[var(--primary-main)] text-white border-transparent hover:bg-[var(--secondary-main)]',
+    'bg-[var(--primary-main)] text-white border border-[var(--primary-main)] hover:bg-[var(--secondary-main)]',
   secondary:
     'bg-[var(--secondary-main)] text-white border-transparent hover:bg-[var(--secondary-mid)]',
   outlined:

@@ -12,6 +12,7 @@ import { AddressFields } from './AddressFields';
 import { ActionButtons } from './ActionButtons';
 import { ImageUpload } from './ImageUpload';
 import { TagInput } from './TagInput';
+import { usePathname } from 'next/navigation';
 
 interface PropertyDetailsStepProps {
   data: FormData;
@@ -40,13 +41,14 @@ export function PropertyDetailsStep({
   onDraft,
 }: PropertyDetailsStepProps) {
   const propertyType = data.propertyType.toLowerCase();
+  const pathname = usePathname();
 
   const renderPropertySpecificFields = () => {
     switch (propertyType) {
       case 'warehouse':
         return (
           <>
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <FormField label='Lot size'>
                 <Input
                   placeholder='Enter lot size'
@@ -77,7 +79,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
               <TagInput
                 label='Warehouse'
                 value={data.amenities}
@@ -97,7 +99,7 @@ export function PropertyDetailsStep({
       case 'house and lot':
         return (
           <>
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <FormField label='Number of floors'>
                 <Input
                   placeholder='Enter floor number'
@@ -155,7 +157,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
               <TagInput
                 label='Amenities'
                 value={data.amenities}
@@ -175,7 +177,7 @@ export function PropertyDetailsStep({
       case 'land':
         return (
           <>
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <TagInput
                 label='Lot Type'
                 value={data.lotType}
@@ -213,7 +215,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <FormField label='Floor No.'>
                 <Input
                   placeholder='Enter floor no'
@@ -229,7 +231,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <FormField label='Furnished'>
                 <Select
                   value={data.fullyFurnished ? 'yes' : 'no'}
@@ -255,7 +257,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
               <FormField label='Bathrooms'>
                 <Input
                   type='number'
@@ -275,7 +277,7 @@ export function PropertyDetailsStep({
                 />
               </FormField>
             </div>
-            <div className='grid grid-cols-2 gap-4 mb-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
               <TagInput
                 label='Amenities'
                 value={data.amenities}
@@ -300,8 +302,12 @@ export function PropertyDetailsStep({
       <AddressFields data={data} onChange={onChange} />
       <h2 className='heading-5 mb-6'>Details about your place</h2>
       {renderPropertySpecificFields()}
-      <h2 className='heading-5 mb-5'>Property Photo</h2>
-      <ImageUpload onChange={(files) => onChange('images', files)} />
+      {!pathname.includes('/valuation') && (
+        <>
+          <h2 className='heading-5 mb-5'>Property Photo</h2>
+          <ImageUpload onChange={(files) => onChange('images', files)} />
+        </>
+      )}
       <ActionButtons onDraft={onDraft} onNext={onNext} />
     </div>
   );

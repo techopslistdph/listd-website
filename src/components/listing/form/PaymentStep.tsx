@@ -101,10 +101,10 @@ export function PaymentStep({
           <span>Includes all taxes and brokers free</span>
           <span>0 per sqm</span>
         </div>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div className='space-y-4'>
             <Label>Downpayment</Label>
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <Input
                 placeholder='0%'
                 value={data.downPaymentPercent}
@@ -120,7 +120,7 @@ export function PaymentStep({
 
           <div className='space-y-4'>
             <Label>Commission</Label>
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <Input
                 placeholder='0%'
                 value={data.commissionPercent}
