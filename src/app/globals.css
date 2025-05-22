@@ -118,7 +118,7 @@
   --success-mid: #68ee6d;
   --success-light: #d0fad2;
   --neutral-text: #0b090a;
-  --neutral-main: #2b2b2b;
+  --neutral-main: #5e5e5e;
   --neutral-mid: #aaaaaa;
   --neutral-light: #f6f6f6;
   --neutral-background: #ffffff;
@@ -173,6 +173,13 @@ body {
   line-height: 20px;
   font-weight: 400;
 }
+
+.body-large {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 800;
+}
+
 .caption {
   font-size: 12px;
   line-height: 18px;
