@@ -46,7 +46,7 @@ export function TagInput({
           ))}
         </div>
         <input
-          className='flex-1 bg-transparent outline-none border-none px-2 text-base'
+          className='flex-1 bg-transparent placeholder:text-sm outline-none border-none px-2 text-base'
           placeholder={placeholder}
           onKeyDown={handleTagInput}
           style={{ minWidth: 0 }}

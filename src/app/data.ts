@@ -38,6 +38,7 @@ import land3 from '../../public/images/land3.png';
 import land4 from '../../public/images/land4.png';
 import land5 from '../../public/images/land5.png';
 import land6 from '../../public/images/land6.png';
+import { StaticImageData } from 'next/image';
 
 export const navigationlinks = [
   {
@@ -251,10 +252,13 @@ export const footerSocials = [
   { icon: linkedin, href: '#' },
 ];
 
-export const properties = [
+export const properties: Listing[] = [
   {
+    id: 1,
+    thumbnail: condo1.src,
     images: [condo1, condo2, condo3, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'For Lease',
     price: '₱ 2.5M',
     title: 'Luxury Skyline Residences',
     slug: 'luxury-skyline-residences',
@@ -282,9 +286,12 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 2,
     images: [condo2, condo1, condo3, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
     price: '₱ 1.8M',
+    status: 'Sold',
+    thumbnail: condo1.src,
     title: 'The Grand Tower Suites',
     slug: 'the-grand-tower-suites',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -311,8 +318,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 3,
     images: [condo3, condo2, condo1, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'Draft',
+    thumbnail: condo1.src,
     price: '₱ 3.2M',
     title: 'Modern Heights Condominium',
     slug: 'modern-heights-condominium',
@@ -340,8 +350,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 4,
     images: [condo4, condo2, condo3, condo1, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'For Lease',
+    thumbnail: condo1.src,
     price: '₱ 2.1M',
     title: 'Urban Living Spaces',
     slug: 'urban-living-spaces',
@@ -369,8 +382,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 5,
     images: [condo5, condo2, condo3, condo4, condo1, condo6, condo1],
     tag: 'Condominium',
+    status: 'Sold',
+    thumbnail: condo1.src,
     price: '₱ 2.8M',
     title: 'The Metropolitan View',
     slug: 'the-metropolitan-view',
@@ -398,8 +414,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 6,
     images: [condo6, condo2, condo3, condo4, condo5, condo1, condo1],
     tag: 'Condominium',
+    status: 'Draft',
+    thumbnail: condo1.src,
     price: '₱ 1.5M',
     title: 'City Center Residences',
     slug: 'city-center-residences',
@@ -427,6 +446,7 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 7,
     images: [
       warehouse1,
       warehouse2,
@@ -437,6 +457,8 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'For Lease',
+    thumbnail: warehouse1.src,
     price: '₱ 4.5M',
     title: 'Industrial Park Warehouse',
     slug: 'industrial-park-warehouse',
@@ -457,6 +479,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 8,
     images: [
       warehouse2,
       warehouse1,
@@ -468,6 +491,8 @@ export const properties = [
     ],
     tag: 'Warehouse',
     price: '₱ 3.8M',
+    status: 'Sold',
+    thumbnail: warehouse1.src,
     title: 'Logistics Hub Center',
     slug: 'logistics-hub-center',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -487,6 +512,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 9,
     images: [
       warehouse3,
       warehouse2,
@@ -497,6 +523,8 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'Draft',
+    thumbnail: warehouse1.src,
     price: '₱ 5.2M',
     title: 'Commercial Storage Facility',
     slug: 'commercial-storage-facility',
@@ -517,6 +545,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 10,
     images: [
       warehouse4,
       warehouse3,
@@ -527,6 +556,8 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'For Lease',
+    thumbnail: warehouse1.src,
     price: '₱ 4.1M',
     title: 'Distribution Center Complex',
     slug: 'distribution-center-complex',
@@ -547,6 +578,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 11,
     images: [
       warehouse5,
       warehouse4,
@@ -557,6 +589,8 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'Sold',
+    thumbnail: warehouse1.src,
     price: '₱ 3.5M',
     title: 'Industrial Storage Solutions',
     slug: 'industrial-storage-solutions',
@@ -577,6 +611,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 12,
     images: [
       warehouse6,
       warehouse5,
@@ -587,6 +622,8 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'Draft',
+    thumbnail: warehouse1.src,
     price: '₱ 4.8M',
     title: 'Business Park Warehouse',
     slug: 'business-park-warehouse',
@@ -607,8 +644,11 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 13,
     images: [house1, house2, house3, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'For Lease',
+    thumbnail: house1.src,
     price: '₱ 6.5M',
     title: 'Serene Valley Homes',
     slug: 'serene-valley-homes',
@@ -636,8 +676,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 14,
     images: [house2, house1, house3, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'Sold',
+    thumbnail: house1.src,
     price: '₱ 5.8M',
     title: 'Green Meadows Estate',
     slug: 'green-meadows-estate',
@@ -665,8 +708,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 15,
     images: [house3, house2, house1, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'Draft',
+    thumbnail: house1.src,
     price: '₱ 7.2M',
     title: 'Sunset Hills Residence',
     slug: 'sunset-hills-residence',
@@ -694,8 +740,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 16,
     images: [house4, house3, house2, house1, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'For Lease',
+    thumbnail: house1.src,
     price: '₱ 6.1M',
     title: 'Pine Grove Villas',
     slug: 'pine-grove-villas',
@@ -723,8 +772,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 17,
     images: [house5, house4, house3, house2, house1, house6, house1],
     tag: 'House and Lot',
+    status: 'Sold',
+    thumbnail: house1.src,
     price: '₱ 5.5M',
     title: 'Mountain View Homes',
     slug: 'mountain-view-homes',
@@ -752,8 +804,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 18,
     images: [house6, house5, house4, house3, house2, house1, house1],
     tag: 'House and Lot',
+    status: 'Draft',
+    thumbnail: house1.src,
     price: '₱ 6.8M',
     title: 'Lakeside Gardens',
     slug: 'lakeside-gardens',
@@ -781,9 +836,12 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 19,
     images: [land1, land2, land3, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 8.5M',
+    status: 'For Lease',
+    thumbnail: land1.src,
     title: 'Prime Development Land',
     slug: 'prime-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -803,9 +861,12 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 20,
     images: [land2, land1, land3, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 7.8M',
+    status: 'Sold',
+    thumbnail: land1.src,
     title: 'Agricultural Investment Property',
     slug: 'agricultural-investment-property',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -825,9 +886,12 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 21,
     images: [land3, land2, land1, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 9.2M',
+    status: 'Draft',
+    thumbnail: land1.src,
     title: 'Commercial Development Site',
     slug: 'commercial-development-site',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -847,9 +911,12 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 22,
     images: [land4, land3, land2, land1, land5, land6, land1],
     tag: 'Land',
     price: '₱ 8.1M',
+    status: 'For Lease',
+    thumbnail: land1.src,
     title: 'Residential Land Parcel',
     slug: 'residential-land-parcel',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -869,10 +936,13 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 23,
     images: [land5, land4, land3, land2, land1, land6, land1],
     tag: 'Land',
     price: '₱ 7.5M',
     title: 'Investment Property Lot',
+    status: 'Sold',
+    thumbnail: land1.src,
     slug: 'investment-property-lot',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
     description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
@@ -891,10 +961,13 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 24,
     images: [land6, land5, land4, land3, land2, land1, land1],
     tag: 'Land',
     price: '₱ 8.8M',
     title: 'Future Development Land',
+    status: 'Draft',
+    thumbnail: land1.src,
     slug: 'future-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
     description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
@@ -913,3 +986,28 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
 ];
+
+export interface Listing {
+  id: number;
+  images: StaticImageData[];
+  thumbnail: string;
+  status: string;
+  price: string;
+  title: string;
+  location: string;
+  googleMap: string;
+  agent: {
+    name: string;
+    image: StaticImageData;
+    whatsapp: string;
+    email: string;
+    isVerified: boolean;
+    position: string;
+  };
+  description: Record<string, string | number | boolean | undefined>[];
+  isVerified: boolean;
+  features?: string[];
+  descriptionText?: string;
+  slug: string;
+  tag: string;
+}
