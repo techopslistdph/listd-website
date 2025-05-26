@@ -252,6 +252,39 @@ export const footerSocials = [
   { icon: linkedin, href: '#' },
 ];
 
+export type Listing = {
+  id: number;
+  images: StaticImageData[];
+  tag: string;
+  status: string;
+  thumbnail: string;
+  price: string;
+  title: string;
+  slug: string;
+  location: string;
+  description: (
+    | { bedrooms: number }
+    | { baths: number }
+    | { area: string }
+    | { 'fully furnished': boolean }
+    | { parking: boolean }
+    | { 'facing west': boolean }
+  )[];
+  isVerified: boolean;
+  isFavorites: boolean;
+  features: string[];
+  googleMap: string;
+  agent: {
+    name: string;
+    image: StaticImageData;
+    whatsapp: string;
+    email: string;
+    isVerified: boolean;
+    position: string;
+  };
+  descriptionText: string;
+};
+
 export const properties: Listing[] = [
   {
     id: 1,
@@ -272,6 +305,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -304,6 +339,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -321,7 +358,7 @@ export const properties: Listing[] = [
     id: 3,
     images: [condo3, condo2, condo1, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
-    status: 'Draft',
+    status: 'For Lease',
     thumbnail: condo1.src,
     price: '₱ 3.2M',
     title: 'Modern Heights Condominium',
@@ -336,6 +373,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -368,6 +407,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -400,6 +441,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -417,7 +460,7 @@ export const properties: Listing[] = [
     id: 6,
     images: [condo6, condo2, condo3, condo4, condo5, condo1, condo1],
     tag: 'Condominium',
-    status: 'Draft',
+    status: 'Sold',
     thumbnail: condo1.src,
     price: '₱ 1.5M',
     title: 'City Center Residences',
@@ -432,6 +475,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -463,8 +508,14 @@ export const properties: Listing[] = [
     title: 'Industrial Park Warehouse',
     slug: 'industrial-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -496,8 +547,14 @@ export const properties: Listing[] = [
     title: 'Logistics Hub Center',
     slug: 'logistics-hub-center',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -523,14 +580,20 @@ export const properties: Listing[] = [
       warehouse1,
     ],
     tag: 'Warehouse',
-    status: 'Draft',
+    status: 'For Lease',
     thumbnail: warehouse1.src,
     price: '₱ 5.2M',
     title: 'Commercial Storage Facility',
     slug: 'commercial-storage-facility',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -562,8 +625,14 @@ export const properties: Listing[] = [
     title: 'Distribution Center Complex',
     slug: 'distribution-center-complex',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -595,8 +664,14 @@ export const properties: Listing[] = [
     title: 'Industrial Storage Solutions',
     slug: 'industrial-storage-solutions',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -622,14 +697,20 @@ export const properties: Listing[] = [
       warehouse1,
     ],
     tag: 'Warehouse',
-    status: 'Draft',
+    status: 'Sold',
     thumbnail: warehouse1.src,
     price: '₱ 4.8M',
     title: 'Business Park Warehouse',
     slug: 'business-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -662,6 +743,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -694,6 +777,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -711,7 +796,7 @@ export const properties: Listing[] = [
     id: 15,
     images: [house3, house2, house1, house4, house5, house6, house1],
     tag: 'House and Lot',
-    status: 'Draft',
+    status: 'For Lease',
     thumbnail: house1.src,
     price: '₱ 7.2M',
     title: 'Sunset Hills Residence',
@@ -726,6 +811,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -758,6 +845,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -790,6 +879,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -807,7 +898,7 @@ export const properties: Listing[] = [
     id: 18,
     images: [house6, house5, house4, house3, house2, house1, house1],
     tag: 'House and Lot',
-    status: 'Draft',
+    status: 'Sold',
     thumbnail: house1.src,
     price: '₱ 6.8M',
     title: 'Lakeside Gardens',
@@ -822,6 +913,8 @@ export const properties: Listing[] = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -845,8 +938,14 @@ export const properties: Listing[] = [
     title: 'Prime Development Land',
     slug: 'prime-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -870,8 +969,14 @@ export const properties: Listing[] = [
     title: 'Agricultural Investment Property',
     slug: 'agricultural-investment-property',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -890,13 +995,19 @@ export const properties: Listing[] = [
     images: [land3, land2, land1, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 9.2M',
-    status: 'Draft',
+    status: 'For Lease',
     thumbnail: land1.src,
     title: 'Commercial Development Site',
     slug: 'commercial-development-site',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -920,8 +1031,14 @@ export const properties: Listing[] = [
     title: 'Residential Land Parcel',
     slug: 'residential-land-parcel',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -945,8 +1062,14 @@ export const properties: Listing[] = [
     thumbnail: land1.src,
     slug: 'investment-property-lot',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -966,12 +1089,18 @@ export const properties: Listing[] = [
     tag: 'Land',
     price: '₱ 8.8M',
     title: 'Future Development Land',
-    status: 'Draft',
+    status: 'Sold',
     thumbnail: land1.src,
     slug: 'future-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -986,28 +1115,3 @@ export const properties: Listing[] = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
 ];
-
-export interface Listing {
-  id: number;
-  images: StaticImageData[];
-  thumbnail: string;
-  status: string;
-  price: string;
-  title: string;
-  location: string;
-  googleMap: string;
-  agent: {
-    name: string;
-    image: StaticImageData;
-    whatsapp: string;
-    email: string;
-    isVerified: boolean;
-    position: string;
-  };
-  description: Record<string, string | number | boolean | undefined>[];
-  isVerified: boolean;
-  features?: string[];
-  descriptionText?: string;
-  slug: string;
-  tag: string;
-}

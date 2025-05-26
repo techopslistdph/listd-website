@@ -7,6 +7,9 @@ import verifiedIcon from '@/../public/images/icons/verified.png';
 import Button from '../common/Button';
 import EditProfile from './EditProfile';
 import MyListing from './MyListing';
+import ValuationListing from './ValuationListing';
+import LoginSecurity from './LoginSecurity';
+import MyFavorites from './MyFavorites';
 
 export default function Tab() {
   return (
@@ -28,7 +31,7 @@ export default function Tab() {
             <span className='caption'>Verified</span>
           </div>
         </div>
-        <Button className='h-12 px-10 text-sm font-semibold w-44 md:w-auto mx-auto'>
+        <Button className='h-12 px-10 text-sm font-semibold sm:w-44 md:w-auto mx-auto'>
           Create listing
         </Button>
       </div>
@@ -58,10 +61,14 @@ export default function Tab() {
         <TabsContent value='my-listing'>
           <MyListing />
         </TabsContent>
-        <TabsContent value='my-valuation'>{/* <MyValuation /> */}</TabsContent>
-        <TabsContent value='my-favorites'>{/* <MyFavorites /> */}</TabsContent>
+        <TabsContent value='my-valuation'>
+          <ValuationListing />
+        </TabsContent>
+        <TabsContent value='my-favorites'>
+          <MyFavorites />
+        </TabsContent>
         <TabsContent value='login-security'>
-          {/* <LoginSecurity /> */}
+          <LoginSecurity />
         </TabsContent>
       </Tabs>
     </div>

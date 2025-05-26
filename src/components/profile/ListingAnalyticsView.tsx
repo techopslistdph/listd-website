@@ -75,19 +75,19 @@ export default function ListingAnalyticsView({
   }
 
   return (
-    <div className='p-8'>
-      {/* Back Button */}
-
+    <div className='p-4 lg:p-8'>
       {/* Title & Address */}
-      <div className='mb-2 text-xl font-bold'>{listing.title}</div>
-      <div className='text-gray-400 mb-2'>{listing.location}</div>
-      <div className='text-2xl font-bold mb-4'>{listing.price}</div>
-      <hr className='mb-6' />
+      <div className='mb-2 text-lg lg:text-xl font-bold'>{listing.title}</div>
+      <div className='text-sm lg:text-base text-gray-400 mb-2'>
+        {listing.location}
+      </div>
+      <div className='text-xl lg:text-2xl font-bold mb-4'>{listing.price}</div>
+      <hr className='mb-4 lg:mb-6' />
 
       {/* Property Details */}
-      <div className='flex justify-between text-center my-8'>
+      <div className='flex flex-wrap justify-between text-center gap-4 lg:gap-0 my-4 lg:my-8'>
         {listing.description.map((item, idx) => {
-          const key = Object.keys(item)[0];
+          const key = Object.keys(item)[0] as keyof typeof item;
           const value = item[key];
           if (value === undefined || value === false) return null;
           const icon = getIconForKey(key);
@@ -95,11 +95,21 @@ export default function ListingAnalyticsView({
           return (
             <div
               key={idx}
-              className='flex flex-col items-center justify-center gap-1 text-[var(--neutral-mid)] text-sm'
+              className='flex flex-col items-center justify-center gap-1 text-[var(--neutral-mid)] text-xs lg:text-sm w-1/3 lg:w-auto'
             >
-              {icon && <Image src={icon} alt={key} width={20} height={20} />}
+              {icon && (
+                <Image
+                  src={icon}
+                  alt={key}
+                  width={16}
+                  height={16}
+                  className='lg:w-5 lg:h-5'
+                />
+              )}
               {isBoolean ? (
-                key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+                (key as string)
+                  .replace(/_/g, ' ')
+                  .replace(/\b\w/g, (l: string) => l.toUpperCase())
               ) : (
                 <>
                   {String(value)}{' '}
@@ -120,32 +130,36 @@ export default function ListingAnalyticsView({
       </div>
 
       {/* Listing Analytics */}
-      <div className='mb-8'>
-        <div className='flex justify-between items-center mb-4'>
-          <div>
-            <div className='font-bold text-lg'>Listing Analytics</div>
-            <div className='text-gray-400 text-sm'>
+      <div className='mb-6 lg:mb-8'>
+        <div className='flex flex-col lg:flex-row lg:justify-between lg:items-center mb-4'>
+          <div className='mb-4 lg:mb-0'>
+            <div className='font-bold text-base lg:text-lg'>
+              Listing Analytics
+            </div>
+            <div className='text-gray-400 text-xs lg:text-sm'>
               Track how your listing is performing
             </div>
           </div>
-          <button className='flex items-center text-[var(--primary-mid)] font-bold cursor-pointer'>
-            <Download className='w-5 h-5 mr-2' /> Export report
+          <button className='flex items-center text-[var(--primary-mid)] font-bold cursor-pointer text-sm lg:text-base'>
+            <Download className='w-4 h-4 lg:w-5 lg:h-5 mr-2' /> Export report
           </button>
         </div>
-        <div className='space-y-4'>
+        <div className='space-y-3 lg:space-y-4'>
           {analytics.map((item) => (
             <div
               key={item.label}
-              className='flex items-center bg-[#FAF8FF] rounded-2xl p-4 justify-between'
+              className='flex items-center bg-[#FAF8FF] rounded-xl lg:rounded-2xl p-3 lg:p-4 justify-between'
             >
-              <div className='flex items-center gap-4'>
+              <div className='flex items-center gap-3 lg:gap-4'>
                 <span
-                  className={`rounded-full p-2 ${item.color} text-[var(--primary-main)]`}
+                  className={`rounded-full p-1.5 lg:p-2 ${item.color} text-[var(--primary-main)]`}
                 >
-                  {item.icon}
+                  {React.cloneElement(item.icon, {
+                    className: 'w-4 h-4 lg:w-6 lg:h-6',
+                  })}
                 </span>
                 <div className='flex flex-col'>
-                  <span className='text-2xl font-bold text-[var(--primary-mid)]'>
+                  <span className='text-xl lg:text-2xl font-bold text-[var(--primary-mid)]'>
                     {item.value}
                   </span>
                   <span className='text-[var(--primary-mid)] text-xs'>
@@ -153,7 +167,7 @@ export default function ListingAnalyticsView({
                   </span>
                 </div>
               </div>
-              <span className='text-[var(--primary-mid)] flex items-center gap-1 text-sm'></span>
+              <span className='text-[var(--primary-mid)] flex items-center gap-1 text-xs lg:text-sm'></span>
             </div>
           ))}
         </div>
@@ -161,16 +175,20 @@ export default function ListingAnalyticsView({
 
       {/* Listing Actions */}
       <div>
-        <div className='font-bold text-lg mb-1'>Listing Actions</div>
-        <div className='text-gray-400 text-sm mb-4'>
+        <div className='font-bold text-base lg:text-lg mb-1'>
+          Listing Actions
+        </div>
+        <div className='text-gray-400 text-xs lg:text-sm mb-3 lg:mb-4'>
           Manage your property listing settings
         </div>
         <button
-          className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-xl p-4 w-full'
+          className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-lg lg:rounded-xl p-3 lg:p-4 w-full'
           onClick={() => setShowDetails(true)}
         >
-          <Eye className='text-[#7B6CD9] w-5 h-5 mr-3' />
-          <span className='font-semibold'>View Listing Details</span>
+          <Eye className='text-[#7B6CD9] w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3' />
+          <span className='font-semibold text-sm lg:text-base'>
+            View Listing Details
+          </span>
         </button>
       </div>
     </div>
