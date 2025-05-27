@@ -50,7 +50,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           Direct Message
         </a>
       </div>
-      <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-2 mt-5'>
+      <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-10 mt-5'>
         <div className='flex items-center gap-2 py-3 cursor-pointer'>
           <Image
             src={calculateMortgageIcon}

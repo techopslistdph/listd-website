@@ -25,13 +25,22 @@ export function PropertyHeader({
           </div>
         </div>
         <div className='flex items-center gap-6'>
-          <button type='button' className='hover:text-[var(--primary-main)]'>
+          <button
+            type='button'
+            className='hover:text-[var(--primary-main)] cursor-pointer [&>svg]:hover:fill-[var(--primary-main)]'
+          >
             <Heart className='w-5 h-5' />
           </button>
-          <button type='button' className='hover:text-[var(--primary-main)]'>
+          <button
+            type='button'
+            className='hover:text-[var(--primary-main)] cursor-pointer [&>svg]:hover:fill-[var(--primary-main)]'
+          >
             <Share2 className='w-5 h-5' />
           </button>
-          <button type='button' className='hover:text-[var(--primary-main)]'>
+          <button
+            type='button'
+            className='hover:text-[var(--primary-main)] cursor-pointer [&>svg]:hover:fill-[var(--primary-main)]'
+          >
             <Trash2 className='w-5 h-5' />
           </button>
         </div>
