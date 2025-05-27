@@ -38,6 +38,7 @@ import land3 from '../../public/images/land3.png';
 import land4 from '../../public/images/land4.png';
 import land5 from '../../public/images/land5.png';
 import land6 from '../../public/images/land6.png';
+import { StaticImageData } from 'next/image';
 
 export const navigationlinks = [
   {
@@ -251,10 +252,46 @@ export const footerSocials = [
   { icon: linkedin, href: '#' },
 ];
 
-export const properties = [
+export type Listing = {
+  id: number;
+  images: StaticImageData[];
+  tag: string;
+  status: string;
+  thumbnail: string;
+  price: string;
+  title: string;
+  slug: string;
+  location: string;
+  description: (
+    | { bedrooms: number }
+    | { baths: number }
+    | { area: string }
+    | { 'fully furnished': boolean }
+    | { parking: boolean }
+    | { 'facing west': boolean }
+  )[];
+  isVerified: boolean;
+  isFavorites: boolean;
+  features: string[];
+  googleMap: string;
+  agent: {
+    name: string;
+    image: StaticImageData;
+    whatsapp: string;
+    email: string;
+    isVerified: boolean;
+    position: string;
+  };
+  descriptionText: string;
+};
+
+export const properties: Listing[] = [
   {
+    id: 1,
+    thumbnail: condo1.src,
     images: [condo1, condo2, condo3, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'For Lease',
     price: '₱ 2.5M',
     title: 'Luxury Skyline Residences',
     slug: 'luxury-skyline-residences',
@@ -268,6 +305,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -282,9 +321,12 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 2,
     images: [condo2, condo1, condo3, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
     price: '₱ 1.8M',
+    status: 'Sold',
+    thumbnail: condo1.src,
     title: 'The Grand Tower Suites',
     slug: 'the-grand-tower-suites',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
@@ -297,6 +339,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -311,8 +355,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 3,
     images: [condo3, condo2, condo1, condo4, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'For Lease',
+    thumbnail: condo1.src,
     price: '₱ 3.2M',
     title: 'Modern Heights Condominium',
     slug: 'modern-heights-condominium',
@@ -326,6 +373,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -340,8 +389,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 4,
     images: [condo4, condo2, condo3, condo1, condo5, condo6, condo1],
     tag: 'Condominium',
+    status: 'For Lease',
+    thumbnail: condo1.src,
     price: '₱ 2.1M',
     title: 'Urban Living Spaces',
     slug: 'urban-living-spaces',
@@ -355,6 +407,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -369,8 +423,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 5,
     images: [condo5, condo2, condo3, condo4, condo1, condo6, condo1],
     tag: 'Condominium',
+    status: 'Sold',
+    thumbnail: condo1.src,
     price: '₱ 2.8M',
     title: 'The Metropolitan View',
     slug: 'the-metropolitan-view',
@@ -384,6 +441,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -398,8 +457,11 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 6,
     images: [condo6, condo2, condo3, condo4, condo5, condo1, condo1],
     tag: 'Condominium',
+    status: 'Sold',
+    thumbnail: condo1.src,
     price: '₱ 1.5M',
     title: 'City Center Residences',
     slug: 'city-center-residences',
@@ -413,6 +475,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -427,6 +491,7 @@ export const properties = [
     descriptionText: 'A Brand New Condominium 2 Storey in Club Laiya, Makati',
   },
   {
+    id: 7,
     images: [
       warehouse1,
       warehouse2,
@@ -437,12 +502,20 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'For Lease',
+    thumbnail: warehouse1.src,
     price: '₱ 4.5M',
     title: 'Industrial Park Warehouse',
     slug: 'industrial-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -457,6 +530,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 8,
     images: [
       warehouse2,
       warehouse1,
@@ -468,11 +542,19 @@ export const properties = [
     ],
     tag: 'Warehouse',
     price: '₱ 3.8M',
+    status: 'Sold',
+    thumbnail: warehouse1.src,
     title: 'Logistics Hub Center',
     slug: 'logistics-hub-center',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -487,6 +569,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 9,
     images: [
       warehouse3,
       warehouse2,
@@ -497,12 +580,20 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'For Lease',
+    thumbnail: warehouse1.src,
     price: '₱ 5.2M',
     title: 'Commercial Storage Facility',
     slug: 'commercial-storage-facility',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -517,6 +608,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 10,
     images: [
       warehouse4,
       warehouse3,
@@ -527,12 +619,20 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'For Lease',
+    thumbnail: warehouse1.src,
     price: '₱ 4.1M',
     title: 'Distribution Center Complex',
     slug: 'distribution-center-complex',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -547,6 +647,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 11,
     images: [
       warehouse5,
       warehouse4,
@@ -557,12 +658,20 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'Sold',
+    thumbnail: warehouse1.src,
     price: '₱ 3.5M',
     title: 'Industrial Storage Solutions',
     slug: 'industrial-storage-solutions',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -577,6 +686,7 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 12,
     images: [
       warehouse6,
       warehouse5,
@@ -587,12 +697,20 @@ export const properties = [
       warehouse1,
     ],
     tag: 'Warehouse',
+    status: 'Sold',
+    thumbnail: warehouse1.src,
     price: '₱ 4.8M',
     title: 'Business Park Warehouse',
     slug: 'business-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '26 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '26 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Port Access', 'Large Lot', 'High Ceiling', 'Office included'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -607,8 +725,11 @@ export const properties = [
     descriptionText: 'A Brand New Warehouse in Club Laiya, Makati',
   },
   {
+    id: 13,
     images: [house1, house2, house3, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'For Lease',
+    thumbnail: house1.src,
     price: '₱ 6.5M',
     title: 'Serene Valley Homes',
     slug: 'serene-valley-homes',
@@ -622,6 +743,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -636,8 +759,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 14,
     images: [house2, house1, house3, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'Sold',
+    thumbnail: house1.src,
     price: '₱ 5.8M',
     title: 'Green Meadows Estate',
     slug: 'green-meadows-estate',
@@ -651,6 +777,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -665,8 +793,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 15,
     images: [house3, house2, house1, house4, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'For Lease',
+    thumbnail: house1.src,
     price: '₱ 7.2M',
     title: 'Sunset Hills Residence',
     slug: 'sunset-hills-residence',
@@ -680,6 +811,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -694,8 +827,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 16,
     images: [house4, house3, house2, house1, house5, house6, house1],
     tag: 'House and Lot',
+    status: 'For Lease',
+    thumbnail: house1.src,
     price: '₱ 6.1M',
     title: 'Pine Grove Villas',
     slug: 'pine-grove-villas',
@@ -709,6 +845,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -723,8 +861,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 17,
     images: [house5, house4, house3, house2, house1, house6, house1],
     tag: 'House and Lot',
+    status: 'Sold',
+    thumbnail: house1.src,
     price: '₱ 5.5M',
     title: 'Mountain View Homes',
     slug: 'mountain-view-homes',
@@ -738,6 +879,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -752,8 +895,11 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 18,
     images: [house6, house5, house4, house3, house2, house1, house1],
     tag: 'House and Lot',
+    status: 'Sold',
+    thumbnail: house1.src,
     price: '₱ 6.8M',
     title: 'Lakeside Gardens',
     slug: 'lakeside-gardens',
@@ -767,6 +913,8 @@ export const properties = [
       { 'facing west': true },
     ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Balcony', 'Bath Tub', 'High Ceiling', 'Walk In Closet'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -781,14 +929,23 @@ export const properties = [
     descriptionText: 'A Brand New House and Lot in Club Laiya, Makati',
   },
   {
+    id: 19,
     images: [land1, land2, land3, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 8.5M',
+    status: 'For Lease',
+    thumbnail: land1.src,
     title: 'Prime Development Land',
     slug: 'prime-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -803,14 +960,23 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 20,
     images: [land2, land1, land3, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 7.8M',
+    status: 'Sold',
+    thumbnail: land1.src,
     title: 'Agricultural Investment Property',
     slug: 'agricultural-investment-property',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -825,14 +991,23 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 21,
     images: [land3, land2, land1, land4, land5, land6, land1],
     tag: 'Land',
     price: '₱ 9.2M',
+    status: 'For Lease',
+    thumbnail: land1.src,
     title: 'Commercial Development Site',
     slug: 'commercial-development-site',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -847,14 +1022,23 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 22,
     images: [land4, land3, land2, land1, land5, land6, land1],
     tag: 'Land',
     price: '₱ 8.1M',
+    status: 'For Lease',
+    thumbnail: land1.src,
     title: 'Residential Land Parcel',
     slug: 'residential-land-parcel',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -869,14 +1053,23 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 23,
     images: [land5, land4, land3, land2, land1, land6, land1],
     tag: 'Land',
     price: '₱ 7.5M',
     title: 'Investment Property Lot',
+    status: 'Sold',
+    thumbnail: land1.src,
     slug: 'investment-property-lot',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
@@ -891,14 +1084,23 @@ export const properties = [
     descriptionText: 'A Brand New Land in Club Laiya, Makati',
   },
   {
+    id: 24,
     images: [land6, land5, land4, land3, land2, land1, land1],
     tag: 'Land',
     price: '₱ 8.8M',
     title: 'Future Development Land',
+    status: 'Sold',
+    thumbnail: land1.src,
     slug: 'future-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
-    description: [{ area: '824 sqm' }, { parking: 2 }, { 'facing west': true }],
+    description: [
+      { area: '824 sqm' },
+      { parking: true },
+      { 'facing west': true },
+    ],
     isVerified: true,
+    isFavorites: true,
+
     features: ['Quiet Community', 'Clean title', 'Ready to build'],
     googleMap:
       '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3854.579724467531!2d120.89017737577106!3d14.960490285569627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396fffe81226745%3A0xd61662a7648edf6b!2sSM%20Baliwag%2C%20Do%C3%B1a%20Remedios%20Trinidad%20Hwy%2C%20Pagala%2C%20Baliwag%2C%203006%20Bulacan!5e0!3m2!1sen!2sph!4v1747800483553!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',

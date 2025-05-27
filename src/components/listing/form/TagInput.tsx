@@ -33,7 +33,7 @@ export function TagInput({
           {value.map((item, i) => (
             <span
               key={i}
-              className='bg-[var(--primary-light)] text-[var(--primary-mid)] px-4 py-2 rounded-xl text-base flex items-center font-normal'
+              className='bg-[var(--primary-light)] text-[var(--primary-mid)] px-2 py-1 rounded-xl text-xs sm:text-sm md:text-base flex items-center font-normal'
             >
               {item}
               <button
@@ -46,12 +46,12 @@ export function TagInput({
           ))}
         </div>
         <input
-          className='flex-1 bg-transparent outline-none border-none px-2 text-base'
+          className='flex-1 bg-transparent placeholder:text-sm outline-none border-none px-2 text-base'
           placeholder={placeholder}
           onKeyDown={handleTagInput}
           style={{ minWidth: 0 }}
         />
-        <Search className='ml-4 w-6 h-6 text-black' />
+        <Search className='ml-4 w-4 h-4 md:w-6 md:h-6 text-black' />
       </div>
     </div>
   );
