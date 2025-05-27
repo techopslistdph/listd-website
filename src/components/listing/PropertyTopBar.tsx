@@ -42,7 +42,7 @@ export default function PropertyTopBar({ onViewChange }: PropertyTopBarProps) {
       {/* Buy/Rent Toggle */}
       <div className='flex items-center bg-[var(--neutral-light)] rounded-2xl px-2 py-2 gap-1 min-w-[180px] justify-center'>
         <button
-          className={`px-8 py-3 rounded-xl transition-all ${
+          className={`px-8 py-3 rounded-xl transition-all cursor-pointer ${
             buyOrRent === 'buy'
               ? 'bg-[var(--primary-main)] text-white '
               : 'bg-transparent text-black'
@@ -52,7 +52,7 @@ export default function PropertyTopBar({ onViewChange }: PropertyTopBarProps) {
           Buy
         </button>
         <button
-          className={`px-8 py-3 rounded-xl transition-all ${
+          className={`px-8 py-3 rounded-xl transition-all cursor-pointer ${
             buyOrRent === 'rent'
               ? 'bg-[var(--primary-main)] text-white'
               : 'bg-transparent text-black'
@@ -65,7 +65,7 @@ export default function PropertyTopBar({ onViewChange }: PropertyTopBarProps) {
       {/* View Toggle */}
       <div className='flex items-center bg-[var(--neutral-light)] rounded-2xl px-2 py-2 gap-1 min-w-[120px] justify-center'>
         <button
-          className={`px-6 py-4 rounded-xl transition-all ${
+          className={`px-6 py-4 rounded-xl transition-all cursor-pointer ${
             view === 'list' ? 'bg-[var(--primary-main)]' : 'bg-transparent'
           } flex items-center justify-center`}
           onClick={() => handleViewChange('list')}
@@ -85,7 +85,7 @@ export default function PropertyTopBar({ onViewChange }: PropertyTopBarProps) {
           </svg>
         </button>
         <button
-          className={`px-6 py-4 rounded-xl transition-all ${
+          className={`px-6 py-4 rounded-xl transition-all cursor-pointer ${
             view === 'map' ? 'bg-[var(--primary-main)]' : 'bg-transparent'
           } flex items-center justify-center`}
           onClick={() => handleViewChange('map')}

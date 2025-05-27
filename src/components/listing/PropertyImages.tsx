@@ -60,7 +60,7 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
         {/* Gallery Header */}
         <div className='absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent z-10'>
           <button
-            className='rounded-none text-white hover:bg-white/20 flex items-center gap-2 px-2 py-1'
+            className='rounded-none text-white hover:bg-white/20 flex items-center cursor-pointer gap-2 px-2 py-1'
             onClick={() => setShowAllPhotos(false)}
           >
             <ArrowLeft className='h-5 w-5 text-neutral-50' />
@@ -133,14 +133,14 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
 
           {/* Left/Right Navigation Buttons */}
           <button
-            className='absolute left-4 top-1/2 -translate-y-1/2 rounded-none bg-primary text-primary-foreground hover:bg-primary/90 h-12 w-12 z-20 flex items-center justify-center'
+            className='absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer rounded-none bg-primary text-primary-foreground hover:bg-primary/90 h-12 w-12 z-20 flex items-center justify-center'
             onClick={handlePrevious}
             disabled={isTransitioning}
           >
             <ChevronLeft className='h-6 w-6' />
           </button>
           <button
-            className='absolute right-4 top-1/2 -translate-y-1/2 rounded-none bg-primary text-primary-foreground hover:bg-primary/90 h-12 w-12 z-20 flex items-center justify-center'
+            className='absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer rounded-none bg-primary text-primary-foreground hover:bg-primary/90 h-12 w-12 z-20 flex items-center justify-center'
             onClick={handleNext}
             disabled={isTransitioning}
           >
@@ -197,7 +197,7 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
 
         {/* Show All Photos Button with improved styling */}
         <button
-          className='absolute bottom-4 right-4 flex items-center gap-2 bg-[var(--secondary-main)] font-semibold text-white px-4 py-2 text-sm rounded-full'
+          className='absolute bottom-4 right-4 flex items-center gap-2 bg-[var(--secondary-main)] cursor-pointer font-semibold text-white px-4 py-2 text-sm rounded-full'
           onClick={() => openGallery(0)}
         >
           <Image src={gridIcon} alt='grid' width={20} height={20} />

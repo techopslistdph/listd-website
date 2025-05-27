@@ -30,15 +30,9 @@ export default function Page() {
             ))}
           </div>
         ) : (
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+          <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
-            <div className='space-y-6'>
-              {filteredProperties.map((property, idx) => (
-                <PropertyCard key={idx} {...property} view='map' />
-              ))}
-            </div>
-            {/* Map Column */}
-            <div className='rounded-xl sticky top-6 h-[calc(100vh-200px)] overflow-hidden'>
+            <div className='rounded-xl w-full h-[480px] overflow-hidden'>
               <div className='relative w-full h-full'>
                 <Image
                   src={mapview}
@@ -50,6 +44,12 @@ export default function Page() {
                 />
               </div>
             </div>
+            <div className='space-y-6'>
+              {filteredProperties.map((property, idx) => (
+                <PropertyCard key={idx} {...property} view='map' />
+              ))}
+            </div>
+            {/* Map Column */}
           </div>
         )}
       </main>
