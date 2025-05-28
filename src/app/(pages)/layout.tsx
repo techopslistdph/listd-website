@@ -10,6 +10,9 @@ import {
 } from '../data';
 import Footer from '@/components/common/Footer';
 
+import {
+  ClerkProvider,
+} from '@clerk/nextjs'
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
@@ -29,19 +32,10 @@ export default function RootLayout({
   const navigtionItems = navigationlinks;
 
   return (
-    // <ClerkProvider>
+    <ClerkProvider>
     <html lang='en'>
       <body className={`${poppins.variable} antialiased`}>
         <NavigationBar navigtionItems={navigtionItems} />
-        {/* <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header> */}
         {children}
         <Footer
           footerLinks={footerLinks}
@@ -50,6 +44,6 @@ export default function RootLayout({
         />
       </body>
     </html>
-    // </ClerkProvider>
+    </ClerkProvider>
   );
 }

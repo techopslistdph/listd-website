@@ -2,6 +2,12 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from './Button';
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from '../ui/sheet';
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+} from '@clerk/nextjs';
+import UserProfileCard from './UserProfileCard';
 
 export default function NavigationBar({
   navigtionItems,
@@ -52,9 +58,20 @@ export default function NavigationBar({
           ))}
         </div>
       </div>
-      <Button variant='primary' className='px-6 py-2 text-base font-normal'>
-        Login
-      </Button>
+      
+      {/* Clerk Authentication */}
+      <div className="flex items-center gap-4">
+        <SignedOut>
+          <SignInButton>
+            <Button variant='primary' className='px-6 py-2 text-base font-normal'>
+              Login
+            </Button>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <UserProfileCard />
+        </SignedIn>
+      </div>
     </div>
   );
 }
