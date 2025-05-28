@@ -9,6 +9,7 @@ import {
   footerSocials,
 } from '../data';
 import Footer from '@/components/common/Footer';
+import { QueryProvider } from '@/lib/queries';
 
 import {
   ClerkProvider,
@@ -33,17 +34,19 @@ export default function RootLayout({
 
   return (
     <ClerkProvider>
-    <html lang='en'>
-      <body className={`${poppins.variable} antialiased`}>
-        <NavigationBar navigtionItems={navigtionItems} />
-        {children}
-        <Footer
-          footerLinks={footerLinks}
-          footerAppButtons={footerAppButtons}
-          footerSocials={footerSocials}
-        />
-      </body>
-    </html>
+      <html lang='en'>
+        <body className={`${poppins.variable} antialiased`}>
+          <QueryProvider>
+            <NavigationBar navigtionItems={navigtionItems} />
+            {children}
+            <Footer
+              footerLinks={footerLinks}
+              footerAppButtons={footerAppButtons}
+              footerSocials={footerSocials}
+            />
+          </QueryProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
