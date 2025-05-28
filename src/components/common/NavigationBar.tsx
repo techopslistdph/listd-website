@@ -22,9 +22,10 @@ export default function NavigationBar({
           <SheetContent side='left' className='p-0'>
             <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
             <nav className='flex flex-col gap-8 p-6'>
+              <Link href={'/'}>
               <p className='text-3xl font-bold text-[var(--primary-main)]'>
-                Listd
-              </p>
+                Listdw
+              </p></Link>
 
               {navigtionItems.map((item) => (
                 <Link
@@ -38,7 +39,7 @@ export default function NavigationBar({
             </nav>
           </SheetContent>
         </Sheet>
-        <p className='text-2xl font-bold text-[var(--primary-main)]'>Listd</p>
+       <Link href={'/'}> <p className='text-2xl font-bold text-[var(--primary-main)]'>Listd</p></Link>
         <div className='hidden md:flex items-center gap-10 ml-8'>
           {navigtionItems.map((item) => (
             <Link
