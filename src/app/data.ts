@@ -262,6 +262,8 @@ export type Listing = {
   title: string;
   slug: string;
   location: string;
+  latitude: number;
+  longitude: number;
   description: (
     | { bedrooms: number }
     | { baths: number }
@@ -296,6 +298,8 @@ export const properties: Listing[] = [
     title: 'Luxury Skyline Residences',
     slug: 'luxury-skyline-residences',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -330,6 +334,8 @@ export const properties: Listing[] = [
     title: 'The Grand Tower Suites',
     slug: 'the-grand-tower-suites',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -364,6 +370,8 @@ export const properties: Listing[] = [
     title: 'Modern Heights Condominium',
     slug: 'modern-heights-condominium',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -398,6 +406,8 @@ export const properties: Listing[] = [
     title: 'Urban Living Spaces',
     slug: 'urban-living-spaces',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -432,6 +442,8 @@ export const properties: Listing[] = [
     title: 'The Metropolitan View',
     slug: 'the-metropolitan-view',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -466,6 +478,8 @@ export const properties: Listing[] = [
     title: 'City Center Residences',
     slug: 'city-center-residences',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -508,6 +522,8 @@ export const properties: Listing[] = [
     title: 'Industrial Park Warehouse',
     slug: 'industrial-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -547,6 +563,8 @@ export const properties: Listing[] = [
     title: 'Logistics Hub Center',
     slug: 'logistics-hub-center',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -586,6 +604,8 @@ export const properties: Listing[] = [
     title: 'Commercial Storage Facility',
     slug: 'commercial-storage-facility',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -625,6 +645,8 @@ export const properties: Listing[] = [
     title: 'Distribution Center Complex',
     slug: 'distribution-center-complex',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -664,6 +686,8 @@ export const properties: Listing[] = [
     title: 'Industrial Storage Solutions',
     slug: 'industrial-storage-solutions',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -703,6 +727,8 @@ export const properties: Listing[] = [
     title: 'Business Park Warehouse',
     slug: 'business-park-warehouse',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '26 sqm' },
       { parking: true },
@@ -734,6 +760,8 @@ export const properties: Listing[] = [
     title: 'Serene Valley Homes',
     slug: 'serene-valley-homes',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -768,6 +796,8 @@ export const properties: Listing[] = [
     title: 'Green Meadows Estate',
     slug: 'green-meadows-estate',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -802,6 +832,8 @@ export const properties: Listing[] = [
     title: 'Sunset Hills Residence',
     slug: 'sunset-hills-residence',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -836,6 +868,8 @@ export const properties: Listing[] = [
     title: 'Pine Grove Villas',
     slug: 'pine-grove-villas',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -870,6 +904,8 @@ export const properties: Listing[] = [
     title: 'Mountain View Homes',
     slug: 'mountain-view-homes',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -904,6 +940,8 @@ export const properties: Listing[] = [
     title: 'Lakeside Gardens',
     slug: 'lakeside-gardens',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { bedrooms: 1 },
       { baths: 1 },
@@ -938,6 +976,8 @@ export const properties: Listing[] = [
     title: 'Prime Development Land',
     slug: 'prime-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },
@@ -969,6 +1009,8 @@ export const properties: Listing[] = [
     title: 'Agricultural Investment Property',
     slug: 'agricultural-investment-property',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },
@@ -1000,6 +1042,8 @@ export const properties: Listing[] = [
     title: 'Commercial Development Site',
     slug: 'commercial-development-site',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },
@@ -1031,6 +1075,8 @@ export const properties: Listing[] = [
     title: 'Residential Land Parcel',
     slug: 'residential-land-parcel',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },
@@ -1062,6 +1108,8 @@ export const properties: Listing[] = [
     thumbnail: land1.src,
     slug: 'investment-property-lot',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },
@@ -1093,6 +1141,8 @@ export const properties: Listing[] = [
     thumbnail: land1.src,
     slug: 'future-development-land',
     location: 'Club Laiya, Brgy, San Juan, Batangas',
+    latitude: 13.7563 + (Math.random() * 0.5 - 0.25),
+    longitude: 121.0583 + (Math.random() * 0.5 - 0.25),
     description: [
       { area: '824 sqm' },
       { parking: true },

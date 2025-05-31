@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { properties } from '@/app/data';
-import { StaticImageData } from 'next/image';
+import { properties, Listing } from '@/app/data';
 
 type PropertyDescription = {
   bedrooms?: number;
@@ -11,26 +10,7 @@ type PropertyDescription = {
   'facing west'?: boolean;
 };
 
-type Property = {
-  images: StaticImageData[];
-  tag: string;
-  price: string;
-  title: string;
-  slug: string;
-  location: string;
-  description: PropertyDescription[];
-  isVerified: boolean;
-  features: string[];
-  googleMap: string;
-  agent: {
-    name: string;
-    image: StaticImageData;
-    whatsapp: string;
-    email: string;
-    isVerified: boolean;
-    position: string;
-  };
-};
+type Property = Listing;
 
 type FilterState = {
   propertyTypes: string[];

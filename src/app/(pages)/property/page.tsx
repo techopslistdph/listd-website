@@ -4,9 +4,8 @@ import PropertyCard from '@/components/listing/PropertyCard';
 import PropertySidebar from '@/components/listing/PropertySidebar';
 import PropertyTopBar from '@/components/listing/PropertyTopBar';
 import { usePropertyFilter } from '@/hooks/usePropertyFilter';
-import mapview from '../../../../public/images/mapview.png';
 import { useState } from 'react';
-import Image from 'next/image';
+import PropertyMap from '@/components/map/PropertyMap';
 
 export default function Page() {
   const { filteredProperties, handleFilterChange } = usePropertyFilter();
@@ -33,23 +32,13 @@ export default function Page() {
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full h-[480px] overflow-hidden'>
-              <div className='relative w-full h-full'>
-                <Image
-                  src={mapview}
-                  alt='mapview'
-                  fill
-                  className='object-cover'
-                  //   sizes='(max-width: 768px) 100vw, 50vw'
-                  priority
-                />
-              </div>
+              <PropertyMap data={filteredProperties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
               {filteredProperties.map((property, idx) => (
                 <PropertyCard key={idx} {...property} view='map' />
               ))}
             </div>
-            {/* Map Column */}
           </div>
         )}
       </main>
