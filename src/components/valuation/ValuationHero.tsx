@@ -40,7 +40,7 @@ export default function ValuationHero() {
   return (
     <section className='max-w-[1000px] rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white  relative z-20'>
       <h1 className='heading-3 text-primary mb-2'>Property valuation</h1>
-      <h2 className='body-large font-bold text-[var(--neutral-mid)] mb-8'>
+      <h2 className='body-large font-bold text-neutral-mid mb-8'>
         With the free online valuation of your property, you can find out the
         selling price and the rental price in just 3 steps
       </h2>
@@ -50,29 +50,27 @@ export default function ValuationHero() {
             key={idx}
             className='flex flex-col md:flex-row items-center gap-2'
           >
-            <div className='flex items-center justify-center w-8 text-xs h-8 rounded-full border-2 border-[var(--neutral-mid)] text-primary font-bold bg-white'>
+            <div className='flex items-center justify-center w-8 text-xs h-8 rounded-full border-2 border-neutral-mid text-primary font-bold bg-white'>
               {step.label}
             </div>
-            <div className=' font-medium text-[var(--neutral-main)]'>
-              {step.text}
-            </div>
+            <div className=' font-medium text-neutral-main'>{step.text}</div>
           </div>
         ))}
       </div>
       <form className=' flex flex-col'>
-        <div className='border-b-2 border-[var(--primary-main)] pb-2 mb-5'>
+        <div className='border-b-2 border-neutral-main pb-2 mb-5'>
           <label className='block font-bold text-lg'>Full address</label>
         </div>
         <div className='flex flex-col md:flex-row items-center md:items-end gap-4 mb-2'>
           <div className='flex-1 w-full md:w-auto'>
             <Label className='block font-medium mb-2'>
-              Municipality <span className='text-[var(--error-main)]'>*</span>
+              Municipality <span className='text-error-man'>*</span>
             </Label>
             <Input placeholder='Type municipality here' />
           </div>
           <div className='flex-1 w-full md:w-auto'>
             <Label className='block font-medium mb-2'>
-              Property <span className='text-[var(--error-main)]'>*</span>
+              Property <span className='text-error-main'>*</span>
             </Label>
             <Select
               value={selectedType}
@@ -102,7 +100,7 @@ export default function ValuationHero() {
             </Button>
           </div>
         </div>
-        <div className='text-[var(--neutral-mid)] text-sm mt-2'>
+        <div className='text-neutral-mid text-sm mt-2'>
           The free online valuation is not and does not replace a professional
           appraisal.
         </div>

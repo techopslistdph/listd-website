@@ -48,7 +48,7 @@ export default function FAQ() {
       <Accordion type='multiple' className='w-full mt-5'>
         {faqs.map((faq, idx) => (
           <AccordionItem key={idx} value={faq.question}>
-            <AccordionTrigger className='text-base lg:text-lg lg:font-semibold text-primary py-3 lg:py-4'>
+            <AccordionTrigger className='text-base lg:text-lg lg:font-semibold text-[#100A55] py-3 lg:py-4'>
               {faq.question}
             </AccordionTrigger>
             <AccordionContent className='text-sm lg:text-base text-muted-foreground'>

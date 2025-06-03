@@ -2,11 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from './Button';
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from '../ui/sheet';
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-} from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import UserProfileCard from './UserProfileCard';
 
 export default function NavigationBar({
@@ -15,7 +11,7 @@ export default function NavigationBar({
   navigtionItems: { label: string; href: string }[];
 }) {
   return (
-    <div className='flex justify-between items-center p-4 md:p-8 container mx-auto'>
+    <div className='flex justify-between items-center p-4 md:p-8 container mx-auto max-w-[1300px]'>
       <div className='flex items-center gap-4'>
         <Sheet>
           <SheetTrigger asChild>
@@ -29,9 +25,8 @@ export default function NavigationBar({
             <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
             <nav className='flex flex-col gap-8 p-6'>
               <Link href={'/'}>
-              <p className='text-3xl font-bold text-[var(--primary-main)]'>
-                Listdw
-              </p></Link>
+                <p className='text-3xl font-bold text-primary-main'>Listdw</p>
+              </Link>
 
               {navigtionItems.map((item) => (
                 <Link
@@ -45,7 +40,10 @@ export default function NavigationBar({
             </nav>
           </SheetContent>
         </Sheet>
-       <Link href={'/'}> <p className='text-2xl font-bold text-[var(--primary-main)]'>Listd</p></Link>
+        <Link href={'/'}>
+          {' '}
+          <p className='text-2xl font-bold text-primary-main'>Listd</p>
+        </Link>
         <div className='hidden md:flex items-center gap-10 ml-8'>
           {navigtionItems.map((item) => (
             <Link
@@ -58,12 +56,15 @@ export default function NavigationBar({
           ))}
         </div>
       </div>
-      
+
       {/* Clerk Authentication */}
-      <div className="flex items-center gap-4">
+      <div className='flex items-center gap-4'>
         <SignedOut>
           <SignInButton>
-            <Button variant='primary' className='px-6 py-2 text-base font-normal'>
+            <Button
+              variant='primary'
+              className='px-6 py-2 text-base font-normal'
+            >
               Login
             </Button>
           </SignInButton>

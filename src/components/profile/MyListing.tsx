@@ -154,7 +154,7 @@ export default function MyListing() {
                           isSold
                             ? 'bg-green-100 text-green-600'
                             : isForLease
-                            ? 'bg-[var(--primary-light)] text-[var(--primary-main)]'
+                            ? 'bg-primary-light text-primary-main'
                             : 'bg-gray-200 text-gray-500'
                         }`}
                       >
@@ -252,7 +252,7 @@ export default function MyListing() {
                         <>
                           <Button
                             variant='outline'
-                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer'
+                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
                             type='button'
                             onClick={(e) => {
                               e.stopPropagation();
@@ -264,7 +264,7 @@ export default function MyListing() {
                           </Button>
                           <Button
                             type='button'
-                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer'
+                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
                           >
                             Delete{' '}
                           </Button>
@@ -273,7 +273,7 @@ export default function MyListing() {
                         <>
                           <Button
                             variant='outline'
-                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer'
+                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
                             type='button'
                           >
                             Delete{' '}
@@ -285,7 +285,7 @@ export default function MyListing() {
                               setUpdateDialogProperty(property);
                               setUpdateDialogOpen(true);
                             }}
-                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer'
+                            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
                           >
                             Update Status
                           </Button>

@@ -42,20 +42,16 @@ import { StaticImageData } from 'next/image';
 
 export const navigationlinks = [
   {
-    label: 'Buy',
-    href: '/buy',
-  },
-  {
-    label: 'Rent',
-    href: '/rent',
-  },
-  {
-    label: 'Sell',
-    href: '/sell',
+    label: 'Homepage',
+    href: '/',
   },
   {
     label: 'Valuation',
     href: '/valuation',
+  },
+  {
+    label: 'Message',
+    href: '/message',
   },
 ];
 

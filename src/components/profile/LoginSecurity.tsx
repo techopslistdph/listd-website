@@ -10,11 +10,11 @@ export default function LoginSecurity() {
         <div className='rounded-lg p-4 lg:p-5 shadow-lg shadow-[#F7EFFD] flex items-center justify-between cursor-pointer transition'>
           <div>
             <p className='font-semibold text-sm lg:text-base mb-1'>Password</p>
-            <p className='text-xs lg:text-sm text-[var(--neutral-mid)]'>
+            <p className='text-xs lg:text-sm text-neutral-mid'>
               Last updated 11 minutes ago
             </p>
           </div>
-          <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-[var(--neutral-mid)]' />
+          <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-neutral-mid' />
         </div>
       </div>
 
@@ -27,22 +27,22 @@ export default function LoginSecurity() {
               <p className='font-semibold text-sm lg:text-base mb-1'>
                 Deactivate your account
               </p>
-              <p className='text-xs lg:text-sm text-[var(--neutral-mid)]'>
+              <p className='text-xs lg:text-sm text-neutral-mid'>
                 This action cannot be undone
               </p>
             </div>
-            <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-[var(--neutral-mid)]' />
+            <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-neutral-mid' />
           </div>
           <div className='rounded-lg p-4 lg:p-5 shadow-lg shadow-[#F7EFFD] flex items-center justify-between cursor-pointer transition'>
             <div>
               <p className='font-semibold text-sm lg:text-base mb-1'>
                 Delete your account
               </p>
-              <p className='text-xs lg:text-sm text-[var(--neutral-mid)]'>
+              <p className='text-xs lg:text-sm text-neutral-mid'>
                 This action cannot be undone
               </p>
             </div>
-            <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-[var(--neutral-mid)]' />
+            <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-neutral-mid' />
           </div>
         </div>
       </div>

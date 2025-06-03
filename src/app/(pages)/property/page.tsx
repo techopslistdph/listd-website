@@ -4,19 +4,65 @@ import PropertyCard from '@/components/listing/PropertyCard';
 import PropertySidebar from '@/components/listing/PropertySidebar';
 import PropertyTopBar from '@/components/listing/PropertyTopBar';
 import { usePropertyFilter } from '@/hooks/usePropertyFilter';
-import { useState } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import PropertyMap from '@/components/map/PropertyMap';
+import { useSearchParams } from 'next/navigation';
+import { properties } from '@/app/data';
 
-export default function Page() {
-  const { filteredProperties, handleFilterChange } = usePropertyFilter();
+function PropertyPageContent() {
+  const searchParams = useSearchParams();
   const [view, setView] = useState<'list' | 'map'>('list');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Get initial property type from URL
+  const initialPropertyType = useMemo(() => {
+    const property = searchParams.get('property');
+    return property ? [property] : [];
+  }, [searchParams]);
+
+  // Filter properties based on URL parameters
+  const filteredInitialProperties = useMemo(() => {
+    let filtered = [...properties];
+    const property = searchParams.get('property');
+
+    // Filter by property type
+    if (property) {
+      filtered = filtered.filter(
+        (p) => p.tag.toLowerCase() === property.toLowerCase()
+      );
+    }
+
+    return filtered;
+  }, [searchParams]);
+
+  const { filteredProperties, handleFilterChange } = usePropertyFilter(
+    filteredInitialProperties
+  );
 
   return (
-    <div className='min-h-screen container xl:max-w-[1350px] mx-auto flex pb-10 lg:px-5'>
-      <PropertySidebar onFilterChange={handleFilterChange} />
+    <div className='min-h-screen container xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 sm:px-0 py-5 sm:pt-5'>
+      <div className='block sm:hidden'>
+        <PropertyTopBar
+          onViewChange={setView}
+          isSidebarOpen={sidebarOpen}
+          onFilterClick={() => setSidebarOpen((v) => !v)}
+        />
+      </div>
+      {sidebarOpen && (
+        <PropertySidebar
+          onFilterChange={handleFilterChange}
+          initialPropertyType={initialPropertyType}
+        />
+      )}
       {/* Main Content */}
-      <main className='flex-1 p-6'>
-        <PropertyTopBar onViewChange={setView} />
+      <main className='flex-1'>
+        <div className='hidden sm:block mb-5'>
+          <PropertyTopBar
+            isSidebarOpen={sidebarOpen}
+            onFilterClick={() => setSidebarOpen((v) => !v)}
+            onViewChange={setView}
+          />
+        </div>
         {/* Property Cards Grid */}
         {filteredProperties.length === 0 ? (
           <div className='text-center text-gray-500 py-20 text-lg'>
@@ -43,5 +89,13 @@ export default function Page() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PropertyPageContent />
+    </Suspense>
   );
 }

@@ -39,13 +39,13 @@ export function AgentCard({ agent }: AgentCardProps) {
         </div>
         <a
           href={`https://wa.me/${agent.whatsapp}`}
-          className='w-full mt-2 py-3 rounded-full bg-[var(--primary-main)] text-white text-center font-semibold'
+          className='w-full mt-2 py-3 rounded-full bg-primary-main text-white text-center font-semibold'
         >
           Whatsapp
         </a>
         <a
           href={`mailto:${agent.email}`}
-          className='w-full py-3 rounded-full border border-[var(--primary-main)] text-[var(--primary-main)] text-center font-semibold'
+          className='w-full py-3 rounded-full border border-primary-main text-primary-main text-center font-semibold'
         >
           Direct Message
         </a>

@@ -35,7 +35,7 @@ export default function PropertyDescription({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className='mt-6 p-5 rounded-lg mb-2 border'>
+    <div className='mt-4 md:mt-6 p-5 rounded-lg mb-2 border'>
       <button
         className='flex items-center justify-between w-full font-semibold text-xl mb-2 cursor-pointer focus:outline-none'
         onClick={() => setOpen((prev) => !prev)}
@@ -50,7 +50,7 @@ export default function PropertyDescription({
       </button>
       {open && (
         <div className=' mt-5'>
-          <div className='mb-5 text-[var(--neutral-mid)]'>{description}</div>
+          <div className='mb-5 text-neutral-mid'>{description}</div>
           <div className='flex gap-8  flex-wrap items-center'>
             {details.map((item, idx) => {
               const key = Object.keys(item)[0];
@@ -61,7 +61,7 @@ export default function PropertyDescription({
               return (
                 <div
                   key={idx}
-                  className='flex flex-col items-center justify-center gap-1 text-[var(--neutral-mid)] text-sm'
+                  className='flex flex-col items-center justify-center gap-1 text-neutral-mid text-sm'
                 >
                   {icon && (
                     <Image src={icon} alt={key} width={20} height={20} />

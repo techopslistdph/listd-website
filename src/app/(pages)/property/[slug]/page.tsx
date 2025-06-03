@@ -36,7 +36,7 @@ export default async function PropertyPage({
       <div className='container mx-auto px-5 lg:px-0 max-w-[1300px]'>
         <div>
           <PropertyImages images={images} title={title} />
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 md:gap-6 mt-10'>
             <div className='col-span-2'>
               {/* Property Header */}
               <PropertyHeader
