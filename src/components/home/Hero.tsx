@@ -1,24 +1,43 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Container } from '../common/Container';
-import { Input } from '../ui/input';
-import {
+import { useRouter } from 'next/navigation';
+import { Container } from '@/components/common/Container';
+import { Input } from '@/components/ui/input';
+import {    
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '../ui/select';
-import background from '../../../public/images/hero-background.png';
-import Button from '../common/Button';
+} from '@/components/ui/select';
+import background from '@/../public/images/hero-background.png';
+import Button from '@/components/common/Button';
+import { useUrlParams } from '@/hooks/useUrlParams';
 
-const propertyOptions = ['Condominium', 'Warehouse', 'House and lot', 'Land'];
+const TAB_OPTIONS = ['Buy', 'Rent', 'Sell', 'Valuation'];
+const PROPERTY_OPTIONS = ['Condominium', 'House and lot', 'Land'];
 
 export default function Hero() {
-  const [activeTab, setActiveTab] = useState('Buy');
-  const [property, setProperty] = useState(propertyOptions[0]);
-  const [propertyType, setPropertyType] = useState('Buy');
+  const router = useRouter();
+  const { createParamsString } = useUrlParams();
+  const [propertyAction, setPropertyAction] = useState(TAB_OPTIONS[0]);
+  const [property, setProperty] = useState(PROPERTY_OPTIONS[0]);
+  const [location, setLocation] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const paramsString = createParamsString({
+      location: location.trim(),
+      property,
+      type: propertyAction,
+    });
+    
+    const url = paramsString ? `/property?${paramsString}` : '/property';
+    router.push(url);
+  };
+
   return (
     <Container
       className='flex justify-center items-center min-h-[750px] max-h-[715px]'
@@ -54,12 +73,12 @@ export default function Hero() {
         </div>
         {/* Tabs */}
         <div className='flex justify-center md:hidden'>
-          <Select value={propertyType} onValueChange={setPropertyType}>
+          <Select value={propertyAction} onValueChange={setPropertyAction}>
             <SelectTrigger className='w-full rounded-full text-base bg-[var(--neutral-light)] px-6 py-6 text-left text-body text-[var(--neutral-text)] flex items-center justify-between border-0 shadow-none'>
               <SelectValue placeholder='Buy' />
             </SelectTrigger>
             <SelectContent className='rounded-2xl shadow-lg'>
-              {['Buy', 'Rent', 'Sell', 'Valuation'].map((option) => (
+              {TAB_OPTIONS.map((option) => (
                 <SelectItem
                   key={option}
                   value={option}
@@ -72,28 +91,30 @@ export default function Hero() {
           </Select>
         </div>
         <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
-          {['Buy', 'Rent', 'Sell', 'Valuation'].map((tab) => (
+          {TAB_OPTIONS.map((tab) => (
             <button
               key={tab}
               className={`pb-2 cursor-pointer ${
-                activeTab === tab
+                propertyAction === tab
                   ? 'border-b-2 border-[var(--primary-main)] text-[var(--primary-main)]'
                   : 'text-[var(--neutral-text)] border-b-2 border-transparent'
               }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setPropertyAction(tab)}
             >
               {tab}
             </button>
           ))}
         </div>
         {/* Form */}
-        <form className='flex flex-col gap-3 md:flex-row md:gap-4 md:items-end'>
+        <form className='flex flex-col gap-3 md:flex-row md:gap-4 md:items-end' onSubmit={handleSubmit}>
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Location</label>
             <div className='relative'>
               <Input
                 type='text'
                 placeholder='Search for Location'
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 className='w-full rounded-full bg-[var(--neutral-light)] px-6 py-6 pr-12 text-body placeholder:text-black  text-[var(--neutral-text)] outline-none border-0 shadow-none'
               />
               <span className='absolute right-4 top-1/2 -translate-y-1/2 text-[var(--primary-main)]'>
@@ -118,7 +139,7 @@ export default function Hero() {
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
-                {propertyOptions.map((option) => (
+                {PROPERTY_OPTIONS.map((option) => (
                   <SelectItem
                     key={option}
                     value={option}
