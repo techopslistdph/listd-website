@@ -9,18 +9,21 @@ import PropertySlider, {
 } from '@/components/home/PropertySlider';
 import Testimonial from '@/components/home/Testimonial';
 import DownloadSection from '@/components/home/DownloadSection';
+
+
+
+
 export default function page() {
   return (
     <div>
       <Hero />
-      <ValuationCards cards={valuationCards} />
-      <FeatureCards cards={featureCards as FeatureCardData[]} />
       <PropertySlider
         propertySliderCards={
           propertySliderCards as unknown as PropertySliderCard[]
         }
       />
-
+      <ValuationCards cards={valuationCards} />
+      <FeatureCards cards={featureCards as FeatureCardData[]} />
       <Testimonial testimonialCards={testimonialCards} />
       <DownloadSection />
     </div>
