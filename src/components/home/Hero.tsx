@@ -1,36 +1,41 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Container } from '../common/Container';
-import { Input } from '../ui/input';
+import { useRouter } from 'next/navigation';
+import { Container } from '@/components/common/Container';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '../ui/select';
-import background from '../../../public/images/hero-background.png';
-import Button from '../common/Button';
-import { useRouter } from 'next/navigation';
+} from '@/components/ui/select';
+import background from '@/../public/images/hero-background.png';
+import Button from '@/components/common/Button';
+import { useUrlParams } from '@/hooks/useUrlParams';
 
-const propertyOptions = ['Condominium', 'Warehouse', 'House and lot', 'Land'];
+const TAB_OPTIONS = ['Buy', 'Rent', 'Sell', 'Valuation'];
+const PROPERTY_OPTIONS = ['Condominium', 'House and lot', 'Land'];
 
 export default function Hero() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('Buy');
-  const [property, setProperty] = useState(propertyOptions[0]);
-  const [propertyType, setPropertyType] = useState('Buy');
+  const { createParamsString } = useUrlParams();
+  const [propertyAction, setPropertyAction] = useState(TAB_OPTIONS[0]);
+  const [property, setProperty] = useState(PROPERTY_OPTIONS[0]);
   const [location, setLocation] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const searchParams = new URLSearchParams();
-    searchParams.set('property', property);
-    if (location) {
-      searchParams.set('location', location);
-    }
-    router.push(`/property?${searchParams.toString()}`);
+
+    const paramsString = createParamsString({
+      location: location.trim(),
+      property,
+      type: propertyAction,
+    });
+
+    const url = paramsString ? `/property?${paramsString}` : '/property';
+    router.push(url);
   };
 
   return (
@@ -62,12 +67,12 @@ export default function Hero() {
         </div>
         {/* Tabs */}
         <div className='flex justify-center md:hidden'>
-          <Select value={propertyType} onValueChange={setPropertyType}>
-            <SelectTrigger className='w-full rounded-full text-base bg-neutral-light px-6 py-6 text-left text-body text-neutral-text flex items-center justify-between border-0 shadow-none'>
+          <Select value={propertyAction} onValueChange={setPropertyAction}>
+            <SelectTrigger className='w-full rounded-full text-base bg-[var(--neutral-light)] px-6 py-6 text-left text-body text-[var(--neutral-text)] flex items-center justify-between border-0 shadow-none'>
               <SelectValue placeholder='Buy' />
             </SelectTrigger>
             <SelectContent className='rounded-2xl shadow-lg'>
-              {['Buy', 'Rent', 'Sell', 'Valuation'].map((option) => (
+              {TAB_OPTIONS.map((option) => (
                 <SelectItem
                   key={option}
                   value={option}
@@ -79,16 +84,16 @@ export default function Hero() {
             </SelectContent>
           </Select>
         </div>
-        <div className='hidden md:flex gap-8 border-b border-neutral-light mb-4 '>
-          {['Buy', 'Rent', 'Sell', 'Valuation'].map((tab) => (
+        <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
+          {TAB_OPTIONS.map((tab) => (
             <button
               key={tab}
               className={`pb-2 cursor-pointer ${
-                activeTab === tab
+                propertyAction === tab
                   ? 'border-b-2 border-primary-main text-primary-main'
                   : 'text-neutral-text border-b-2 border-transparent'
               }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setPropertyAction(tab)}
             >
               {tab}
             </button>
@@ -96,8 +101,8 @@ export default function Hero() {
         </div>
         {/* Form */}
         <form
-          onSubmit={handleSubmit}
           className='flex flex-col gap-3 md:flex-row md:gap-4 md:items-end'
+          onSubmit={handleSubmit}
         >
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Location</label>
@@ -131,7 +136,7 @@ export default function Hero() {
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
-                {propertyOptions.map((option) => (
+                {PROPERTY_OPTIONS.map((option) => (
                   <SelectItem
                     key={option}
                     value={option}

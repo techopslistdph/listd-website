@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { getInitials, toTitleCase } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function UserProfileCard() {
   const { user } = useUser();
@@ -47,8 +48,10 @@ export default function UserProfileCard() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-56'>
         <DropdownMenuItem>
-          <User className='mr-2 h-4 w-4' />
-          <span>Profile</span>
+          <Link href='/profile' className='flex items-center gap-2'>
+            <User className='mr-2 h-4 w-4' />
+            <span>Profile</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
