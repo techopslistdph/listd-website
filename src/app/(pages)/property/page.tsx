@@ -1,47 +1,56 @@
-'use client';
+import PropertyPage from "@/components/property/PropertyPage";
 
-import PropertyCard from '@/components/listing/PropertyCard';
-import PropertySidebar from '@/components/listing/PropertySidebar';
-import PropertyTopBar from '@/components/listing/PropertyTopBar';
-import { usePropertyFilter } from '@/hooks/usePropertyFilter';
-import { useState } from 'react';
-import PropertyMap from '@/components/map/PropertyMap';
+const API_BASE_URL = "https://listd-restapi-dev.up.railway.app/api";
 
-export default function Page() {
-  const { filteredProperties, handleFilterChange } = usePropertyFilter();
-  const [view, setView] = useState<'list' | 'map'>('list');
+type Params = {
+  location: string;
+  property: string;
+  type: string;
+};
 
-  return (
-    <div className='min-h-screen container xl:max-w-[1350px] mx-auto flex pb-10 lg:px-5'>
-      <PropertySidebar onFilterChange={handleFilterChange} />
-      {/* Main Content */}
-      <main className='flex-1 p-6'>
-        <PropertyTopBar onViewChange={setView} />
-        {/* Property Cards Grid */}
-        {filteredProperties.length === 0 ? (
-          <div className='text-center text-gray-500 py-20 text-lg'>
-            No properties found matching your filters.
-          </div>
-        ) : view === 'list' ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
-            {filteredProperties.map((property, idx) => (
-              <PropertyCard key={idx} {...property} view='list' />
-            ))}
-          </div>
-        ) : (
-          <div className='flex flex-col gap-6'>
-            {/* Property Cards Column */}
-            <div className='rounded-xl w-full h-[480px] overflow-hidden'>
-              <PropertyMap data={filteredProperties} minHeight='480px' />
-            </div>
-            <div className='space-y-6'>
-              {filteredProperties.map((property, idx) => (
-                <PropertyCard key={idx} {...property} view='map' />
-              ))}
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
+
+const propertyMapping: Record<string, string> = {
+  'condominium': '/v1/condominiums',
+  'house': '/v1/house-and-lots',
+  'warehouse': '/v1/warehouses',
+  'land': '/v1/vacant-lots',
+  'lot': '/v1/vacant-lots'
+};
+
+async function fetchProperties(location: string, property: string, type: string) {
+
+  const searchParams = new URLSearchParams();
+  
+  if (location) {
+    searchParams.append('search', location);
+  }
+
+  if (property) {
+    searchParams.append('property', property);
+  }
+
+  if (type) {
+    searchParams.append('type', type);
+  }
+
+  const url = `${API_BASE_URL}${propertyMapping[property]}?${searchParams.toString()}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+
+
+ 
+}
+
+export default async function Page({ searchParams }: { searchParams: Promise<Params> }) {
+  const { location, property, type } = await searchParams;
+  
+  console.log('Search parameters:', { location, property, type });
+  
+  // Fetch properties based on search parameters
+  const propertyResults = await fetchProperties(location, property, type);
+  
+  console.log('Property fetch results:', propertyResults);
+
+  return <PropertyPage />;
 }
