@@ -17,7 +17,6 @@ import { useUrlParams } from '@/hooks/useUrlParams';
 import { PropertyType } from '@/lib/queries/server/home/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 
-
 export default function Hero({
   listingTypes,
   propertyTypes,
@@ -43,8 +42,6 @@ export default function Hero({
     const url = paramsString ? `/property?${paramsString}` : '/property';
     router.push(url);
   };
-
-
 
   return (
     <Container
@@ -80,7 +77,7 @@ export default function Hero({
               <SelectValue placeholder='Buy' />
             </SelectTrigger>
             <SelectContent className='rounded-2xl shadow-lg'>
-              {listingTypes?.map((option) => (
+              {listingTypes?.map(option => (
                 <SelectItem
                   key={option.id}
                   value={option.id}
@@ -93,7 +90,7 @@ export default function Hero({
           </Select>
         </div>
         <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
-          {listingTypes?.map((tab) => (
+          {listingTypes?.map(tab => (
             <button
               key={tab.id}
               className={`pb-2 cursor-pointer ${
@@ -120,7 +117,7 @@ export default function Hero({
                 placeholder='Search for Location'
                 className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black  text-neutral-text outline-none border-0 shadow-none'
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={e => setLocation(e.target.value)}
               />
               <span className='absolute right-4 top-1/2 -translate-y-1/2 text-primary-main'>
                 {/* Search Icon */}
@@ -144,7 +141,7 @@ export default function Hero({
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
-                {propertyTypes?.map((option) => (
+                {propertyTypes?.map(option => (
                   <SelectItem
                     key={option.id}
                     value={option.name}

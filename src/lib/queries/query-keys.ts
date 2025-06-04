@@ -4,18 +4,17 @@
  */
 
 export const queryKeys = {
-  users: {
+  users: {},
 
-  },
-  
   listingTypes: {
     all: ['listingTypes'] as const,
     listingTypes: () => [...queryKeys.listingTypes.all, 'list'] as const,
-    list: (filters: string) => [...queryKeys.listingTypes.listingTypes(), { filters }] as const,
+    list: (filters: string) =>
+      [...queryKeys.listingTypes.listingTypes(), { filters }] as const,
     details: () => [...queryKeys.listingTypes.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.listingTypes.details(), id] as const,
   },
-  
+
   // Add more entities as needed
   // posts: {
   //   all: ['posts'] as const,
@@ -24,4 +23,4 @@ export const queryKeys = {
   //   details: () => [...queryKeys.posts.all, 'detail'] as const,
   //   detail: (id: string) => [...queryKeys.posts.details(), id] as const,
   // },
-} as const 
+} as const;

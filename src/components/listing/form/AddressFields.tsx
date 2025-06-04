@@ -15,7 +15,7 @@ export function AddressFields({ data, onChange }: AddressFieldsProps) {
         <Input
           placeholder='Enter your region'
           value={data.state}
-          onChange={(e) => onChange('state', e.target.value)}
+          onChange={e => onChange('state', e.target.value)}
         />
       </div>
       <div className='space-y-4'>
@@ -23,7 +23,7 @@ export function AddressFields({ data, onChange }: AddressFieldsProps) {
         <Input
           placeholder='Enter your city'
           value={data.city}
-          onChange={(e) => onChange('city', e.target.value)}
+          onChange={e => onChange('city', e.target.value)}
         />
       </div>
       <div className='space-y-4'>
@@ -31,7 +31,7 @@ export function AddressFields({ data, onChange }: AddressFieldsProps) {
         <Input
           placeholder='Enter your barangay'
           value={data.barangay}
-          onChange={(e) => onChange('barangay', e.target.value)}
+          onChange={e => onChange('barangay', e.target.value)}
         />
       </div>
       <div className='space-y-4'>
@@ -39,7 +39,7 @@ export function AddressFields({ data, onChange }: AddressFieldsProps) {
         <Input
           placeholder='Enter your street address'
           value={data.street}
-          onChange={(e) => onChange('street', e.target.value)}
+          onChange={e => onChange('street', e.target.value)}
         />
       </div>
       <div className='space-y-4'>
@@ -47,7 +47,7 @@ export function AddressFields({ data, onChange }: AddressFieldsProps) {
         <Input
           placeholder='ZIP Code'
           value={data.zipCode}
-          onChange={(e) => onChange('zipCode', e.target.value)}
+          onChange={e => onChange('zipCode', e.target.value)}
         />
       </div>
     </div>

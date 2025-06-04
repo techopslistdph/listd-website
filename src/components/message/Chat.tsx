@@ -64,7 +64,7 @@ const Chat: React.FC<ChatProps> = ({
     <div className='flex flex-col gap-5 md:flex-row md:h-[85vh] mx-5 '>
       {/* Sidebar */}
       <aside className='w-full md:w-96 bg-white p-2 md:p-4 flex md:flex-col flex-row overflow-x-auto md:overflow-x-visible border-b md:border-b-0 border-[#eee]'>
-        {conversations.map((conv) => (
+        {conversations.map(conv => (
           <div
             key={conv.id}
             onClick={() => setSelectedId(conv.id)}
@@ -141,7 +141,7 @@ const Chat: React.FC<ChatProps> = ({
         </Link>
         {/* Messages */}
         <div className='flex-1 overflow-y-auto mb-4 md:mb-6 flex flex-col gap-2 md:gap-4 mt-12'>
-          {selected?.messages.map((msg) => (
+          {selected?.messages.map(msg => (
             <div
               key={msg.id}
               className={`flex w-full ${
@@ -199,7 +199,7 @@ const Chat: React.FC<ChatProps> = ({
               placeholder='Write something here...'
               className='w-full rounded-xl border border-[#eee] px-3 py-2 md:px-4 md:py-3 text-sm outline-none pr-12'
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={e => setInputValue(e.target.value)}
             />
             {inputValue && (
               <button type='button' className='p-1 cursor-pointer' tabIndex={0}>

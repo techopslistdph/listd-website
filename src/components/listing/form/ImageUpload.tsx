@@ -16,7 +16,7 @@ export function ImageUpload({ onChange }: ImageUploadProps) {
           multiple
           className='hidden'
           id='image-upload'
-          onChange={(e) => {
+          onChange={e => {
             if (e.target.files) {
               onChange(Array.from(e.target.files));
             }

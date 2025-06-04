@@ -15,7 +15,7 @@ export default async function PropertyPage({
 }) {
   const resolvedParams = await params;
 
-  const property = properties.find((p) => p.slug === resolvedParams.slug!);
+  const property = properties.find(p => p.slug === resolvedParams.slug!);
   if (!property) return notFound();
 
   const {

@@ -13,7 +13,7 @@ export default function PropertyLocation({ googleMap }: PropertyLocationProps) {
     <div className='mt-4 md:mt-6 rounded-lg mb-4 border'>
       <button
         className='flex items-center justify-between w-full font-semibold text-xl p-5 cursor-pointer focus:outline-none'
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => setOpen(prev => !prev)}
         type='button'
       >
         <span>Location</span>

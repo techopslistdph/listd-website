@@ -78,8 +78,8 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
                 idx === step
                   ? 'border-4 border-primary-main bg-white text-primary-main'
                   : idx < step
-                  ? 'bg-primary-main border-4 border-primary-main text-white'
-                  : 'bg-primary-light border-4 border-gray-200 text-gray-200 opacity-60'
+                    ? 'bg-primary-main border-4 border-primary-main text-white'
+                    : 'bg-primary-light border-4 border-gray-200 text-gray-200 opacity-60'
               }
               rounded-full transition-colors duration-200`}
             >

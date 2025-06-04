@@ -22,22 +22,20 @@ queries/
 Add the `QueryProvider` to your app layout or root component:
 
 ```tsx
-import { QueryProvider } from '@/lib/queries'
+import { QueryProvider } from '@/lib/queries';
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body>
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
-  )
+  );
 }
 ```
 
@@ -46,31 +44,25 @@ export default function RootLayout({
 Import and use the query hooks in your components:
 
 ```tsx
-import { useLists, useCreateList } from '@/lib/queries'
+import { useLists, useCreateList } from '@/lib/queries';
 
 function ListsPage() {
-  const { data: lists, isLoading, error } = useLists()
-  const createListMutation = useCreateList()
+  const { data: lists, isLoading, error } = useLists();
+  const createListMutation = useCreateList();
 
   const handleCreateList = async (title: string) => {
     try {
-      await createListMutation.mutateAsync({ title })
+      await createListMutation.mutateAsync({ title });
       // List will be automatically refetched due to cache invalidation
     } catch (error) {
-      console.error('Failed to create list:', error)
+      console.error('Failed to create list:', error);
     }
-  }
+  };
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
-  return (
-    <div>
-      {lists?.map(list => (
-        <div key={list.id}>{list.title}</div>
-      ))}
-    </div>
-  )
+  return <div>{lists?.map(list => <div key={list.id}>{list.title}</div>)}</div>;
 }
 ```
 
@@ -86,11 +78,12 @@ export const queryKeys = {
   posts: {
     all: ['posts'] as const,
     lists: () => [...queryKeys.posts.all, 'list'] as const,
-    list: (filters: string) => [...queryKeys.posts.lists(), { filters }] as const,
+    list: (filters: string) =>
+      [...queryKeys.posts.lists(), { filters }] as const,
     details: () => [...queryKeys.posts.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.posts.details(), id] as const,
   },
-}
+};
 ```
 
 ### 2. Create Hook File
@@ -98,32 +91,32 @@ export const queryKeys = {
 Create a new file in `hooks/` directory (e.g., `use-posts.ts`):
 
 ```ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '../query-keys'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../query-keys';
 
 // Define your types
 interface Post {
-  id: string
-  title: string
-  content: string
+  id: string;
+  title: string;
+  content: string;
 }
 
 // Define API functions
 const api = {
   getPosts: async (): Promise<Post[]> => {
-    const response = await fetch('/api/posts')
-    if (!response.ok) throw new Error('Failed to fetch posts')
-    return response.json()
+    const response = await fetch('/api/posts');
+    if (!response.ok) throw new Error('Failed to fetch posts');
+    return response.json();
   },
   // ... other API functions
-}
+};
 
 // Export hooks
 export function usePosts() {
   return useQuery({
     queryKey: queryKeys.posts.all,
     queryFn: api.getPosts,
-  })
+  });
 }
 ```
 
@@ -132,7 +125,7 @@ export function usePosts() {
 Add your new hooks to `index.ts`:
 
 ```ts
-export * from './hooks/use-posts'
+export * from './hooks/use-posts';
 ```
 
 ## Best Practices
@@ -147,6 +140,7 @@ export * from './hooks/use-posts'
 ## Configuration
 
 The query client is configured with:
+
 - 5-minute stale time
 - 10-minute garbage collection time
 - Smart retry logic (no retry on 4xx errors)
@@ -156,4 +150,4 @@ You can modify these settings in `query-client.ts`.
 
 ## Development Tools
 
-React Query DevTools are automatically included in development mode. You can toggle them using the floating button in the bottom-left corner of your app. 
+React Query DevTools are automatically included in development mode. You can toggle them using the floating button in the bottom-left corner of your app.

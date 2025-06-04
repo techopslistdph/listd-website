@@ -70,7 +70,7 @@ const conversations = [
 
 export default function MessagePage() {
   const [selectedId, setSelectedId] = useState(conversations[0].id);
-  const selected = conversations.find((c) => c.id === selectedId);
+  const selected = conversations.find(c => c.id === selectedId);
 
   return (
     <div className='container max-w-[1300px] mx-auto'>

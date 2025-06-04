@@ -81,7 +81,7 @@ export default function ValuationHero() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {propertyTypes.map((type) => (
+                {propertyTypes.map(type => (
                   <SelectItem key={type} value={type}>
                     {type}
                   </SelectItem>

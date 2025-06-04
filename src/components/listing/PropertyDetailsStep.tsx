@@ -39,7 +39,7 @@ export function PropertyDetailsStep({
               <Input
                 placeholder='Enter building name'
                 value={data.buildingName}
-                onChange={(e) => onChange('buildingName', e.target.value)}
+                onChange={e => onChange('buildingName', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -48,7 +48,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter floor number'
                 value={data.floorNo}
-                onChange={(e) => onChange('floorNo', e.target.value)}
+                onChange={e => onChange('floorNo', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -57,7 +57,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter floor area'
                 value={data.floorArea}
-                onChange={(e) => onChange('floorArea', e.target.value)}
+                onChange={e => onChange('floorArea', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -66,7 +66,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter ceiling height'
                 value={data.ceilingHeight}
-                onChange={(e) => onChange('ceilingHeight', e.target.value)}
+                onChange={e => onChange('ceilingHeight', e.target.value)}
               />
             </div>
           </>
@@ -80,7 +80,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter floor area'
                 value={data.floorArea}
-                onChange={(e) => onChange('floorArea', e.target.value)}
+                onChange={e => onChange('floorArea', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -89,7 +89,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter lot size'
                 value={data.lotSize}
-                onChange={(e) => onChange('lotSize', e.target.value)}
+                onChange={e => onChange('lotSize', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -97,7 +97,7 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Add lot types'
                 value={data.lotType}
-                onChange={(value) => onChange('lotType', value)}
+                onChange={value => onChange('lotType', value)}
                 placeholder='Type and press Enter'
               />
             </div>
@@ -107,7 +107,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter number of bedrooms'
                 value={data.bedrooms}
-                onChange={(e) => onChange('bedrooms', e.target.value)}
+                onChange={e => onChange('bedrooms', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -116,7 +116,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter number of bathrooms'
                 value={data.bathrooms}
-                onChange={(e) => onChange('bathrooms', e.target.value)}
+                onChange={e => onChange('bathrooms', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -125,15 +125,13 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter number of parking spaces'
                 value={data.parking}
-                onChange={(e) => onChange('parking', e.target.value)}
+                onChange={e => onChange('parking', e.target.value)}
               />
             </div>
             <div className='flex items-center space-x-2'>
               <Switch
                 checked={data.fullyFurnished}
-                onCheckedChange={(checked) =>
-                  onChange('fullyFurnished', checked)
-                }
+                onCheckedChange={checked => onChange('fullyFurnished', checked)}
               />
               <Label>Fully Furnished</Label>
             </div>
@@ -148,7 +146,7 @@ export function PropertyDetailsStep({
                 type='number'
                 placeholder='Enter lot size'
                 value={data.lotSize}
-                onChange={(e) => onChange('lotSize', e.target.value)}
+                onChange={e => onChange('lotSize', e.target.value)}
               />
             </div>
             <div className='space-y-4'>
@@ -156,7 +154,7 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Add lot types'
                 value={data.lotType}
-                onChange={(value) => onChange('lotType', value)}
+                onChange={value => onChange('lotType', value)}
                 placeholder='Type and press Enter'
               />
             </div>
@@ -173,7 +171,7 @@ export function PropertyDetailsStep({
         <Label>Property Type</Label>
         <Select
           value={data.propertyType}
-          onValueChange={(value) => onChange('propertyType', value)}
+          onValueChange={value => onChange('propertyType', value)}
         >
           <SelectTrigger>
             <SelectValue placeholder='Select property type' />
@@ -195,7 +193,7 @@ export function PropertyDetailsStep({
         <TagInput
           label='Add amenities'
           value={data.amenities}
-          onChange={(value) => onChange('amenities', value)}
+          onChange={value => onChange('amenities', value)}
           placeholder='Type and press Enter'
         />
       </div>
@@ -205,7 +203,7 @@ export function PropertyDetailsStep({
         <TagInput
           label='Add features'
           value={data.features}
-          onChange={(value) => onChange('features', value)}
+          onChange={value => onChange('features', value)}
           placeholder='Type and press Enter'
         />
       </div>
@@ -215,14 +213,14 @@ export function PropertyDetailsStep({
         <TagInput
           label='Add security features'
           value={data.security}
-          onChange={(value) => onChange('security', value)}
+          onChange={value => onChange('security', value)}
           placeholder='Type and press Enter'
         />
       </div>
 
       <div className='space-y-4'>
         <Label>Images</Label>
-        <ImageUpload onChange={(files) => onChange('images', files)} />
+        <ImageUpload onChange={files => onChange('images', files)} />
       </div>
 
       <ActionButtons onDraft={onDraft} onNext={onNext} onBack={onBack} />

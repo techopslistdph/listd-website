@@ -27,11 +27,11 @@ function PostListingContent() {
   });
 
   const handleChange = (field: keyof FormData, value: unknown) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleNext = () => setStep((s) => (s < 3 ? ((s + 1) as Step) : s));
-  const handleBack = () => setStep((s) => (s > 0 ? ((s - 1) as Step) : s));
+  const handleNext = () => setStep(s => (s < 3 ? ((s + 1) as Step) : s));
+  const handleBack = () => setStep(s => (s > 0 ? ((s - 1) as Step) : s));
   const handleDraft = () => {
     // TODO: Save as draft logic
     alert('Draft saved!');

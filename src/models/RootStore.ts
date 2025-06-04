@@ -24,7 +24,7 @@ const PropertyListingQuery = types
     ),
     max_distance_km: types.optional(types.number, 0),
   })
-  .actions((self) => ({
+  .actions(self => ({
     updatePropertyListingQuery(
       key: keyof Instance<typeof PropertyListingQuery>,
       value: unknown

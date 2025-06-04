@@ -70,21 +70,21 @@ export function PropertyDetailsStep({
                 <Input
                   placeholder='Enter lot size'
                   value={data.lotSize}
-                  onChange={(e) => onChange('lotSize', e.target.value)}
+                  onChange={e => onChange('lotSize', e.target.value)}
                 />
               </FormField>
               <FormField label='Floor area'>
                 <Input
                   placeholder='Enter floor area'
                   value={data.floorArea}
-                  onChange={(e) => onChange('floorArea', e.target.value)}
+                  onChange={e => onChange('floorArea', e.target.value)}
                 />
               </FormField>
               <FormField label='Ceiling Height'>
                 <Input
                   placeholder='Enter ceiling height'
                   value={data.ceilingHeight}
-                  onChange={(e) => onChange('ceilingHeight', e.target.value)}
+                  onChange={e => onChange('ceilingHeight', e.target.value)}
                 />
               </FormField>
               <FormField label='Parking'>
@@ -92,7 +92,7 @@ export function PropertyDetailsStep({
                   type='number'
                   placeholder='0'
                   value={data.parking}
-                  onChange={(e) => onChange('parking', Number(e.target.value))}
+                  onChange={e => onChange('parking', Number(e.target.value))}
                 />
               </FormField>
             </div>
@@ -100,13 +100,13 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Warehouse'
                 value={data.amenities}
-                onChange={(value) => onChange('amenities', value)}
+                onChange={value => onChange('amenities', value)}
                 placeholder='Business District, Nearby School...'
               />
               <TagInput
                 label='Security'
                 value={data.security}
-                onChange={(value) => onChange('security', value)}
+                onChange={value => onChange('security', value)}
                 placeholder='Smoke Alarm, Fire Extinguisher...'
               />
             </div>
@@ -121,20 +121,20 @@ export function PropertyDetailsStep({
                 <Input
                   placeholder='Enter floor number'
                   value={data.floorNo}
-                  onChange={(e) => onChange('floorNo', e.target.value)}
+                  onChange={e => onChange('floorNo', e.target.value)}
                 />
               </FormField>
               <FormField label='Floor area'>
                 <Input
                   placeholder='Enter floor area'
                   value={data.floorArea}
-                  onChange={(e) => onChange('floorArea', e.target.value)}
+                  onChange={e => onChange('floorArea', e.target.value)}
                 />
               </FormField>
               <FormField label='Fully Furnished'>
                 <Select
                   value={data.fullyFurnished ? 'yes' : 'no'}
-                  onValueChange={(value) =>
+                  onValueChange={value =>
                     onChange('fullyFurnished', value === 'yes')
                   }
                 >
@@ -152,7 +152,7 @@ export function PropertyDetailsStep({
                   type='number'
                   placeholder='0'
                   value={data.bedrooms}
-                  onChange={(e) => onChange('bedrooms', Number(e.target.value))}
+                  onChange={e => onChange('bedrooms', Number(e.target.value))}
                 />
               </FormField>
               <FormField label='Bathrooms'>
@@ -160,9 +160,7 @@ export function PropertyDetailsStep({
                   type='number'
                   placeholder='0'
                   value={data.bathrooms}
-                  onChange={(e) =>
-                    onChange('bathrooms', Number(e.target.value))
-                  }
+                  onChange={e => onChange('bathrooms', Number(e.target.value))}
                 />
               </FormField>
               <FormField label='Parking'>
@@ -170,7 +168,7 @@ export function PropertyDetailsStep({
                   type='number'
                   placeholder='0'
                   value={data.parking}
-                  onChange={(e) => onChange('parking', Number(e.target.value))}
+                  onChange={e => onChange('parking', Number(e.target.value))}
                 />
               </FormField>
             </div>
@@ -178,13 +176,13 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Amenities'
                 value={data.amenities}
-                onChange={(value) => onChange('amenities', value)}
+                onChange={value => onChange('amenities', value)}
                 placeholder='Add amenity and press Enter'
               />
               <TagInput
                 label='Features'
                 value={data.features}
-                onChange={(value) => onChange('features', value)}
+                onChange={value => onChange('features', value)}
                 placeholder='Add feature and press Enter'
               />
             </div>
@@ -198,14 +196,14 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Lot Type'
                 value={data.lotType}
-                onChange={(value) => onChange('lotType', value)}
+                onChange={value => onChange('lotType', value)}
                 placeholder='Business District, Nearby School...'
               />
               <FormField label='Lot size'>
                 <Input
                   placeholder='Enter sqm'
                   value={data.lotSize}
-                  onChange={(e) => onChange('lotSize', e.target.value)}
+                  onChange={e => onChange('lotSize', e.target.value)}
                 />
               </FormField>
               <FormField label='Parking'>
@@ -213,7 +211,7 @@ export function PropertyDetailsStep({
                   type='number'
                   placeholder='0'
                   value={data.parking}
-                  onChange={(e) => onChange('parking', Number(e.target.value))}
+                  onChange={e => onChange('parking', Number(e.target.value))}
                 />
               </FormField>
             </div>
@@ -232,7 +230,7 @@ export function PropertyDetailsStep({
                 <Input
                   placeholder='Enter building name'
                   value={data.buildingName}
-                  onChange={(e) => onChange('buildingName', e.target.value)}
+                  onChange={e => onChange('buildingName', e.target.value)}
                 />
               </FormField>
               {/* Street Address / Barangay */}
@@ -241,14 +239,14 @@ export function PropertyDetailsStep({
                   <Input
                     placeholder='Enter your street address'
                     value={data.street}
-                    onChange={(e) => onChange('street', e.target.value)}
+                    onChange={e => onChange('street', e.target.value)}
                   />
                 </FormField>
                 <FormField label='Barangay'>
                   <Input
                     placeholder='Enter your barangay'
                     value={data.barangay}
-                    onChange={(e) => onChange('barangay', e.target.value)}
+                    onChange={e => onChange('barangay', e.target.value)}
                   />
                 </FormField>
               </div>
@@ -258,14 +256,14 @@ export function PropertyDetailsStep({
                   <Input
                     placeholder='Enter your city'
                     value={data.city}
-                    onChange={(e) => onChange('city', e.target.value)}
+                    onChange={e => onChange('city', e.target.value)}
                   />
                 </FormField>
                 <FormField label='Region'>
                   <Input
                     placeholder='Enter your region'
                     value={data.state}
-                    onChange={(e) => onChange('state', e.target.value)}
+                    onChange={e => onChange('state', e.target.value)}
                   />
                 </FormField>
               </div>
@@ -278,14 +276,14 @@ export function PropertyDetailsStep({
                   <Input
                     placeholder='Enter floor no'
                     value={data.floorNo}
-                    onChange={(e) => onChange('floorNo', e.target.value)}
+                    onChange={e => onChange('floorNo', e.target.value)}
                   />
                 </FormField>
                 <FormField label='Floor area'>
                   <Input
                     placeholder='Enter your sqm'
                     value={data.floorArea}
-                    onChange={(e) => onChange('floorArea', e.target.value)}
+                    onChange={e => onChange('floorArea', e.target.value)}
                   />
                 </FormField>
               </div>
@@ -294,7 +292,7 @@ export function PropertyDetailsStep({
                 <FormField label='Fully Furnished'>
                   <Select
                     value={data.fullyFurnished ? 'yes' : 'no'}
-                    onValueChange={(value) =>
+                    onValueChange={value =>
                       onChange('fullyFurnished', value === 'yes')
                     }
                   >
@@ -312,9 +310,7 @@ export function PropertyDetailsStep({
                     type='number'
                     placeholder='0'
                     value={data.bedrooms}
-                    onChange={(e) =>
-                      onChange('bedrooms', Number(e.target.value))
-                    }
+                    onChange={e => onChange('bedrooms', Number(e.target.value))}
                   />
                 </FormField>
               </div>
@@ -325,7 +321,7 @@ export function PropertyDetailsStep({
                     type='number'
                     placeholder='0'
                     value={data.bathrooms}
-                    onChange={(e) =>
+                    onChange={e =>
                       onChange('bathrooms', Number(e.target.value))
                     }
                   />
@@ -335,9 +331,7 @@ export function PropertyDetailsStep({
                     type='number'
                     placeholder='0'
                     value={data.parking}
-                    onChange={(e) =>
-                      onChange('parking', Number(e.target.value))
-                    }
+                    onChange={e => onChange('parking', Number(e.target.value))}
                   />
                 </FormField>
               </div>
@@ -346,13 +340,13 @@ export function PropertyDetailsStep({
               <TagInput
                 label='Amenities'
                 value={data.amenities}
-                onChange={(value) => onChange('amenities', value)}
+                onChange={value => onChange('amenities', value)}
                 placeholder='Add amenity and press Enter'
               />
               <TagInput
                 label='Features'
                 value={data.features}
-                onChange={(value) => onChange('features', value)}
+                onChange={value => onChange('features', value)}
                 placeholder='Add feature and press Enter'
               />
             </div>
@@ -389,7 +383,7 @@ export function PropertyDetailsStep({
           {/* Property Type Selection UI */}
           <div className='mb-8'>
             <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
-              {propertyTypes.map((type) => (
+              {propertyTypes.map(type => (
                 <button
                   key={type.value}
                   type='button'
@@ -420,7 +414,7 @@ export function PropertyDetailsStep({
       {!pathname.includes('/valuation') && (
         <>
           <h2 className='heading-5 mb-5'>Property Photo</h2>
-          <ImageUpload onChange={(files) => onChange('images', files)} />
+          <ImageUpload onChange={files => onChange('images', files)} />
         </>
       )}
       <ActionButtons onDraft={onDraft} onNext={onNext} />

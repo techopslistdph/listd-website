@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -8,10 +8,10 @@ export const queryClient = new QueryClient({
       retry: (failureCount, error: Error & { status?: number }) => {
         // Don't retry on 4xx errors
         if (error?.status && error.status >= 400 && error.status < 500) {
-          return false
+          return false;
         }
         // Retry up to 3 times for other errors
-        return failureCount < 3
+        return failureCount < 3;
       },
       refetchOnWindowFocus: false,
     },
@@ -19,4 +19,4 @@ export const queryClient = new QueryClient({
       retry: false,
     },
   },
-}) 
+});

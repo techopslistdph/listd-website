@@ -115,21 +115,19 @@ export default function ListingDetailsView({
                   />
                 )}
                 {isBoolean ? (
-                  key
-                    .replace(/_/g, ' ')
-                    .replace(/\b\w/g, (l) => l.toUpperCase())
+                  key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
                 ) : (
                   <>
                     {String(value)}{' '}
                     {key === 'parking'
                       ? 'Parking'
                       : key === 'baths'
-                      ? 'Bath'
-                      : key === 'bedrooms'
-                      ? 'Bedroom'
-                      : key === 'area'
-                      ? ''
-                      : ''}
+                        ? 'Bath'
+                        : key === 'bedrooms'
+                          ? 'Bedroom'
+                          : key === 'area'
+                            ? ''
+                            : ''}
                   </>
                 )}
               </div>
@@ -171,7 +169,7 @@ export default function ListingDetailsView({
           variant='default'
           className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
           type='button'
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             setUpdateDialogProperty(listing);
             setUpdateDialogOpen(true);

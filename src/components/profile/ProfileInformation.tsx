@@ -25,7 +25,7 @@ export default function ProfileInformation() {
   return (
     <div className='w-full'>
       <div className='space-y-3 lg:space-y-5'>
-        {information.map((item) => (
+        {information.map(item => (
           <div
             key={item.label}
             className='rounded-lg border-[#F6F6F6] border p-4 lg:p-5 shadow-2xl shadow-[#F7EFFD] space-y-0.5 lg:space-y-1'

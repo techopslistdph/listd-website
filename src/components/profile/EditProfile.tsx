@@ -253,7 +253,7 @@ export default function EditProfile() {
                         accept='image/*'
                         id='gov-id-upload'
                         className='hidden'
-                        onChange={(e) => {
+                        onChange={e => {
                           const file = e.target.files?.[0];
                           if (file) {
                             setUploadedFile(file);

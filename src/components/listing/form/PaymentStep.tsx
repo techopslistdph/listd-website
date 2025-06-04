@@ -59,7 +59,7 @@ export function PaymentStep({
         <>
           <h3 className='font-bold mb-2'>Choose a period for your property</h3>
           <div className='mb-6 flex flex-col gap-4'>
-            {['5', '15', '45'].map((days) => (
+            {['5', '15', '45'].map(days => (
               <div
                 key={days}
                 className={`border rounded-lg p-4 flex items-center shadow-lg shadow-primary-main/10 justify-between cursor-pointer ${
@@ -89,7 +89,7 @@ export function PaymentStep({
           <Input
             placeholder='PHP'
             value={data.grossAskingPrice}
-            onChange={(e) => onChange('grossAskingPrice', e.target.value)}
+            onChange={e => onChange('grossAskingPrice', e.target.value)}
             className='mb-1'
           />
         </div>

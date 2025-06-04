@@ -9,7 +9,7 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from '../listing/propertySidebar';
 
- export type View = 'list' | 'map';
+export type View = 'list' | 'map';
 
 export function PropertyPage({
   properties,
@@ -28,20 +28,17 @@ export function PropertyPage({
           listingTypes={listingTypes}
           onViewChange={setView}
           isSidebarOpen={sidebarOpen}
-          onFilterClick={() => setSidebarOpen((v) => !v)}
+          onFilterClick={() => setSidebarOpen(v => !v)}
         />
       </div>
-      {sidebarOpen && (
-        <PropertySidebar
-        />
-      )}
+      {sidebarOpen && <PropertySidebar />}
       {/* Main Content */}
       <main className='flex-1'>
         <div className='hidden sm:block mb-5'>
           <PropertyTopBar
             listingTypes={listingTypes}
             isSidebarOpen={sidebarOpen}
-            onFilterClick={() => setSidebarOpen((v) => !v)}
+            onFilterClick={() => setSidebarOpen(v => !v)}
             onViewChange={setView}
           />
         </div>

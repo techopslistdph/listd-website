@@ -14,7 +14,7 @@ import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
 export default async function page() {
   const [listingTypes, propertyTypes] = await Promise.all([
     getListingTypes(),
-    getPropertyTypes()
+    getPropertyTypes(),
   ]);
   return (
     <div>

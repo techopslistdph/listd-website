@@ -26,7 +26,7 @@ export function TitleDescriptionStep({
         <Input
           placeholder='Enter your title'
           value={data.title}
-          onChange={(e) => onChange('title', e.target.value)}
+          onChange={e => onChange('title', e.target.value)}
           className='mb-4'
         />
       </div>
@@ -35,7 +35,7 @@ export function TitleDescriptionStep({
         <Textarea
           placeholder='Tell us what makes your place special!'
           value={data.description}
-          onChange={(e) => onChange('description', e.target.value)}
+          onChange={e => onChange('description', e.target.value)}
           className=' min-h-[200px]'
         />
         <div className='mb-8 text-neutral-mid flex gap-1 items-center'>

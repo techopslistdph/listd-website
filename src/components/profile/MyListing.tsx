@@ -23,7 +23,7 @@ export default function MyListing() {
   const [updateDialogProperty, setUpdateDialogProperty] =
     useState<Listing | null>(null);
 
-  const filteredProperties = properties.filter((property) => {
+  const filteredProperties = properties.filter(property => {
     switch (activeTab) {
       case 'published':
         return property.status === 'For Lease';
@@ -123,7 +123,7 @@ export default function MyListing() {
             </div>
           </div>
         ) : (
-          filteredProperties.map((property) => {
+          filteredProperties.map(property => {
             const isSold = property.status === 'Sold';
             const isDraft = property.status === 'Draft';
             const isForLease = property.status === 'For Lease';
@@ -154,8 +154,8 @@ export default function MyListing() {
                           isSold
                             ? 'bg-green-100 text-green-600'
                             : isForLease
-                            ? 'bg-primary-light text-primary-main'
-                            : 'bg-gray-200 text-gray-500'
+                              ? 'bg-primary-light text-primary-main'
+                              : 'bg-gray-200 text-gray-500'
                         }`}
                       >
                         {property.status}
@@ -212,7 +212,7 @@ export default function MyListing() {
                         />
                         {
                           property.description.find(
-                            (detail) => 'bedrooms' in detail
+                            detail => 'bedrooms' in detail
                           )?.bedrooms
                         }{' '}
                         Bedroom
@@ -226,9 +226,8 @@ export default function MyListing() {
                           className='mr-1 lg:w-5 lg:h-5'
                         />
                         {
-                          property.description.find(
-                            (detail) => 'baths' in detail
-                          )?.baths
+                          property.description.find(detail => 'baths' in detail)
+                            ?.baths
                         }{' '}
                         Bath
                       </div>
@@ -241,9 +240,8 @@ export default function MyListing() {
                           className='mr-1 lg:w-5 lg:h-5'
                         />
                         {
-                          property.description.find(
-                            (detail) => 'area' in detail
-                          )?.area
+                          property.description.find(detail => 'area' in detail)
+                            ?.area
                         }
                       </div>
                     </div>
@@ -254,7 +252,7 @@ export default function MyListing() {
                             variant='outline'
                             className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
                             type='button'
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               setUpdateDialogProperty(property);
                               setUpdateDialogOpen(true);
@@ -280,7 +278,7 @@ export default function MyListing() {
                           </Button>
                           <Button
                             type='button'
-                            onClick={(e) => {
+                            onClick={e => {
                               e.stopPropagation();
                               setUpdateDialogProperty(property);
                               setUpdateDialogOpen(true);

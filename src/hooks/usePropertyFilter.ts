@@ -69,13 +69,13 @@ export const usePropertyFilter = (initialProperties: Property[]) => {
 
     // Apply filters based on property type
     if (filters.propertyTypes.length > 0) {
-      filtered = filtered.filter((property) =>
+      filtered = filtered.filter(property =>
         filters.propertyTypes.includes(property.tag)
       );
     }
 
     // Apply filters based on property type
-    filtered = filtered.filter((property) => {
+    filtered = filtered.filter(property => {
       // Bedrooms filter (apply to all property types)
       if (filters.bedrooms.length > 0) {
         const bedroomDesc = property.description.find(hasBedrooms);
@@ -117,7 +117,7 @@ export const usePropertyFilter = (initialProperties: Property[]) => {
 
     // Filter by price range
     if (filters.priceRange.min || filters.priceRange.max) {
-      filtered = filtered.filter((property) => {
+      filtered = filtered.filter(property => {
         const price = parsePriceString(property.price);
         const min = filters.priceRange.min
           ? parsePriceString(filters.priceRange.min)
@@ -132,8 +132,8 @@ export const usePropertyFilter = (initialProperties: Property[]) => {
 
     // Filter by square feet
     if (filters.squareFeet.min || filters.squareFeet.max) {
-      filtered = filtered.filter((property) => {
-        const area = property.description.find((d) => 'area' in d)?.area;
+      filtered = filtered.filter(property => {
+        const area = property.description.find(d => 'area' in d)?.area;
         if (!area) return false;
 
         const areaValue = parseInt(area.toString().replace(/[^0-9]/g, ''));
@@ -149,8 +149,8 @@ export const usePropertyFilter = (initialProperties: Property[]) => {
 
     // Filter by features
     if (filters.features.length > 0) {
-      filtered = filtered.filter((property) =>
-        filters.features.every((feature) => property.features.includes(feature))
+      filtered = filtered.filter(property =>
+        filters.features.every(feature => property.features.includes(feature))
       );
     }
 

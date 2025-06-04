@@ -12,7 +12,7 @@ import {
 // import { Button } from '@/components/ui/button'; // Uncomment if you have a Button component
 import { cn } from '@/lib/utils';
 import gridIcon from '@/../public/images/photos.svg';
-import {  PropertyImage } from '@/lib/queries/server/propety/type';
+import { PropertyImage } from '@/lib/queries/server/propety/type';
 
 interface PropertyImagesProps {
   images: PropertyImage[];
@@ -36,14 +36,14 @@ export function PropertyImages({
   const handlePrevious = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+    setCurrentIndex(prev => (prev > 0 ? prev - 1 : images.length - 1));
     setTimeout(() => setIsTransitioning(false), 300);
   }, [images.length, isTransitioning]);
 
   const handleNext = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+    setCurrentIndex(prev => (prev < images.length - 1 ? prev + 1 : 0));
     setTimeout(() => setIsTransitioning(false), 300);
   }, [images.length, isTransitioning]);
 

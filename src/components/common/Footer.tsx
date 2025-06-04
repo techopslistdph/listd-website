@@ -37,14 +37,14 @@ export default function Footer({
           {/* Navigation Columns */}
           <div className='grid grid-cols-2 md:grid-cols-3 gap-10 lg:gap-12 justify-between w-full lg:min-w-[600px]'>
             {/* Render navigation sections */}
-            {footerLinks.map((section) => (
+            {footerLinks.map(section => (
               <div
                 key={section.section}
                 className={`flex flex-col gap-4 md:min-w-[150px]`}
               >
                 <h4 className='font-bold text-[#0F172A]'>{section.section}</h4>
                 <ul className='space-y-4 text-[#0F172A]'>
-                  {section.links.map((link) => (
+                  {section.links.map(link => (
                     <li key={link.label}>
                       <a
                         href={link.href}
@@ -62,7 +62,7 @@ export default function Footer({
           <div className='flex flex-col items-center md:items-start gap-6 min-w-[220px]'>
             <h4 className='font-bold text-gray-900 '>DOWNLOAD US ON</h4>
             <div className='flex flex-col gap-3 w-full items-center md:items-start'>
-              {footerAppButtons.map((btn) => (
+              {footerAppButtons.map(btn => (
                 <a href={btn.href} key={btn.alt} className='w-44 '>
                   <Image
                     src={btn.src}

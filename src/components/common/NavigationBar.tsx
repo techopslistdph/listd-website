@@ -28,7 +28,7 @@ export default function NavigationBar({
                 <p className='text-3xl font-bold text-primary-main'>Listd</p>
               </Link>
 
-              {navigtionItems.map((item) => (
+              {navigtionItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -45,7 +45,7 @@ export default function NavigationBar({
           <p className='text-2xl font-bold text-priary-main'>Listd</p>
         </Link>
         <div className='hidden md:flex items-center gap-10 ml-8'>
-          {navigtionItems.map((item) => (
+          {navigtionItems.map(item => (
             <Link
               key={item.href}
               href={item.href}

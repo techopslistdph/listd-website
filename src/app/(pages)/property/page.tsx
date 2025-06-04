@@ -1,8 +1,9 @@
-
 import { PropertyPage } from '@/components/property/PropertyPage';
 import { getListingTypes } from '@/lib/queries/server/home';
-import { getProperties, PROPERTY_TYPES_MAPPING } from '@/lib/queries/server/propety';
-
+import {
+  getProperties,
+  PROPERTY_TYPES_MAPPING,
+} from '@/lib/queries/server/propety';
 
 export default async function Page({
   searchParams: searchParamsPromise,
@@ -24,11 +25,8 @@ export default async function Page({
       maxBedrooms: searchParams.maxBedrooms,
       minBedrooms: searchParams.minBedrooms,
     }),
-    getListingTypes()
+    getListingTypes(),
   ]);
 
-
-  return (
-    <PropertyPage properties={properties} listingTypes={listingTypes} />
-  );
+  return <PropertyPage properties={properties} listingTypes={listingTypes} />;
 }

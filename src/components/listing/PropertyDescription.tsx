@@ -38,7 +38,7 @@ export default function PropertyDescription({
     <div className='mt-4 md:mt-6 p-5 rounded-lg mb-2 border'>
       <button
         className='flex items-center justify-between w-full font-semibold text-xl mb-2 cursor-pointer focus:outline-none'
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => setOpen(prev => !prev)}
         type='button'
       >
         <span>Description</span>
@@ -69,19 +69,19 @@ export default function PropertyDescription({
                   {isBoolean ? (
                     key
                       .replace(/_/g, ' ')
-                      .replace(/\b\w/g, (l) => l.toUpperCase())
+                      .replace(/\b\w/g, l => l.toUpperCase())
                   ) : (
                     <>
                       {String(value)}{' '}
                       {key === 'parking'
                         ? 'Parking'
                         : key === 'baths'
-                        ? 'Bath'
-                        : key === 'bedrooms'
-                        ? 'Bedroom'
-                        : key === 'area'
-                        ? ''
-                        : ''}
+                          ? 'Bath'
+                          : key === 'bedrooms'
+                            ? 'Bedroom'
+                            : key === 'area'
+                              ? ''
+                              : ''}
                     </>
                   )}
                 </div>

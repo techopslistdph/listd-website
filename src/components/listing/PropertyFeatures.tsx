@@ -9,7 +9,7 @@ export default function PropertyFeatures({ features }: { features: string[] }) {
     <div className='mt-4 md:mt-6 p-5  rounded-lg mb-2 border'>
       <button
         className='flex items-center justify-between w-full font-semibold text-xl mb-2 cursor-pointer focus:outline-none'
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => setOpen(prev => !prev)}
         type='button'
       >
         <span>Features</span>

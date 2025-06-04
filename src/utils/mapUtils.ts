@@ -11,8 +11,8 @@ interface BoundingBox {
 }
 
 export const getBoundingBox = (coordinates: Coordinate[]): BoundingBox => {
-  const latitudes = coordinates.map((coord) => coord.latitude);
-  const longitudes = coordinates.map((coord) => coord.longitude);
+  const latitudes = coordinates.map(coord => coord.latitude);
+  const longitudes = coordinates.map(coord => coord.longitude);
 
   return {
     north: Math.max(...latitudes),
@@ -39,7 +39,7 @@ export const calculateDistances = (
   center: Coordinate,
   coordinates: Coordinate[]
 ): number[] => {
-  return coordinates.map((coord) => {
+  return coordinates.map(coord => {
     const R = 6371; // Earth's radius in kilometers
     const dLat = toRad(coord.latitude - center.latitude);
     const dLon = toRad(coord.longitude - center.longitude);

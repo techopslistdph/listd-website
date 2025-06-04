@@ -46,7 +46,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
@@ -213,8 +213,8 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
             <TagInput
               label='Amenities'
               value={formData.amenities}
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, amenities: value }))
+              onChange={value =>
+                setFormData(prev => ({ ...prev, amenities: value }))
               }
               placeholder='Type and press Enter'
             />
@@ -223,8 +223,8 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
             <TagInput
               label='Features'
               value={formData.features}
-              onChange={(value) =>
-                setFormData((prev) => ({ ...prev, features: value }))
+              onChange={value =>
+                setFormData(prev => ({ ...prev, features: value }))
               }
               placeholder='Type and press Enter'
             />
@@ -279,7 +279,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
                     'No Interest',
                     'Property under Remodeling',
                     'Other Reason',
-                  ].map((reason) => (
+                  ].map(reason => (
                     <label
                       key={reason}
                       className={`flex items-center border rounded-lg lg:rounded-xl px-4 lg:px-6 py-3 lg:py-5 cursor-pointer transition ${

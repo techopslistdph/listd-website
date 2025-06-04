@@ -64,7 +64,7 @@ export default function ImageUploadModal({
             <Input
               placeholder='Add file URL'
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              onChange={e => setUrl(e.target.value)}
               className='flex-1 rounded-full py-6 text-base bg-neutral-light border-0'
             />
             <button className='font-bold text-primary-main ml-2 cursor-pointer'>

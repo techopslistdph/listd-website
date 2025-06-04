@@ -116,12 +116,12 @@ export default function ListingAnalyticsView({
                   {key === 'parking'
                     ? 'Parking'
                     : key === 'baths'
-                    ? 'Bath'
-                    : key === 'bedrooms'
-                    ? 'Bedroom'
-                    : key === 'area'
-                    ? ''
-                    : ''}
+                      ? 'Bath'
+                      : key === 'bedrooms'
+                        ? 'Bedroom'
+                        : key === 'area'
+                          ? ''
+                          : ''}
                 </>
               )}
             </div>
@@ -145,7 +145,7 @@ export default function ListingAnalyticsView({
           </button>
         </div>
         <div className='space-y-3 lg:space-y-4'>
-          {analytics.map((item) => (
+          {analytics.map(item => (
             <div
               key={item.label}
               className='flex items-center bg-primary-light rounded-xl lg:rounded-2xl p-3 lg:p-4 justify-between'

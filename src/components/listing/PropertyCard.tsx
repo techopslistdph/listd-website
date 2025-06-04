@@ -9,16 +9,26 @@ import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
-
-  export default function PropertyCard({
-    propertyDetail,
-    view
-  }: {
-    propertyDetail: PropertyDetail;
-    view?: 'list' | 'map';
-  }) {
-    const { property: { images, listingTitle, listingPrice, address, scrapeContactInfo },id,numberOfBathrooms,numberOfBedrooms,floorArea } = propertyDetail;
-
+export default function PropertyCard({
+  propertyDetail,
+  view,
+}: {
+  propertyDetail: PropertyDetail;
+  view?: 'list' | 'map';
+}) {
+  const {
+    property: {
+      images,
+      listingTitle,
+      listingPrice,
+      address,
+      scrapeContactInfo,
+    },
+    id,
+    numberOfBathrooms,
+    numberOfBedrooms,
+    floorArea,
+  } = propertyDetail;
 
   if (view === 'map') {
     // Horizontal card for map view
@@ -145,7 +155,9 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
               </div>
               <div className='flex items-center text-gray-400  gap-2 mb-4 '>
                 <PhoneIcon className='w-4 text-primary-main' />
-                <span className='font-medium'>{scrapeContactInfo.agentName}</span>
+                <span className='font-medium'>
+                  {scrapeContactInfo.agentName}
+                </span>
                 {scrapeContactInfo.agentName && (
                   <Image src={verified} alt='verified' width={16} height={16} />
                 )}
@@ -175,28 +187,24 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
           {/* Contact buttons OUTSIDE of <Link> */}
           <div className='flex flex-col sm:flex-row gap-3 mt-2'>
-                {
-                  scrapeContactInfo.phoneNumber && (
-                    <a
-                      href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
-                      className='flex-1 py-2 rounded-full border border-primary-main text-sm text-primary-main text-center font-semibold'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                    >
-                      Whatsapp
-                    </a>
-                  )
-                }
-                {
-                  scrapeContactInfo.email && (
-                    <a
-                      href={`mailto:${scrapeContactInfo.email}`}
-                      className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
-                    >
-                      Direct Message
-                    </a>
-                  )
-                }
+            {scrapeContactInfo.phoneNumber && (
+              <a
+                href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                className='flex-1 py-2 rounded-full border border-primary-main text-sm text-primary-main text-center font-semibold'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Whatsapp
+              </a>
+            )}
+            {scrapeContactInfo.email && (
+              <a
+                href={`mailto:${scrapeContactInfo.email}`}
+                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+              >
+                Direct Message
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -322,26 +330,22 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
           {/* Contact buttons should be outside the Link */}
           <div className='flex gap-3 mt-3'>
-              {
-                scrapeContactInfo.phoneNumber && (
-                  <a
-                    href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
-                    className='flex-1 py-2 flex items-center justify-center text-sm rounded-full border border-primary-main text-primary-main font-semibold'
-                  >
-                    Whatsapp
-                  </a>
-                )
-              }
-              {
-                scrapeContactInfo.email && (
-                  <a
-                    href={`mailto:${scrapeContactInfo.email}`}
-                    className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
-                  >
-                    Direct Message
-                  </a>
-                )
-              }
+            {scrapeContactInfo.phoneNumber && (
+              <a
+                href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                className='flex-1 py-2 flex items-center justify-center text-sm rounded-full border border-primary-main text-primary-main font-semibold'
+              >
+                Whatsapp
+              </a>
+            )}
+            {scrapeContactInfo.email && (
+              <a
+                href={`mailto:${scrapeContactInfo.email}`}
+                className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
+              >
+                Direct Message
+              </a>
+            )}
           </div>
         </div>
       </div>

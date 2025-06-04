@@ -1,4 +1,4 @@
-export const API_BASE_URL = `${process.env.BACKEND_API_HOST}/api/${process.env.BACKEND_API_VERSION}`
+export const API_BASE_URL = `${process.env.BACKEND_API_HOST}/api/${process.env.BACKEND_API_VERSION}`;
 
 export const API_ENDPOINTS = {
   users: {
@@ -10,7 +10,6 @@ export const API_ENDPOINTS = {
     updatePassword: `${API_BASE_URL}/users/update-password`,
     delete: `${API_BASE_URL}/users/delete`,
   },
-
 
   listingTypes: {
     list: `${API_BASE_URL}/listing-types`,
@@ -30,8 +29,10 @@ export const API_ENDPOINTS = {
 
   locations: {
     regions: `${API_BASE_URL}/locations/regions`,
-    cities: (regionId: string) => `${API_BASE_URL}/locations/regions/${regionId}/cities`,
-    barangays: (cityId: string) => `${API_BASE_URL}/locations/cities/${cityId}/barangays`,
+    cities: (regionId: string) =>
+      `${API_BASE_URL}/locations/regions/${regionId}/cities`,
+    barangays: (cityId: string) =>
+      `${API_BASE_URL}/locations/cities/${cityId}/barangays`,
   },
 
   condominium: {
@@ -43,7 +44,8 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/condominium/${id}`,
     delete: (id: string) => `${API_BASE_URL}/condominium/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/condominium/user/${userId}`,
-    drafts: (userId: string) => `${API_BASE_URL}/condominium/user/${userId}/drafts`,
+    drafts: (userId: string) =>
+      `${API_BASE_URL}/condominium/user/${userId}/drafts`,
   },
 
   houseAndLot: {
@@ -55,7 +57,8 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
     delete: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/house-and-lot/user/${userId}`,
-    drafts: (userId: string) => `${API_BASE_URL}/house-and-lot/user/${userId}/drafts`,
+    drafts: (userId: string) =>
+      `${API_BASE_URL}/house-and-lot/user/${userId}/drafts`,
   },
 
   warehouse: {
@@ -67,7 +70,8 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/warehouse/${id}`,
     delete: (id: string) => `${API_BASE_URL}/warehouse/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/warehouse/user/${userId}`,
-    drafts: (userId: string) => `${API_BASE_URL}/warehouse/user/${userId}/drafts`,
+    drafts: (userId: string) =>
+      `${API_BASE_URL}/warehouse/user/${userId}/drafts`,
   },
 
   vacantLot: {
@@ -79,9 +83,9 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/vacant-lot/${id}`,
     delete: (id: string) => `${API_BASE_URL}/vacant-lot/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/vacant-lot/user/${userId}`,
-    drafts: (userId: string) => `${API_BASE_URL}/vacant-lot/user/${userId}/drafts`,
+    drafts: (userId: string) =>
+      `${API_BASE_URL}/vacant-lot/user/${userId}/drafts`,
   },
-
 
   media: {
     uploadImage: `${API_BASE_URL}/media/upload-image`,
@@ -99,6 +103,6 @@ export const API_ENDPOINTS = {
   jobs: {
     status: (jobId: string) => `${API_BASE_URL}/jobs/${jobId}/status`,
   },
-} as const
+} as const;
 
-export type ApiEndpoints = typeof API_ENDPOINTS 
+export type ApiEndpoints = typeof API_ENDPOINTS;

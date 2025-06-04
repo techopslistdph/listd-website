@@ -101,7 +101,7 @@ const PropertyMap: React.FC<IMapProps> = ({
     const path = polygon
       .getPath()
       .getArray()
-      .map((coord) => ({
+      .map(coord => ({
         latitude: coord.lat(),
         longitude: coord.lng(),
       }));
@@ -172,7 +172,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   let polygon_path: { lat: number; lng: number }[];
 
   if (rootStore.propertyListingQuery.polygon_path) {
-    polygon_path = rootStore.propertyListingQuery.polygon_path.map((coord) => ({
+    polygon_path = rootStore.propertyListingQuery.polygon_path.map(coord => ({
       lat: coord.latitude,
       lng: coord.longitude,
     }));
@@ -231,7 +231,7 @@ const PropertyMap: React.FC<IMapProps> = ({
               />
               {data
                 .filter(
-                  (item) =>
+                  item =>
                     Number(item.latitude) === selectedLocation?.latitude &&
                     Number(item.longitude) === selectedLocation?.longitude
                 )
@@ -288,7 +288,7 @@ const PropertyMap: React.FC<IMapProps> = ({
                   zIndex: 1,
                 },
               }}
-              onPolygonComplete={(polygon) => {
+              onPolygonComplete={polygon => {
                 setPoligon(polygon);
                 onPolygonComplete();
               }}

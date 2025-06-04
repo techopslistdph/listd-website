@@ -8,17 +8,12 @@ import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useDebounce } from '@/hooks/useDebounce';
 
-
-
 interface PropertyTopBarProps {
   onViewChange: (view: View) => void;
   isSidebarOpen: boolean;
   onFilterClick: () => void;
   listingTypes: ListingType[];
 }
-
-
-
 
 export default function PropertyTopBar({
   onViewChange,
@@ -27,11 +22,11 @@ export default function PropertyTopBar({
   listingTypes,
 }: PropertyTopBarProps) {
   const router = useRouter();
-  const params = useSearchParams()
-  const {  updateParams } = useUrlParams();
-  const typeId = params.get('type')
+  const params = useSearchParams();
+  const { updateParams } = useUrlParams();
+  const typeId = params.get('type');
   const [view, setView] = useState<View>('list');
-  const activeListingType = listingTypes?.find(type => type.id === typeId)
+  const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 300);
 
@@ -45,7 +40,6 @@ export default function PropertyTopBar({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-  
 
   const handleViewChange = (newView: View) => {
     setView(newView);
@@ -56,10 +50,8 @@ export default function PropertyTopBar({
     const paramsString = updateParams({
       type: listingTypeId,
     });
-    router.push(`/property?${paramsString}`); 
-
+    router.push(`/property?${paramsString}`);
   };
-
 
   return (
     <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full text-base relative'>
@@ -168,7 +160,7 @@ export default function PropertyTopBar({
       </div>
       {/* Buy/Rent Toggle */}
       <div className='flex items-center bg-neutral-light rounded-2xl px-2 py-2 gap-1 w-full sm:w-auto sm:min-w-[180px] justify-center'>
-        {listingTypes?.map((option) => {
+        {listingTypes?.map(option => {
           const isActive = activeListingType?.name === option.name;
           return (
             <button

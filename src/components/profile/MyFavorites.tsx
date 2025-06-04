@@ -18,7 +18,7 @@ import {
 
 export default function MyFavorites() {
   const [favorites, setFavorites] = useState(
-    properties.filter((p) => p.isFavorites)
+    properties.filter(p => p.isFavorites)
   );
   const [showModal, setShowModal] = useState(false);
   const [propertyToRemove, setPropertyToRemove] = useState<number | null>(null);
@@ -30,7 +30,7 @@ export default function MyFavorites() {
 
   const handleRemove = () => {
     if (propertyToRemove !== null) {
-      setFavorites((prev) => prev.filter((p) => p.id !== propertyToRemove));
+      setFavorites(prev => prev.filter(p => p.id !== propertyToRemove));
       setPropertyToRemove(null);
       setShowModal(false);
     }
@@ -69,7 +69,7 @@ export default function MyFavorites() {
             </div>
           </div>
         ) : (
-          favorites.map((property) => {
+          favorites.map(property => {
             return (
               <div
                 key={property.id}
@@ -139,7 +139,7 @@ export default function MyFavorites() {
                         />
                         {
                           property.description.find(
-                            (detail) => 'bedrooms' in detail
+                            detail => 'bedrooms' in detail
                           )?.bedrooms
                         }{' '}
                         Bedroom
@@ -153,9 +153,8 @@ export default function MyFavorites() {
                           className='mr-1 lg:w-5 lg:h-5'
                         />
                         {
-                          property.description.find(
-                            (detail) => 'baths' in detail
-                          )?.baths
+                          property.description.find(detail => 'baths' in detail)
+                            ?.baths
                         }{' '}
                         Bath
                       </div>
@@ -168,9 +167,8 @@ export default function MyFavorites() {
                           className='mr-1 lg:w-5 lg:h-5'
                         />
                         {
-                          property.description.find(
-                            (detail) => 'area' in detail
-                          )?.area
+                          property.description.find(detail => 'area' in detail)
+                            ?.area
                         }{' '}
                         sqm
                       </div>
