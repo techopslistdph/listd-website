@@ -1,19 +1,11 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import '../globals.css';
-import NavigationBar from '@/components/common/NavigationBar';
-import {
-  navigationlinks,
-  footerLinks,
-  footerAppButtons,
-  footerSocials,
-} from '../data';
-import Footer from '@/components/common/Footer';
+import { ClerkProvider } from '@clerk/nextjs';
 import { QueryProvider } from '@/lib/queries';
+import Main from './main';
+import { Toaster } from 'sonner';
 
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
@@ -30,20 +22,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navigtionItems = navigationlinks;
-
   return (
     <ClerkProvider>
       <html lang='en'>
         <body className={`${poppins.variable} antialiased`}>
           <QueryProvider>
-            <NavigationBar navigtionItems={navigtionItems} />
-            {children}
-            <Footer
-              footerLinks={footerLinks}
-              footerAppButtons={footerAppButtons}
-              footerSocials={footerSocials}
-            />
+            <Toaster position='top-right' />
+
+            <Main>{children}</Main>
           </QueryProvider>
         </body>
       </html>
