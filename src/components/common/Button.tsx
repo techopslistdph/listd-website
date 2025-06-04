@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outlined';
@@ -25,13 +26,11 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseClasses =
-    'flex items-center gap-2 rounded-full px-6 py-2 transition-colors duration-200 cursor-pointer';
-  const classes = [
-    baseClasses,
+  const classes = cn(
+    'flex items-center gap-2 rounded-full px-6 py-2 transition-colors duration-200 cursor-pointer',
     disabled ? variantClasses.disabled : variantClasses[variant],
-    className,
-  ].join(' ');
+    className
+  );
 
   return (
     <button className={classes} disabled={disabled} {...props}>

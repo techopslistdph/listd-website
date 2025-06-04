@@ -238,6 +238,7 @@ The wrapper handles various error scenarios:
    ```
 
 4. **Leverage request cancellation** for better UX:
+
    ```ts
    useEffect(() => {
      const controller = new AbortController();

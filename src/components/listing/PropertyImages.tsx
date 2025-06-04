@@ -65,21 +65,19 @@ export function PropertyImages({
   if (cardMode) {
     return (
       <div className='relative w-full h-[350px] rounded-2xl overflow-hidden'>
-        {
-          images.length > 1 ? (
-            <Image
-              src={images[currentIndex]?.imageUrl}
-              alt={title}
-              fill
-              className='object-cover w-full h-full'
-              sizes='100vw'
-            />
-          ) : (
-            <div className='w-full h-full bg-neutral-light flex items-center justify-center'>
-              <p className='text-neutral-mid text-sm'>No images</p>
-            </div>
-          )
-        }
+        {images.length > 1 ? (
+          <Image
+            src={images[currentIndex]?.imageUrl}
+            alt={title}
+            fill
+            className='object-cover w-full h-full'
+            sizes='100vw'
+          />
+        ) : (
+          <div className='w-full h-full bg-neutral-light flex items-center justify-center'>
+            <p className='text-neutral-mid text-sm'>No images</p>
+          </div>
+        )}
         {/* Heart Button */}
         <button
           type='button'

@@ -51,10 +51,7 @@ export const PROPERTY_TYPES_MAPPING = {
   'vacant-lot': getLots,
 };
 
-export const getProperties = async ({
-  property,
-  ...rest
-}: {
+export type SearchParams = {
   property: keyof typeof PROPERTY_TYPES_MAPPING;
   type: string;
   search?: string;
@@ -64,9 +61,13 @@ export const getProperties = async ({
   maxBathrooms?: string;
   minPrice?: string;
   maxPrice?: string;
-}) => {
+  minFloorArea?: string;
+  maxFloorArea?: string;
+};
+
+export const getProperties = async ({ property, ...rest }: SearchParams) => {
   const fetchProperties = PROPERTY_TYPES_MAPPING[property];
-  
+
   const queryParams = new URLSearchParams();
   Object.entries(rest).forEach(([key, value]) => {
     if (value !== undefined) {

@@ -1,54 +1,35 @@
 'use client';
-import React, { useMemo } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { properties } from '@/app/data';
-import { Slider } from '../../ui/slider';
+import React from 'react';
+
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useRouter } from 'next/navigation';
 import {
   BATHROOM_OPTIONS,
   BEDROOM_OPTIONS,
+  PARKING_OPTIONS,
   PROPERTY_TYPES_WITH_BEDROOM_FILTER,
   PROPERTY_TYPES_WITH_PARKING_FILTER,
 } from './types';
-
-function formatPrice(value: string) {
-  const num = Number(value);
-  if (num >= 1000000) return `${num / 1000000}M`;
-  if (num >= 1000) return `${num / 1000}K`;
-  return num;
-}
+import { RangeSlider } from './RangeSlider';
+import { InputFilter } from './InputFilter';
+import { SelectFilter } from './SelectFilter';
+import { NumberFilter } from './NumberFilter';
+import Button from '@/components/common/Button';
 
 const PropertySidebar = () => {
+  const router = useRouter();
   const { getParam, updateParams, deleteParams } = useUrlParams();
   const propertyType = getParam('property');
-  const router = useRouter();
   const activeBedrooms = getParam('minBedrooms') || getParam('maxBedrooms');
   const activeBathrooms = getParam('minBathrooms') || getParam('maxBathrooms');
+
   const showBedroomBathroomFilters =
     PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
   const showParkingFilters = PROPERTY_TYPES_WITH_PARKING_FILTER.includes(
     propertyType || ''
   );
 
-  const uniqueFeatures = useMemo(() => {
-    const featuresSet = new Set<string>();
-    properties.forEach(property => {
-      property.features.forEach(feature => {
-        featuresSet.add(feature);
-      });
-    });
-    return Array.from(featuresSet).sort();
-  }, []);
-
   const handleBedroomChange = (bedrooms: string) => {
-
     if (bedrooms === BEDROOM_OPTIONS[BEDROOM_OPTIONS.length - 1].value) {
       const params = updateParams({
         maxBedrooms: null,
@@ -82,189 +63,70 @@ const PropertySidebar = () => {
     router.push(`/property?${params}`);
   };
 
-  const handleParkingChange = (parking: number | string) => {
+  const handleParkingChange = (parking: string) => {
     console.log({ parking });
-  };
-
-  const handlePriceRangeChange = (type: 'min' | 'max', value: string) => {
-    console.log({ type, value });
-  };
-
-  const handleSquareFeetChange = (type: 'min' | 'max', value: string) => {
-    console.log({ type, value });
-  };
-
-  const handleFeatureChange = (feature: string) => {
-    console.log({ feature });
+    /**
+     * Todo: Implement parking filter
+     */
   };
 
   const handleApplyFilters = () => {
-    console.log('apply filters');
+    /**
+     * Todo: Implement apply filters
+     */
   };
 
   const handleResetFilters = () => {
-    const params = deleteParams(['minBedrooms', 'maxBedrooms', 'minBathrooms', 'maxBathrooms']);
+    const params = deleteParams([
+      'minBedrooms',
+      'maxBedrooms',
+      'minBathrooms',
+      'maxBathrooms',
+      'minPrice',
+      'maxPrice',
+      'minFloorArea',
+      'maxFloorArea',
+    ]);
     router.push(`/property?${params}`);
   };
 
   return (
     <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 sm:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
-      {/* <div>
-        <div className='font-bold text-xl mb-3'>Property</div>
-        <div className='flex flex-col gap-2'>
-          {['Condominium', 'Warehouse', 'House and Lot', 'Land'].map((type) => (
-            <label key={type} className='flex items-center gap-2'>
-              <input
-                type='checkbox'
-                className='accent-primary-main'
-                checked={filters.propertyTypes.includes(type)}
-                onChange={() => handlePropertyTypeChange(type)}
-              />
-              {type}
-            </label>
-          ))}
-        </div>
-      </div> */}
-
       {showBedroomBathroomFilters && (
         <>
-          <div>
-            <div className='font-bold text-xl mb-3'>Bedrooms</div>
-            <div className='flex gap-2 flex-wrap'>
-              {BEDROOM_OPTIONS.map(option => (
-                <button
-                  key={option.value}
-                  className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                    activeBedrooms === option.value
-                      ? 'bg-primary-main text-white'
-                      : ''
-                  }`}
-                  onClick={() => handleBedroomChange(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <NumberFilter
+            options={BEDROOM_OPTIONS}
+            activeValue={activeBedrooms || ''}
+            onChange={handleBedroomChange}
+          />
 
-          <div>
-            <div className='font-bold text-xl mb-3'>Bathrooms</div>
-            <div className='flex gap-2 flex-wrap'>
-              {BATHROOM_OPTIONS.map(option => (
-                <button
-                  key={option.value}
-                  className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                    activeBathrooms === option.value
-                      ? 'bg-primary-main text-white'
-                      : ''
-                  }`}
-                  onClick={() => handleBathroomChange(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <NumberFilter
+            options={BATHROOM_OPTIONS}
+            activeValue={activeBathrooms || ''}
+            onChange={handleBathroomChange}
+          />
         </>
       )}
 
       {showParkingFilters && (
-        <div>
-          <div className='font-bold text-xl mb-3'>Parking</div>
-          <div className='flex gap-2 flex-wrap'>
-            {[1, 2, 3, '4+'].map(label => (
-              <button
-                key={label}
-                className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                  true ? 'bg-primary-main text-white' : ''
-                }`}
-                onClick={() => handleParkingChange(label)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <NumberFilter
+          options={PARKING_OPTIONS}
+          activeValue={''}
+          onChange={handleParkingChange}
+        />
       )}
 
-      <div>
-        <div className='font-bold text-xl mb-3'>Price Range</div>
-        <div className='flex flex-col gap-4'>
-          <Slider
-            min={0}
-            max={10000000}
-            step={500000}
-            value={[500000, 4000000]}
-            onValueChange={([min, max]) => {
-              handlePriceRangeChange('min', String(min));
-              handlePriceRangeChange('max', String(max));
-            }}
-          />
-          <div className='flex items-center justify-between mt-2'>
-            <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
-              {formatPrice('500000')}
-            </div>
-            <span className='mx-2 text-2xl font-bold'>-</span>
-            <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
-              {formatPrice('4000000')}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div className='font-bold text-xl mb-3'>Square Meter</div>
-        <div className='flex flex-col gap-2'>
-          <input
-            type='text'
-            placeholder='Minimum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
-            value={'500000'}
-            onChange={e => handleSquareFeetChange('min', e.target.value)}
-          />
-          <input
-            type='text'
-            placeholder='Maximum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
-            value={'4000000'}
-            onChange={e => handleSquareFeetChange('max', e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div>
-        <div className='font-bold text-xl mb-3'>Features & Amenities</div>
-        <Select
-          onValueChange={handleFeatureChange}
-          // Todo: fetch features from server
-          value={''}
-        >
-          <SelectTrigger className='rounded-full focus:outline-none text-base px-4 py-6 bg-neutral-light w-full'>
-            <SelectValue placeholder='feature & amenities' />
-          </SelectTrigger>
-          <SelectContent>
-            {uniqueFeatures.map(feature => (
-              <SelectItem key={feature} value={feature}>
-                {feature}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <RangeSlider />
+      <InputFilter />
+      <SelectFilter />
 
       <div className='flex gap-2'>
-        <button
-          className='bg-primary-main text-white rounded-full px-4 py-2 cursor-pointer hover:bg-primary-main/80'
-          onClick={handleApplyFilters}
-        >
+        <Button className='px-4' onClick={handleApplyFilters}>
           Apply Filters
-        </button>
-        <button
-          className='border border-primary-main text-primary-main rounded-full px-4 py-2 cursor-pointer hover:bg-primary-main/10'
-          onClick={handleResetFilters}
-        >
+        </Button>
+        <Button variant='outlined' className='px-4' onClick={handleResetFilters}>
           Reset Filters
-        </button>
+        </Button>
       </div>
     </aside>
   );
