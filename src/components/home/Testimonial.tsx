@@ -51,14 +51,14 @@ export default function Testimonial({
               <button
                 aria-label='Previous testimonial'
                 onClick={handlePrev}
-                className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full border-2 border-[var(--primary-main)] text-[var(--primary-main)] text-2xl md:text-3xl transition hover:bg-[var(--primary-main)] hover:text-white focus:outline-none cursor-pointer'
+                className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full border-2 border-primary-main text-primary-main text-2xl md:text-3xl transition hover:bg-primary-main hover:text-white focus:outline-none cursor-pointer'
               >
                 <ArrowLeft />
               </button>
               <button
                 aria-label='Next testimonial'
                 onClick={handleNext}
-                className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full border-2 border-[var(--primary-main)] text-[var(--primary-main)] text-2xl md:text-3xl transition hover:bg-[var(--primary-main)] hover:text-white focus:outline-none cursor-pointer'
+                className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full border-2 border-primary-main text-primary-main text-2xl md:text-3xl transition hover:bg-primary-main hover:text-white focus:outline-none cursor-pointer'
               >
                 <ArrowRight />
               </button>
@@ -90,7 +90,7 @@ export default function Testimonial({
                           className='w-10 h-10 mx-auto md:mx-0'
                         />
                       </div>
-                      <div className='font-medium text-[var(--neutral-main)] mt-1 line-clamp-[6] overflow-hidden'>
+                      <div className='font-medium text-neutral-main mt-1 line-clamp-[6] overflow-hidden'>
                         {card.testimonial}
                       </div>
                     </div>

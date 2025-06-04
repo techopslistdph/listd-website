@@ -4,6 +4,10 @@ import { PropertyType } from '../types';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import downloadIcon from '@/../public/images/icons/download.svg';
+import { useState } from 'react';
+import ImageUploadModal from './ImageUploadModal';
+import WaitAlertModal from './WaitAlertModal';
+
 interface ResultsStepProps {
   onHome: () => void;
   propertyType: PropertyType;
@@ -11,49 +15,62 @@ interface ResultsStepProps {
 
 export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
   const pathname = usePathname();
+  const [showWaitModal, setShowWaitModal] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+
+  const handlePost = () => {
+    setShowWaitModal(true);
+  };
 
   if (pathname.includes('/valuation')) {
     return (
-      <div>
-        <h2 className='text-2xl font-bold mb-6'>Property Results</h2>
-        <div className='mb-6 shadow-sm rounded-lg p-4'>
-          <div className='text-sm text-[var(--neutral-mid)] mb-1'>
-            Estimated Property Value
+      <>
+        <div>
+          <h2 className='text-2xl font-bold mb-6'>Property Results</h2>
+          <div className='mb-6 shadow-sm rounded-lg p-4'>
+            <div className='text-sm text-neutral-mid mb-1'>
+              Estimated Property Value
+            </div>
+            <div className='heading-4 text-primary-main'>₱2,622,715.20</div>
           </div>
-          <div className='heading-4 text-[var(--primary-main)]'>
-            ₱2,622,715.20
+          <div className='mb-6 shadow-sm rounded-lg p-4'>
+            <div className='text-sm text-muted-foreground mb-1'>Country</div>
+            <div className='text-lg '>Philippines</div>
+          </div>
+          <div className='mb-6 shadow-sm rounded-lg p-4'>
+            <div className='text-sm text-muted-foreground mb-1'>Address</div>
+            <div className='text-lg '>1234 Elm street, Springfield, USA</div>
+          </div>
+          <div className='mb-6 shadow-sm rounded-lg p-4'>
+            <div className='text-sm text-muted-foreground mb-1'>Property</div>
+            <div className='text-lg  capitalize'>{propertyType}</div>
+          </div>
+          <div className='flex flex-col md:flex-row justify-end items-center gap-5 mt-10'>
+            <div className='flex cursor-pointer items-center gap-2'>
+              <Image src={downloadIcon} alt='download' />
+              <span className='text-primary-mid'>Download file</span>
+            </div>
+            <Button
+              className='rounded-full py-5 px-8 w-44 border border-primary-main bg-white text-primary-main hover:bg-white cursor-pointer'
+              onClick={onHome}
+            >
+              Back to Home
+            </Button>
+            <Button
+              className='rounded-full py-5 px-8 w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
+              onClick={handlePost}
+            >
+              Post
+            </Button>
           </div>
         </div>
-        <div className='mb-6 shadow-sm rounded-lg p-4'>
-          <div className='text-sm text-muted-foreground mb-1'>Country</div>
-          <div className='text-lg font-semibold'>Philippines</div>
-        </div>
-        <div className='mb-6 shadow-sm rounded-lg p-4'>
-          <div className='text-sm text-muted-foreground mb-1'>Address</div>
-          <div className='text-lg font-semibold'>
-            1234 Elm street, Springfield, USA
-          </div>
-        </div>
-        <div className='mb-6 shadow-sm rounded-lg p-4'>
-          <div className='text-sm text-muted-foreground mb-1'>Property</div>
-          <div className='text-lg font-semibold capitalize'>{propertyType}</div>
-        </div>
-        <div className='flex flex-col md:flex-row justify-end items-center gap-5 mt-10'>
-          <div className='flex cursor-pointer items-center gap-2'>
-            <Image src={downloadIcon} alt='download' />
-            <span className='text-[var(--primary-mid)]'>Download file</span>
-          </div>
-          <Button
-            className='rounded-full py-5 px-8 w-44 border border-[var(--primary-main)] bg-white text-[var(--primary-main)] hover:bg-white cursor-pointer'
-            onClick={onHome}
-          >
-            Back to Home
-          </Button>
-          <Button className='rounded-full py-5 px-8 w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer'>
-            Post
-          </Button>
-        </div>
-      </div>
+        <WaitAlertModal
+          open={showWaitModal}
+          setOpen={setShowWaitModal}
+          onUploadNow={() => setShowPhotoModal(true)}
+        />
+        <ImageUploadModal open={showPhotoModal} setOpen={setShowPhotoModal} />
+      </>
     );
   }
 
@@ -64,17 +81,23 @@ export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
         <h2 className='heading-5 mb-2 text-center my-5'>
           We&apos;ve posted your listing!
         </h2>
-        <div className='text-[var(--neutral-mid)] body-sm text-center max-w-md'>
+        <div className='text-neutral-mid body-sm text-center max-w-md'>
           Your {propertyType} listing has been successfully created. You can
           change some of the details anytime you need!
         </div>
       </div>
       <Button
         onClick={onHome}
-        className='px-8 py-6 w-56 hover:bg-[var(--primary-main)] rounded-full bg-[var(--primary-main)] cursor-pointer text-white'
+        className='px-8 py-6 w-56 hover:bg-primary-main rounded-full bg-primary-main cursor-pointer text-white'
       >
         Back to Home
       </Button>
+      <WaitAlertModal
+        open={showWaitModal}
+        setOpen={setShowWaitModal}
+        onUploadNow={() => setShowPhotoModal(true)}
+      />
+      <ImageUploadModal open={showPhotoModal} setOpen={setShowPhotoModal} />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function PropertySlider({
     <section className='container max-w-[1300px] mx-auto px-8 md:px-5 py-10 lg:py-20 '>
       <div className='flex flex-col md:flex-row gap-3 justify-between items-start md:items-center  mb-10 md:mb-4'>
         <div>
-          <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--neutral-text)] md:mb-2'>
+          <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-neutral-text md:mb-2'>
             Based on your location
           </h2>
           <p className='text-lg text-gray-500'>
@@ -59,14 +59,14 @@ export default function PropertySlider({
                 />
               </div>
               <div className='p-6 flex flex-col flex-1'>
-                <div className='text-[var(--primary-main)] font-extrabold text-xl md:text-2xl mb-2'>
+                <div className='text-primary-main font-extrabold text-xl md:text-2xl mb-2'>
                   {card.price}
                 </div>
                 <div className='font-semibold text-base md:text-lg mb-1'>
                   {card.title}
                 </div>
                 <div className='flex items-center text-gray-500 text-sm'>
-                  <FaMapMarkerAlt className='mr-2 text-[var(--primary-main)]' />
+                  <FaMapMarkerAlt className='mr-2 text-primary-main' />
                   {card.location}
                 </div>
               </div>

@@ -35,10 +35,10 @@ export default function Advantages() {
         {advantages.map((adv, idx) => (
           <div
             key={idx}
-            className='flex flex-col md:flex-row items-center md:items-start gap-4 rounded-2xl border border-[var(--neutral-mid)] bg-white p-8 shadow-none transition hover:shadow-md'
+            className='flex flex-col md:flex-row items-center md:items-start gap-4 rounded-2xl border border-neutral-mid bg-white p-8 shadow-none transition hover:shadow-md'
           >
             <div className='flex-shrink-0'>{adv.icon}</div>
-            <div className='text-[var(--neutral-mid)]'>{adv.text}</div>
+            <div className='text-neutral-mid'>{adv.text}</div>
           </div>
         ))}
       </div>

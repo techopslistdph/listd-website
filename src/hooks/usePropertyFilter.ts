@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { properties, Listing } from '@/app/data';
+import { Listing } from '@/app/data';
 
 type PropertyDescription = {
   bedrooms?: number;
@@ -40,14 +40,34 @@ function hasParking(
   return 'parking' in desc && typeof desc.parking === 'number';
 }
 
-export const usePropertyFilter = () => {
+function parsePriceString(price: string): number {
+  // Remove currency symbols and spaces
+  const cleaned = price.replace(/[₱, ]/g, '').toUpperCase();
+  // Match number and optional multiplier
+  const match = cleaned.match(/^([\d.]+)([KM]?)$/);
+  if (!match) return 0;
+  const [, num, multiplier] = match;
+  let value = parseFloat(num);
+  if (multiplier === 'M') value *= 1_000_000;
+  if (multiplier === 'K') value *= 1_000;
+  return value;
+}
+
+// function formatNumber(num: number): string {
+//   return num.toLocaleString('en-US', {
+//     minimumFractionDigits: 2,
+//     maximumFractionDigits: 2,
+//   });
+// }
+
+export const usePropertyFilter = (initialProperties: Property[]) => {
   const [filteredProperties, setFilteredProperties] =
-    useState<Property[]>(properties);
+    useState<Property[]>(initialProperties);
 
   const handleFilterChange = (filters: FilterState) => {
-    let filtered = [...properties];
+    let filtered = [...initialProperties];
 
-    // Filter by property type
+    // Apply filters based on property type
     if (filters.propertyTypes.length > 0) {
       filtered = filtered.filter((property) =>
         filters.propertyTypes.includes(property.tag)
@@ -56,99 +76,39 @@ export const usePropertyFilter = () => {
 
     // Apply filters based on property type
     filtered = filtered.filter((property) => {
-      // Condominium filters
-      if (property.tag === 'Condominium') {
-        // Bedrooms filter
-        if (filters.bedrooms.length > 0) {
-          const bedroomDesc = property.description.find(hasBedrooms);
-          if (!bedroomDesc || !hasBedrooms(bedroomDesc)) return false;
-          const bedroomCount = bedroomDesc.bedrooms;
-          if (filters.bedrooms.includes('4+')) {
-            if (bedroomCount < 4) return false;
-          } else if (!filters.bedrooms.includes(bedroomCount)) {
-            return false;
-          }
-        }
-
-        // Bathrooms filter
-        if (filters.bathrooms.length > 0) {
-          const bathroomDesc = property.description.find(hasBaths);
-          if (!bathroomDesc || !hasBaths(bathroomDesc)) return false;
-          const bathroomCount = bathroomDesc.baths;
-          if (filters.bathrooms.includes('5+')) {
-            if (bathroomCount < 5) return false;
-          } else if (!filters.bathrooms.includes(bathroomCount)) {
-            return false;
-          }
+      // Bedrooms filter (apply to all property types)
+      if (filters.bedrooms.length > 0) {
+        const bedroomDesc = property.description.find(hasBedrooms);
+        if (!bedroomDesc || !hasBedrooms(bedroomDesc)) return false;
+        const bedroomCount = bedroomDesc.bedrooms;
+        if (filters.bedrooms.includes('4+')) {
+          if (bedroomCount < 4) return false;
+        } else if (!filters.bedrooms.includes(bedroomCount)) {
+          return false;
         }
       }
 
-      // Warehouse filters
-      if (property.tag === 'Warehouse') {
-        // Parking filter
-        if (filters.parking.length > 0) {
-          const parkingDesc = property.description.find(hasParking);
-          if (!parkingDesc || !hasParking(parkingDesc)) return false;
-          const parkingCount = parkingDesc.parking;
-          if (filters.parking.includes('4+')) {
-            if (parkingCount < 4) return false;
-          } else if (!filters.parking.includes(parkingCount)) {
-            return false;
-          }
+      // Parking filter (apply to all property types)
+      if (filters.parking.length > 0) {
+        const parkingDesc = property.description.find(hasParking);
+        if (!parkingDesc || !hasParking(parkingDesc)) return false;
+        const parkingCount = parkingDesc.parking;
+        if (filters.parking.includes('4+')) {
+          if (parkingCount < 4) return false;
+        } else if (!filters.parking.includes(parkingCount)) {
+          return false;
         }
       }
 
-      // House and Lot filters
-      if (property.tag === 'House and Lot') {
-        // Bedrooms filter
-        if (filters.bedrooms.length > 0) {
-          const bedroomDesc = property.description.find(hasBedrooms);
-          if (!bedroomDesc || !hasBedrooms(bedroomDesc)) return false;
-          const bedroomCount = bedroomDesc.bedrooms;
-          if (filters.bedrooms.includes('4+')) {
-            if (bedroomCount < 4) return false;
-          } else if (!filters.bedrooms.includes(bedroomCount)) {
-            return false;
-          }
-        }
-
-        // Bathrooms filter
-        if (filters.bathrooms.length > 0) {
-          const bathroomDesc = property.description.find(hasBaths);
-          if (!bathroomDesc || !hasBaths(bathroomDesc)) return false;
-          const bathroomCount = bathroomDesc.baths;
-          if (filters.bathrooms.includes('5+')) {
-            if (bathroomCount < 5) return false;
-          } else if (!filters.bathrooms.includes(bathroomCount)) {
-            return false;
-          }
-        }
-
-        // Parking filter
-        if (filters.parking.length > 0) {
-          const parkingDesc = property.description.find(hasParking);
-          if (!parkingDesc || !hasParking(parkingDesc)) return false;
-          const parkingCount = parkingDesc.parking;
-          if (filters.parking.includes('4+')) {
-            if (parkingCount < 4) return false;
-          } else if (!filters.parking.includes(parkingCount)) {
-            return false;
-          }
-        }
-      }
-
-      // Land filters
-      if (property.tag === 'Land') {
-        // Parking filter
-        if (filters.parking.length > 0) {
-          const parkingDesc = property.description.find(hasParking);
-          if (!parkingDesc || !hasParking(parkingDesc)) return false;
-          const parkingCount = parkingDesc.parking;
-          if (filters.parking.includes('4+')) {
-            if (parkingCount < 4) return false;
-          } else if (!filters.parking.includes(parkingCount)) {
-            return false;
-          }
+      // Bathrooms filter (apply to all property types)
+      if (filters.bathrooms.length > 0) {
+        const bathroomDesc = property.description.find(hasBaths);
+        if (!bathroomDesc || !hasBaths(bathroomDesc)) return false;
+        const bathroomCount = bathroomDesc.baths;
+        if (filters.bathrooms.includes('5+')) {
+          if (bathroomCount < 5) return false;
+        } else if (!filters.bathrooms.includes(bathroomCount)) {
+          return false;
         }
       }
 
@@ -158,13 +118,14 @@ export const usePropertyFilter = () => {
     // Filter by price range
     if (filters.priceRange.min || filters.priceRange.max) {
       filtered = filtered.filter((property) => {
-        const price = parseFloat(property.price.replace(/[^0-9.]/g, ''));
+        const price = parsePriceString(property.price);
         const min = filters.priceRange.min
-          ? parseFloat(filters.priceRange.min)
+          ? parsePriceString(filters.priceRange.min)
           : 0;
         const max = filters.priceRange.max
-          ? parseFloat(filters.priceRange.max)
+          ? parsePriceString(filters.priceRange.max)
           : Infinity;
+
         return price >= min && price <= max;
       });
     }

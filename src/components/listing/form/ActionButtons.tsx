@@ -12,7 +12,7 @@ export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
       {onBack && (
         <Button
           variant='outline'
-          className='rounded-full py-5 px-8 w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer'
+          className='rounded-full py-5 px-8 w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
           type='button'
           onClick={onBack}
         >
@@ -21,7 +21,7 @@ export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
       )}
       <Button
         variant='outline'
-        className='rounded-full py-5 px-8 w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer'
+        className='rounded-full py-5 px-8 w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
         type='button'
         onClick={onDraft}
       >
@@ -29,7 +29,7 @@ export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
       </Button>
       <Button
         type='button'
-        className='rounded-full py-5 px-8 w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer'
+        className='rounded-full py-5 px-8 w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
         onClick={onNext}
       >
         Continue

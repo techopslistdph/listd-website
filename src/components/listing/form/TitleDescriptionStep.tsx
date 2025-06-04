@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '../../ui/label';
 import { ActionButtons } from './ActionButtons';
+import { SparkleIcon } from 'lucide-react';
 
 interface TitleDescriptionStepProps {
   data: FormData;
@@ -35,8 +36,12 @@ export function TitleDescriptionStep({
           placeholder='Tell us what makes your place special!'
           value={data.description}
           onChange={(e) => onChange('description', e.target.value)}
-          className='mb-8 min-h-[200px]'
+          className=' min-h-[200px]'
         />
+        <div className='mb-8 text-neutral-mid flex gap-1 items-center'>
+          <SparkleIcon className='w-5 h-5' />
+          <p>Type a description to see AI suggestions</p>
+        </div>
       </div>
 
       <ActionButtons onDraft={onDraft} onNext={onNext} />

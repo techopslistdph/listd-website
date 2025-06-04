@@ -8,14 +8,37 @@ import bedIcon from '../../../public/images/icons/bedroom.svg';
 import bathIcon from '../../../public/images/icons/bath.svg';
 import { PhoneIcon } from 'lucide-react';
 import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from '../ui/dialog';
 
 export default function MyFavorites() {
   const [favorites, setFavorites] = useState(
     properties.filter((p) => p.isFavorites)
   );
+  const [showModal, setShowModal] = useState(false);
+  const [propertyToRemove, setPropertyToRemove] = useState<number | null>(null);
 
-  const handleFavoriteClick = (propertyId: number) => {
-    setFavorites((prev) => prev.filter((p) => p.id !== propertyId));
+  const handleHeartClick = (propertyId: number) => {
+    setPropertyToRemove(propertyId);
+    setShowModal(true);
+  };
+
+  const handleRemove = () => {
+    if (propertyToRemove !== null) {
+      setFavorites((prev) => prev.filter((p) => p.id !== propertyToRemove));
+      setPropertyToRemove(null);
+      setShowModal(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setPropertyToRemove(null);
   };
 
   return (
@@ -155,14 +178,14 @@ export default function MyFavorites() {
                     <div className='flex flex-col lg:flex-row gap-2 lg:gap-4 w-full lg:w-auto'>
                       <Button
                         variant='outline'
-                        className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer text-sm lg:text-base'
+                        className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer text-sm lg:text-base'
                         type='button'
                       >
                         Whatsapp
                       </Button>
                       <Button
                         type='button'
-                        className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer text-sm lg:text-base'
+                        className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
                       >
                         Direct Message
                       </Button>
@@ -172,7 +195,7 @@ export default function MyFavorites() {
                 {/* Heart Icon */}
                 <div
                   className='absolute top-4 right-4 lg:top-6 lg:right-6 cursor-pointer'
-                  onClick={() => handleFavoriteClick(property.id)}
+                  onClick={() => handleHeartClick(property.id)}
                 >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -188,6 +211,33 @@ export default function MyFavorites() {
           })
         )}
       </div>
+      {/* Modal Dialog */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className='rounded-3xl p-8 w-full min-w-xl mx-auto flex flex-col items-center'>
+          <DialogHeader className='w-full text-left'>
+            <DialogTitle className='text-xl font-bold'>Wait!</DialogTitle>
+          </DialogHeader>
+          <p className='text-lg  w-full text-left'>
+            Are you sure you want to remove this from your favorite list?
+          </p>
+          <DialogFooter className='flex gap-4 w-full justify-end'>
+            <button
+              className='rounded-full border-2 cursor-pointer border-[#4B23A0] text-sm text-[#4B23A0] w-48 font-bold py-3 px-8  hover:bg-white focus:outline-none'
+              onClick={handleCancel}
+              type='button'
+            >
+              Cancel
+            </button>
+            <button
+              className='rounded-full cursor-pointer bg-[#4B23A0] text-white font-bold py-3 px-8 text-sm w-48 hover:bg-[#3a1870] focus:outline-none'
+              onClick={handleRemove}
+              type='button'
+            >
+              Remove from list
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

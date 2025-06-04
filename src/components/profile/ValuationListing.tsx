@@ -61,7 +61,7 @@ export default function ValuationListing() {
               {/* Details */}
               <div className='flex flex-col justify-between lg:ml-8 flex-1'>
                 <div>
-                  <span className='px-2 lg:px-3 py-1 rounded-lg text-xs lg:text-sm font-medium bg-[var(--primary-light)] text-[var(--primary-main)] mb-2 inline-block'>
+                  <span className='px-2 lg:px-3 py-1 rounded-lg text-xs lg:text-sm font-medium bg-primary-light text-primary-main mb-2 inline-block'>
                     {item.status}
                   </span>
                   <div className='text-lg lg:text-xl font-bold mb-1'>
@@ -110,7 +110,7 @@ export default function ValuationListing() {
                       </span>
                     </div>
                     <div className='flex items-end justify-end h-full'>
-                      <div className='text-lg lg:text-xl font-bold text-[var(--primary-main)]'>
+                      <div className='text-lg lg:text-xl font-bold text-primary-main'>
                         {item.price}
                       </div>
                     </div>

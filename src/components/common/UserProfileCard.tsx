@@ -43,7 +43,7 @@ export default function UserProfileCard() {
               {userInitials}
             </AvatarFallback>
           </Avatar>
-          <LogOut className='h-4 w-4 text-[var(--primary-main)]' />
+          <LogOut className='h-4 w-4 text-primary-main' />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-56'>

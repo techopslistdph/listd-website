@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Hero from '@/components/home/Hero';
 import ValuationCards from '@/components/home/ValuationCards';
 import { propertySliderCards, valuationCards } from '../data';
@@ -10,22 +10,21 @@ import PropertySlider, {
 import Testimonial from '@/components/home/Testimonial';
 import DownloadSection from '@/components/home/DownloadSection';
 
-
-
-
 export default function page() {
   return (
     <div>
-      <Hero />
-      <PropertySlider
-        propertySliderCards={
-          propertySliderCards as unknown as PropertySliderCard[]
-        }
-      />
-      <ValuationCards cards={valuationCards} />
-      <FeatureCards cards={featureCards as FeatureCardData[]} />
-      <Testimonial testimonialCards={testimonialCards} />
-      <DownloadSection />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Hero />
+        <PropertySlider
+          propertySliderCards={
+            propertySliderCards as unknown as PropertySliderCard[]
+          }
+        />
+        <ValuationCards cards={valuationCards} />
+        <FeatureCards cards={featureCards as FeatureCardData[]} />
+        <Testimonial testimonialCards={testimonialCards} />
+        <DownloadSection />
+      </Suspense>
     </div>
   );
 }

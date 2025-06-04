@@ -6,7 +6,7 @@ export default function PropertyFeatures({ features }: { features: string[] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className='mt-6 p-5  rounded-lg mb-2 border'>
+    <div className='mt-4 md:mt-6 p-5  rounded-lg mb-2 border'>
       <button
         className='flex items-center justify-between w-full font-semibold text-xl mb-2 cursor-pointer focus:outline-none'
         onClick={() => setOpen((prev) => !prev)}
@@ -24,7 +24,7 @@ export default function PropertyFeatures({ features }: { features: string[] }) {
           {features.map((f, i) => (
             <span
               key={i}
-              className='bg-[var(--primary-mid)] text-white px-3 py-1 rounded-full text-sm'
+              className='bg-primary-mid text-white px-3 py-1 rounded-full text-sm'
             >
               {f}
             </span>
