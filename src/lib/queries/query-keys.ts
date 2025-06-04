@@ -4,21 +4,16 @@
  */
 
 export const queryKeys = {
-  // Example query keys - replace with your actual entities
   users: {
-    all: ['users'] as const,
-    lists: () => [...queryKeys.users.all, 'list'] as const,
-    list: (filters: string) => [...queryKeys.users.lists(), { filters }] as const,
-    details: () => [...queryKeys.users.all, 'detail'] as const,
-    detail: (id: string) => [...queryKeys.users.details(), id] as const,
+
   },
   
-  lists: {
-    all: ['lists'] as const,
-    lists: () => [...queryKeys.lists.all, 'list'] as const,
-    list: (filters: string) => [...queryKeys.lists.lists(), { filters }] as const,
-    details: () => [...queryKeys.lists.all, 'detail'] as const,
-    detail: (id: string) => [...queryKeys.lists.details(), id] as const,
+  listingTypes: {
+    all: ['listingTypes'] as const,
+    listingTypes: () => [...queryKeys.listingTypes.all, 'list'] as const,
+    list: (filters: string) => [...queryKeys.listingTypes.listingTypes(), { filters }] as const,
+    details: () => [...queryKeys.listingTypes.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.listingTypes.details(), id] as const,
   },
   
   // Add more entities as needed

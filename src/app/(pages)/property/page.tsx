@@ -1,5 +1,3 @@
-'use client';
-
 import PropertyCard from '@/components/listing/PropertyCard';
 import PropertySidebar from '@/components/listing/PropertySidebar';
 import PropertyTopBar from '@/components/listing/PropertyTopBar';

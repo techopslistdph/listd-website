@@ -14,14 +14,16 @@ import {
 import background from '@/../public/images/hero-background.png';
 import Button from '@/components/common/Button';
 import { useUrlParams } from '@/hooks/useUrlParams';
+import { useListingTypes } from '@/lib/queries/hooks/use-listing-type';
 
-const TAB_OPTIONS = ['Buy', 'Rent', 'Sell', 'Valuation'];
+const LISTING_TYPES = ['Buy', 'Rent', 'Sell', 'Valuation'];
 const PROPERTY_OPTIONS = ['Condominium', 'House and lot', 'Land'];
 
 export default function Hero() {
   const router = useRouter();
   const { createParamsString } = useUrlParams();
-  const [propertyAction, setPropertyAction] = useState(TAB_OPTIONS[0]);
+  const { data: listingTypes, isLoading } = useListingTypes();
+  const [propertyAction, setPropertyAction] = useState(LISTING_TYPES[0]);
   const [property, setProperty] = useState(PROPERTY_OPTIONS[0]);
   const [location, setLocation] = useState('');
 
@@ -37,6 +39,8 @@ export default function Hero() {
     const url = paramsString ? `/property?${paramsString}` : '/property';
     router.push(url);
   };
+
+
 
   return (
     <Container
@@ -72,7 +76,7 @@ export default function Hero() {
               <SelectValue placeholder='Buy' />
             </SelectTrigger>
             <SelectContent className='rounded-2xl shadow-lg'>
-              {TAB_OPTIONS.map((option) => (
+              {LISTING_TYPES.map((option) => (
                 <SelectItem
                   key={option}
                   value={option}
@@ -85,7 +89,7 @@ export default function Hero() {
           </Select>
         </div>
         <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
-          {TAB_OPTIONS.map((tab) => (
+          {LISTING_TYPES.map((tab) => (
             <button
               key={tab}
               className={`pb-2 cursor-pointer ${
