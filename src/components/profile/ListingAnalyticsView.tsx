@@ -19,25 +19,25 @@ interface ListingAnalyticsViewProps {
 const analytics = [
   {
     icon: <Eye className='text-green-400 w-6 h-6' />,
-    color: 'bg-[var(--success-light)]',
+    color: 'bg-success-light',
     label: 'Views',
     value: 125,
   },
   {
     icon: <Search className='text-purple-400 w-6 h-6' />,
-    color: 'bg-[var(--secondary-light)]',
+    color: 'bg-secondary-light',
     label: 'Clicks',
     value: 125,
   },
   {
     icon: <Heart className='text-red-400 w-6 h-6' />,
-    color: 'bg-[var(--error-light)]',
+    color: 'bg-error-light',
     label: 'Saves',
     value: 125,
   },
   {
     icon: <MessageCircle className='text-purple-400 w-6 h-6' />,
-    color: 'bg-[var(--primary-light)]',
+    color: 'bg-primary-light',
     label: 'Inquiries',
     value: 125,
   },
@@ -95,7 +95,7 @@ export default function ListingAnalyticsView({
           return (
             <div
               key={idx}
-              className='flex flex-col items-center justify-center gap-1 text-[var(--neutral-mid)] text-xs lg:text-sm w-1/3 lg:w-auto'
+              className='flex flex-col items-center justify-center gap-1 text-neutral-mid text-xs lg:text-sm w-1/3 lg:w-auto'
             >
               {icon && (
                 <Image
@@ -140,7 +140,7 @@ export default function ListingAnalyticsView({
               Track how your listing is performing
             </div>
           </div>
-          <button className='flex items-center text-[var(--primary-mid)] font-bold cursor-pointer text-sm lg:text-base'>
+          <button className='flex items-center text-primary-mid font-bold cursor-pointer text-sm lg:text-base'>
             <Download className='w-4 h-4 lg:w-5 lg:h-5 mr-2' /> Export report
           </button>
         </div>
@@ -148,26 +148,24 @@ export default function ListingAnalyticsView({
           {analytics.map((item) => (
             <div
               key={item.label}
-              className='flex items-center bg-[#FAF8FF] rounded-xl lg:rounded-2xl p-3 lg:p-4 justify-between'
+              className='flex items-center bg-primary-light rounded-xl lg:rounded-2xl p-3 lg:p-4 justify-between'
             >
               <div className='flex items-center gap-3 lg:gap-4'>
                 <span
-                  className={`rounded-full p-1.5 lg:p-2 ${item.color} text-[var(--primary-main)]`}
+                  className={`rounded-full p-1.5 lg:p-2 ${item.color} text-primary-main`}
                 >
                   {React.cloneElement(item.icon, {
                     className: 'w-4 h-4 lg:w-6 lg:h-6',
                   })}
                 </span>
                 <div className='flex flex-col'>
-                  <span className='text-xl lg:text-2xl font-bold text-[var(--primary-mid)]'>
+                  <span className='text-xl lg:text-2xl font-bold text-primary-mid'>
                     {item.value}
                   </span>
-                  <span className='text-[var(--primary-mid)] text-xs'>
-                    {item.label}
-                  </span>
+                  <span className='text-primary-mid text-xs'>{item.label}</span>
                 </div>
               </div>
-              <span className='text-[var(--primary-mid)] flex items-center gap-1 text-xs lg:text-sm'></span>
+              <span className='text-primary-mid flex items-center gap-1 text-xs lg:text-sm'></span>
             </div>
           ))}
         </div>

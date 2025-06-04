@@ -240,7 +240,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
               <label className='block font-medium text-sm lg:text-base mb-1'>
                 Image
               </label>
-              <div className='border-2 border-dashed border-[var(--primary-main)] rounded-lg lg:rounded-xl p-4 lg:p-8 flex flex-col items-center justify-center bg-[#fafaff]'>
+              <div className='border-2 border-dashed border-primary-main rounded-lg lg:rounded-xl p-4 lg:p-8 flex flex-col items-center justify-center bg-[#fafaff]'>
                 <Image
                   src={uploadIcon}
                   alt='upload Icon'
@@ -248,7 +248,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
                 />
                 <span className='text-gray-500 text-sm lg:text-base'>
                   Drag your file(s) or{' '}
-                  <span className='text-[var(--primary-main)] cursor-pointer'>
+                  <span className='text-primary-main cursor-pointer'>
                     browse
                   </span>
                 </span>
@@ -284,13 +284,13 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
                       key={reason}
                       className={`flex items-center border rounded-lg lg:rounded-xl px-4 lg:px-6 py-3 lg:py-5 cursor-pointer transition ${
                         unlistReason === reason
-                          ? 'border-[var(--primary-main)]'
+                          ? 'border-primary-main'
                           : 'border-gray-300'
                       }`}
                     >
                       <input
                         type='radio'
-                        className='form-radio w-4 h-4 lg:w-6 lg:h-6 mr-3 lg:mr-4 accent-[var(--primary-main)]'
+                        className='form-radio w-4 h-4 lg:w-6 lg:h-6 mr-3 lg:mr-4 accent-primary-main'
                         checked={unlistReason === reason}
                         onChange={() => setUnlistReason(reason)}
                       />
@@ -306,14 +306,14 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
         <div className='flex flex-col lg:flex-row justify-end gap-2 lg:gap-4 mt-6 lg:mt-8'>
           <Button
             variant='outline'
-            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer text-sm lg:text-base'
+            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer text-sm lg:text-base'
             type='button'
           >
             Discard
           </Button>
           <Button
             type='button'
-            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer text-sm lg:text-base'
+            className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
           >
             Save
           </Button>

@@ -11,7 +11,7 @@ export default function NavigationBar({
   navigtionItems: { label: string; href: string }[];
 }) {
   return (
-    <div className='flex justify-between items-center p-4 md:p-8 container mx-auto'>
+    <div className='flex justify-between items-center p-4 md:p-8 container mx-auto max-w-[1300px]'>
       <div className='flex items-center gap-4'>
         <Sheet>
           <SheetTrigger asChild>
@@ -25,9 +25,7 @@ export default function NavigationBar({
             <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
             <nav className='flex flex-col gap-8 p-6'>
               <Link href={'/'}>
-                <p className='text-3xl font-bold text-[var(--primary-main)]'>
-                  Listdw
-                </p>
+                <p className='text-3xl font-bold text-primary-main'>Listd</p>
               </Link>
 
               {navigtionItems.map((item) => (
@@ -44,7 +42,7 @@ export default function NavigationBar({
         </Sheet>
         <Link href={'/'}>
           {' '}
-          <p className='text-2xl font-bold text-[var(--primary-main)]'>Listd</p>
+          <p className='text-2xl font-bold text-priary-main'>Listd</p>
         </Link>
         <div className='hidden md:flex items-center gap-10 ml-8'>
           {navigtionItems.map((item) => (

@@ -31,10 +31,10 @@ export default function ValuationCards({
               />
             </div>
             <div className='flex flex-col justify-center w-full'>
-              <h3 className='font-bold text-xl text-[var(--neutral-text)] mb-2'>
+              <h3 className='font-bold text-xl text-neutral-text mb-2'>
                 {card.title}
               </h3>
-              <p className=' text-sm text-[var(--neutral-mid)] mb-4'>
+              <p className=' text-sm text-neutral-mid mb-4'>
                 {card.description}
               </p>
               <Button

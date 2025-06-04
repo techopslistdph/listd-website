@@ -64,18 +64,18 @@ export default function ListingDetailsView({
           <div className='text-xl lg:text-2xl font-bold mb-1'>
             {listing.title}
           </div>
-          <div className='text-sm lg:text-base text-[var(--neutral-mid)] mb-1'>
+          <div className='text-sm lg:text-base text-neutral-mid mb-1'>
             {listing.location}
           </div>
           <div className='text-lg lg:text-xl font-bold mb-1'>
             {listing.price}
           </div>
-          <div className='text-xs lg:text-sm text-[var(--primary-mid)] font-semibold mb-1'>
+          <div className='text-xs lg:text-sm text-primary-mid font-semibold mb-1'>
             {listing.status}
           </div>
         </div>
         {listing.isVerified && (
-          <div className='flex items-center gap-1 bg-[var(--primary-mid)] text-white px-2 w-24 justify-center lg:px-3 py-1 rounded-full text-xs font-medium mt-2 lg:mt-0'>
+          <div className='flex items-center gap-1 bg-primary-mid text-white px-2 w-24 justify-center lg:px-3 py-1 rounded-full text-xs font-medium mt-2 lg:mt-0'>
             <span className='text-xs text-white font-bold'>Verified</span>
           </div>
         )}
@@ -84,7 +84,7 @@ export default function ListingDetailsView({
       {/* Description */}
       <div className='mb-3 lg:mb-4'>
         <div className='font-bold text-sm lg:text-base mb-1'>Description</div>
-        <div className='text-[var(--neutral-main)] text-xs lg:text-sm'>
+        <div className='text-neutral-main text-xs lg:text-sm'>
           {listing.descriptionText}
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function ListingDetailsView({
             return (
               <div
                 key={idx}
-                className='flex flex-col items-center justify-center gap-1 text-[var(--neutral-main)] text-xs lg:text-sm w-1/3 lg:w-auto'
+                className='flex flex-col items-center justify-center gap-1 text-neutral-main text-xs lg:text-sm w-1/3 lg:w-auto'
               >
                 {icon && (
                   <Image
@@ -145,7 +145,7 @@ export default function ListingDetailsView({
             {listing.features.map((feature, idx) => (
               <span
                 key={idx}
-                className='bg-[var(--primary-mid)] text-white px-2 lg:px-3 py-1 rounded-full text-xs font-medium'
+                className='bg-primary-mid text-white px-2 lg:px-3 py-1 rounded-full text-xs font-medium'
               >
                 {feature}
               </span>
@@ -169,7 +169,7 @@ export default function ListingDetailsView({
       <div className='flex justify-end'>
         <Button
           variant='default'
-          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer text-sm lg:text-base'
+          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
           type='button'
           onClick={(e) => {
             e.stopPropagation();

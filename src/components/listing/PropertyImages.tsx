@@ -2,7 +2,13 @@
 'use client';
 import { useState, useCallback } from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { ChevronLeft, ChevronRight, Grid2X2, ArrowLeft } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Grid2X2,
+  ArrowLeft,
+  Heart,
+} from 'lucide-react';
 // import { Button } from '@/components/ui/button'; // Uncomment if you have a Button component
 import { cn } from '@/lib/utils';
 import gridIcon from '@/../public/images/photos.svg';
@@ -10,9 +16,14 @@ import gridIcon from '@/../public/images/photos.svg';
 interface PropertyImagesProps {
   images: StaticImageData[];
   title: string;
+  cardMode?: boolean;
 }
 
-export function PropertyImages({ images, title }: PropertyImagesProps) {
+export function PropertyImages({
+  images,
+  title,
+  cardMode = false,
+}: PropertyImagesProps) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -49,6 +60,56 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
     },
     [handleNext, handlePrevious]
   );
+
+  if (cardMode) {
+    return (
+      <div className='relative w-full h-[350px] rounded-2xl overflow-hidden'>
+        <Image
+          src={images[currentIndex]}
+          alt={title}
+          fill
+          className='object-cover w-full h-full'
+          sizes='100vw'
+        />
+        {/* Heart Button */}
+        <button
+          type='button'
+          className='absolute top-4 right-4 bg-white rounded-full p-3 z-20 flex items-center justify-center shadow-md hover:bg-primary-main/10 transition-colors'
+          aria-label='Favorite'
+        >
+          <Heart
+            className='w-5 h-5 text-primary-main'
+            strokeWidth={3}
+            fill='white'
+          />
+        </button>
+        {/* Left Arrow */}
+        {images.length > 1 && (
+          <button
+            className='absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary-main rounded-full p-2 z-10 shadow-md'
+            onClick={handlePrevious}
+            aria-label='Previous image'
+          >
+            <ChevronLeft className='w-7 h-7' />
+          </button>
+        )}
+        {/* Right Arrow */}
+        {images.length > 1 && (
+          <button
+            className='absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary-main rounded-full p-2 z-10 shadow-md'
+            onClick={handleNext}
+            aria-label='Next image'
+          >
+            <ChevronRight className='w-7 h-7' />
+          </button>
+        )}
+        {/* Image count */}
+        <div className='absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/80 border border-white rounded-xl px-4 py-1 text-base font-semibold text-black flex items-center justify-center shadow-md'>
+          {currentIndex + 1} / {images.length}
+        </div>
+      </div>
+    );
+  }
 
   if (showAllPhotos) {
     return (
@@ -197,7 +258,7 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
 
         {/* Show All Photos Button with improved styling */}
         <button
-          className='absolute bottom-4 right-4 flex items-center gap-2 bg-[var(--secondary-main)] cursor-pointer font-semibold text-white px-4 py-2 text-sm rounded-full'
+          className='absolute bottom-4 right-4 flex items-center gap-2 bg-secondary-main cursor-pointer font-semibold text-white px-4 py-2 text-sm rounded-full'
           onClick={() => openGallery(0)}
         >
           <Image src={gridIcon} alt='grid' width={20} height={20} />
@@ -206,7 +267,7 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
       </div>
 
       {/* Mobile Navigation with improved styling */}
-      <div className='md:hidden absolute bottom-4 left-4 right-4 flex justify-between'>
+      {/* <div className='md:hidden absolute bottom-4 left-4 right-4 flex justify-between'>
         <button
           className='rounded-none bg-secondary text-secondary-foreground shadow-md p-2'
           onClick={handlePrevious}
@@ -219,7 +280,7 @@ export function PropertyImages({ images, title }: PropertyImagesProps) {
         >
           <ChevronRight className='h-5 w-5' />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

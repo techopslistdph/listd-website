@@ -33,7 +33,7 @@ export default function HowListdValuate() {
       <div className='mb-8'>
         <Link
           href='#faq'
-          className='text-[var(--primary-main)] underline text-lg font-medium'
+          className='text-primary-main underline text-lg font-medium'
         >
           Questions? Read our FAQ&apos;s
         </Link>
@@ -42,7 +42,7 @@ export default function HowListdValuate() {
         {steps.map((step, idx) => (
           <div
             key={idx}
-            className='rounded-2xl border border-[var(--neutral-mid)] bg-white p-8 flex flex-col shadow-sm transition hover:shadow-md  h-full'
+            className='rounded-2xl border border-neutral-mid bg-white p-8 flex flex-col shadow-sm transition hover:shadow-md  h-full'
           >
             <Image
               src={step.img}

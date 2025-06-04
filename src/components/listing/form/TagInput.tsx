@@ -33,11 +33,11 @@ export function TagInput({
           {value.map((item, i) => (
             <span
               key={i}
-              className='bg-[var(--primary-light)] text-[var(--primary-mid)] px-2 py-1 rounded-xl text-xs sm:text-sm md:text-base flex items-center font-normal'
+              className='bg-primary-light text-primary-mid px-2 py-1 rounded-xl text-xs sm:text-sm md:text-base flex items-center font-normal'
             >
               {item}
               <button
-                className='ml-2 text-[var(--primary-mid)] hover:text-[var(--primary-main)] focus:outline-none'
+                className='ml-2 text-primary-mid hover:text-primary-main focus:outline-none'
                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
               >
                 &times;

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Container } from '@/components/common/Container';
 import { Input } from '@/components/ui/input';
-import {    
+import {
   Select,
   SelectTrigger,
   SelectValue,
@@ -29,13 +29,13 @@ export default function Hero() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const paramsString = createParamsString({
       location: location.trim(),
       property,
       type: propertyAction,
     });
-    
+
     const url = paramsString ? `/property?${paramsString}` : '/property';
     router.push(url);
   };
@@ -50,28 +50,22 @@ export default function Hero() {
       <div className='bg-white rounded-3xl shadow-lg w-full max-w-[1300px] p-8 md:p-12 flex flex-col gap-8'>
         <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-6'>
           <div>
-            <h1 className='font-bold heading-2 md:heading-1 text-[var(--neutral-text)] mb-2'>
+            <h1 className='font-bold heading-2 md:heading-1 text-neutral-text mb-2'>
               Buy, rent, sell your property easily
             </h1>
-            <p className='text-body text-[#475569]'>
+            <p className='text-body text-neutral-mid'>
               A great platform to buy, sell, or even rent your properties
               without any commissions.
             </p>
           </div>
           <div className='flex gap-10 justify-center md:justify-start'>
             <div className='text-center'>
-              <div className='font-bold text-3xl text-[var(--primary-main)]'>
-                50k+
-              </div>
-              <div className='text-body text-[var(--neutral-mid)]'>Renters</div>
+              <div className='font-bold text-3xl text-primary-main'>50k+</div>
+              <div className='text-body text-neutral-mid'>Renters</div>
             </div>
             <div className='text-center'>
-              <div className='font-bold text-3xl text-[var(--primary-main)]'>
-                10k+
-              </div>
-              <div className='text-body text-[var(--neutral-mid)]'>
-                Properties
-              </div>
+              <div className='font-bold text-3xl text-primary-main'>10k+</div>
+              <div className='text-body text-neutral-mid'>Properties</div>
             </div>
           </div>
         </div>
@@ -86,7 +80,7 @@ export default function Hero() {
                 <SelectItem
                   key={option}
                   value={option}
-                  className='text-body py-3 text-[var(--neutral-text)] text-vase'
+                  className='text-body py-3 text-neutral-text text-vase'
                 >
                   {option}
                 </SelectItem>
@@ -100,8 +94,8 @@ export default function Hero() {
               key={tab}
               className={`pb-2 cursor-pointer ${
                 propertyAction === tab
-                  ? 'border-b-2 border-[var(--primary-main)] text-[var(--primary-main)]'
-                  : 'text-[var(--neutral-text)] border-b-2 border-transparent'
+                  ? 'border-b-2 border-primary-main text-primary-main'
+                  : 'text-neutral-text border-b-2 border-transparent'
               }`}
               onClick={() => setPropertyAction(tab)}
             >
@@ -110,18 +104,21 @@ export default function Hero() {
           ))}
         </div>
         {/* Form */}
-        <form className='flex flex-col gap-3 md:flex-row md:gap-4 md:items-end' onSubmit={handleSubmit}>
+        <form
+          className='flex flex-col gap-3 md:flex-row md:gap-4 md:items-end'
+          onSubmit={handleSubmit}
+        >
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Location</label>
             <div className='relative'>
               <Input
                 type='text'
                 placeholder='Search for Location'
+                className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black  text-neutral-text outline-none border-0 shadow-none'
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className='w-full rounded-full bg-[var(--neutral-light)] px-6 py-6 pr-12 text-body placeholder:text-black  text-[var(--neutral-text)] outline-none border-0 shadow-none'
               />
-              <span className='absolute right-4 top-1/2 -translate-y-1/2 text-[var(--primary-main)]'>
+              <span className='absolute right-4 top-1/2 -translate-y-1/2 text-primary-main'>
                 {/* Search Icon */}
                 <svg
                   width='24'
@@ -139,7 +136,7 @@ export default function Hero() {
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Property</label>
             <Select value={property} onValueChange={setProperty}>
-              <SelectTrigger className='w-full rounded-full text-base bg-[var(--neutral-light)] px-6 py-6 text-left text-body text-[var(--neutral-text)] flex items-center justify-between border-0 shadow-none'>
+              <SelectTrigger className='w-full rounded-full text-base bg-neutral-light px-6 py-6 text-left text-body text-neutral-text flex items-center justify-between border-0 shadow-none'>
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
@@ -147,7 +144,7 @@ export default function Hero() {
                   <SelectItem
                     key={option}
                     value={option}
-                    className='text-body text-base py-3 text-[var(--neutral-text)]'
+                    className='text-body text-base py-3 text-neutral-text'
                   >
                     {option}
                   </SelectItem>

@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import { properties } from '@/app/data';
+import { Slider } from '../ui/slider';
 
 interface PropertySidebarProps {
   onFilterChange: (filters: {
@@ -19,6 +20,7 @@ interface PropertySidebarProps {
     squareFeet: { min: string; max: string };
     features: string[];
   }) => void;
+  initialPropertyType?: string[];
 }
 
 interface Filters {
@@ -31,9 +33,19 @@ interface Filters {
   features: string[];
 }
 
-const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
+function formatPrice(value: string) {
+  const num = Number(value);
+  if (num >= 1000000) return `${num / 1000000}M`;
+  if (num >= 1000) return `${num / 1000}K`;
+  return num;
+}
+
+const PropertySidebar = ({
+  onFilterChange,
+  initialPropertyType = ['Condominium'],
+}: PropertySidebarProps) => {
   const [filters, setFilters] = useState<Filters>({
-    propertyTypes: ['Condominium'],
+    propertyTypes: initialPropertyType,
     bedrooms: [],
     bathrooms: [],
     parking: [],
@@ -52,15 +64,6 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
     });
     return Array.from(featuresSet).sort();
   }, []);
-
-  const handlePropertyTypeChange = (type: string) => {
-    setFilters((prev) => {
-      const updated = prev.propertyTypes.includes(type)
-        ? prev.propertyTypes.filter((t) => t !== type)
-        : [...prev.propertyTypes, type];
-      return { ...prev, propertyTypes: updated };
-    });
-  };
 
   const handleBedroomChange = (bedroom: number | string) => {
     setFilters((prev) => {
@@ -118,7 +121,7 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
 
   const handleResetFilters = () => {
     const reset = {
-      propertyTypes: ['Condominium'],
+      propertyTypes: initialPropertyType,
       bedrooms: [],
       bathrooms: [],
       parking: [],
@@ -135,20 +138,19 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
   );
 
   const showParkingFilters = filters.propertyTypes.some(
-    (type) =>
-      type === 'Warehouse' || type === 'House and Lot' || type === 'Land'
+    (type) => type === 'Warehouse' || type === 'House and Lot'
   );
 
   return (
-    <aside className='max-w-72 pt-5 flex flex-col gap-6 sticky top-0 bottom-10 h-fit'>
-      <div>
+    <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 sm:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
+      {/* <div>
         <div className='font-bold text-xl mb-3'>Property</div>
         <div className='flex flex-col gap-2'>
           {['Condominium', 'Warehouse', 'House and Lot', 'Land'].map((type) => (
             <label key={type} className='flex items-center gap-2'>
               <input
                 type='checkbox'
-                className='accent-[var(--primary-main)]'
+                className='accent-primary-main'
                 checked={filters.propertyTypes.includes(type)}
                 onChange={() => handlePropertyTypeChange(type)}
               />
@@ -156,7 +158,7 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
             </label>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {showBedroomBathroomFilters && (
         <>
@@ -166,10 +168,10 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
               {['Studio', 1, 2, 3, '4+'].map((label) => (
                 <button
                   key={label}
-                  className={`border border-[var(--primary-main)] cursor-pointer text-[var(--primary-main)] rounded-full px-3 py-1 text-sm font-medium ${
+                  className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
                     filters.bedrooms.includes(label)
-                      ? 'bg-[var(--primary-main)] text-white'
-                      : 'bg-white'
+                      ? 'bg-primary-main text-white'
+                      : ''
                   }`}
                   onClick={() => handleBedroomChange(label)}
                 >
@@ -185,10 +187,10 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
               {[1, 2, 3, 4, '5+'].map((label) => (
                 <button
                   key={label}
-                  className={`border border-[var(--primary-main)] cursor-pointer text-[var(--primary-main)] rounded-full px-3 py-1 text-sm font-medium ${
+                  className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
                     filters.bathrooms.includes(label)
-                      ? 'bg-[var(--primary-main)] text-white'
-                      : 'bg-white'
+                      ? 'bg-primary-main text-white'
+                      : ''
                   }`}
                   onClick={() => handleBathroomChange(label)}
                 >
@@ -207,10 +209,10 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
             {[1, 2, 3, '4+'].map((label) => (
               <button
                 key={label}
-                className={`border border-[var(--primary-main)] cursor-pointer text-[var(--primary-main)] rounded-full px-3 py-1 text-sm font-medium ${
+                className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
                   filters.parking.includes(label)
-                    ? 'bg-[var(--primary-main)] text-white'
-                    : 'bg-white'
+                    ? 'bg-primary-main text-white'
+                    : ''
                 }`}
                 onClick={() => handleParkingChange(label)}
               >
@@ -223,21 +225,29 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
 
       <div>
         <div className='font-bold text-xl mb-3'>Price Range</div>
-        <div className='flex flex-col gap-2'>
-          <input
-            type='text'
-            placeholder='Minimum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-[var(--neutral-light)]'
-            value={filters.priceRange.min}
-            onChange={(e) => handlePriceRangeChange('min', e.target.value)}
+        <div className='flex flex-col gap-4'>
+          <Slider
+            min={0}
+            max={10000000}
+            step={500000}
+            value={[
+              filters.priceRange.min ? Number(filters.priceRange.min) : 500000,
+              filters.priceRange.max ? Number(filters.priceRange.max) : 4000000,
+            ]}
+            onValueChange={([min, max]) => {
+              handlePriceRangeChange('min', String(min));
+              handlePriceRangeChange('max', String(max));
+            }}
           />
-          <input
-            type='text'
-            placeholder='Maximum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-[var(--neutral-light)]'
-            value={filters.priceRange.max}
-            onChange={(e) => handlePriceRangeChange('max', e.target.value)}
-          />
+          <div className='flex items-center justify-between mt-2'>
+            <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
+              {formatPrice(filters.priceRange.min || '500000')}
+            </div>
+            <span className='mx-2 text-2xl font-bold'>-</span>
+            <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
+              {formatPrice(filters.priceRange.max || '4000000')}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -247,14 +257,14 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
           <input
             type='text'
             placeholder='Minimum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-[var(--neutral-light)]'
+            className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
             value={filters.squareFeet.min}
             onChange={(e) => handleSquareFeetChange('min', e.target.value)}
           />
           <input
             type='text'
             placeholder='Maximum'
-            className='rounded-full focus:outline-none px-4 py-3 bg-[var(--neutral-light)]'
+            className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
             value={filters.squareFeet.max}
             onChange={(e) => handleSquareFeetChange('max', e.target.value)}
           />
@@ -267,7 +277,7 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
           onValueChange={handleFeatureChange}
           value={filters.features.length > 0 ? filters.features[0] : ''}
         >
-          <SelectTrigger className='rounded-full focus:outline-none text-base px-4 py-6 bg-[var(--neutral-light)] w-full'>
+          <SelectTrigger className='rounded-full focus:outline-none text-base px-4 py-6 bg-neutral-light w-full'>
             <SelectValue placeholder='feature & amenities' />
           </SelectTrigger>
           <SelectContent>
@@ -282,13 +292,13 @@ const PropertySidebar = ({ onFilterChange }: PropertySidebarProps) => {
 
       <div className='flex gap-2'>
         <button
-          className='bg-[var(--primary-main)] text-white rounded-full px-4 py-2 cursor-pointer hover:bg-[var(--primary-main)]/80'
+          className='bg-primary-main text-white rounded-full px-4 py-2 cursor-pointer hover:bg-primary-main/80'
           onClick={handleApplyFilters}
         >
           Apply Filters
         </button>
         <button
-          className='border border-[var(--primary-main)] text-[var(--primary-main)] rounded-full px-4 py-2 cursor-pointer hover:bg-[var(--primary-main)]/10'
+          className='border border-primary-main text-primary-main rounded-full px-4 py-2 cursor-pointer hover:bg-primary-main/10'
           onClick={handleResetFilters}
         >
           Reset Filters

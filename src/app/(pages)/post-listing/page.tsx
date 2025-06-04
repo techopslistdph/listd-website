@@ -1,18 +1,12 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, Suspense } from 'react';
 import { Stepper } from '@/components/listing/form/Stepper';
 import { PropertyDetailsStep } from '@/components/listing/form/PropertyDetailsStep';
 import { TitleDescriptionStep } from '@/components/listing/form/TitleDescriptionStep';
 import { PaymentStep } from '@/components/listing/form/PaymentStep';
 import { ResultsStep } from '@/components/listing/form/ResultsStep';
-import {
-  Step,
-  FormData,
-  initialFormData,
-  PropertyType,
-} from '@/components/listing/types';
+import { Step, FormData, initialFormData } from '@/components/listing/types';
 
 import Image from 'next/image';
 import { backgroundImage } from '@/lib/getBackgroundImage';
@@ -26,11 +20,10 @@ export default function PostListingMultiStep() {
 }
 
 function PostListingContent() {
-  const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>(0);
   const [formData, setFormData] = useState<FormData>({
     ...initialFormData,
-    propertyType: (searchParams.get('type') as PropertyType) || 'Condominium',
+    propertyType: 'condominium',
   });
 
   const handleChange = (field: keyof FormData, value: unknown) => {
@@ -48,21 +41,8 @@ function PostListingContent() {
     setStep(0);
   };
 
-  // Update form data when URL parameter changes
-  useEffect(() => {
-    const type = searchParams.get('type') as PropertyType;
-    if (
-      type &&
-      ['condominium', 'warehouse', 'house and lot', 'land'].includes(
-        type.toLowerCase()
-      )
-    ) {
-      setFormData((prev) => ({ ...prev, propertyType: type }));
-    }
-  }, [searchParams]);
-
   return (
-    <div className='container mx-auto relative mb-10 px-5 lg:px-0'>
+    <div className='container mx-auto relative mb-10 px-5 lg:px-0 max-w-[1300px]'>
       <Image
         src={backgroundImage(formData.propertyType)}
         alt='Background'

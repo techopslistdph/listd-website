@@ -52,11 +52,11 @@ export default function EditProfile() {
             Government ID (Optional)
           </Label>
           <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 lg:gap-5'>
-            <span className='text-xs lg:text-sm text-[var(--neutral-mid)]'>
+            <span className='text-xs lg:text-sm text-neutral-mid'>
               passport.png
             </span>
             <Button
-              className='bg-[var(--neutral-light)] text-[var(--primary-main)] hover:bg-[var(--neutral-light)] cursor-pointer text-sm lg:text-base'
+              className='bg-neutral-light text-primary-main hover:bg-neutral-light cursor-pointer text-sm lg:text-base'
               onClick={() => setShowGovIdFields(true)}
             >
               Replace
@@ -80,10 +80,10 @@ export default function EditProfile() {
                 <SelectItem value='National ID'>National ID</SelectItem>
               </SelectContent>
             </Select>
-            <div className='text-[var(--neutral-mid)] mb-3 lg:mb-4 text-xs lg:text-sm'>
+            <div className='text-neutral-mid mb-3 lg:mb-4 text-xs lg:text-sm'>
               To verify your identity, please upload a clear photo of your
               government ID. Ensure that:
-              <ul className='list-none mt-2 space-y-1 text-[var(--neutral-text)] text-xs lg:text-sm'>
+              <ul className='list-none mt-2 space-y-1 text-neutral-text text-xs lg:text-sm'>
                 <li className='flex gap-1 items-center'>
                   <CheckIcon className='w-3 lg:w-4' /> The passport is valid and
                   not expired.
@@ -114,7 +114,7 @@ export default function EditProfile() {
                         className='w-full h-32 lg:h-40 object-cover rounded-lg border mb-2'
                       />
                       <div className='flex items-center gap-2'>
-                        <span className='flex items-center gap-1 text-[var(--neutral-mid)] text-xs lg:text-sm'>
+                        <span className='flex items-center gap-1 text-neutral-mid text-xs lg:text-sm'>
                           <Image
                             src='/file-icon.png'
                             alt='file'
@@ -126,7 +126,7 @@ export default function EditProfile() {
                         </span>
                         <Button
                           size='sm'
-                          className='bg-[var(--neutral-light)] text-[var(--primary-main)] hover:bg-[var(--neutral-light)] px-2 lg:px-3 py-1 rounded-md cursor-pointer text-xs lg:text-sm'
+                          className='bg-neutral-light text-primary-main hover:bg-neutral-light px-2 lg:px-3 py-1 rounded-md cursor-pointer text-xs lg:text-sm'
                           onClick={() => {
                             setUploadedFile(null);
                             setImagePreview(null);
@@ -145,7 +145,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='Dela Cruz, Maria, Santos'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -155,7 +155,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='P0000000A'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -165,7 +165,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='Filipino'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -175,7 +175,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='16 March 1980'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -185,7 +185,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='Female'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -195,7 +195,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='Manila'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -205,7 +205,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='27 June 2016'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div>
@@ -215,7 +215,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='26 June 2025'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                         <div className='md:col-span-2'>
@@ -225,7 +225,7 @@ export default function EditProfile() {
                           <Input
                             defaultValue='DFA Manila'
                             readOnly
-                            className='bg-[var(--neutral-light)] rounded-full text-sm lg:text-base'
+                            className='bg-neutral-light rounded-full text-sm lg:text-base'
                           />
                         </div>
                       </div>
@@ -233,11 +233,11 @@ export default function EditProfile() {
                         <input
                           type='checkbox'
                           id='gov-id-confirm'
-                          className='accent-[var(--primary-main)] w-4 h-4 lg:w-5 lg:h-5'
+                          className='accent-primary-main w-4 h-4 lg:w-5 lg:h-5'
                         />
                         <label
                           htmlFor='gov-id-confirm'
-                          className='text-[var(--neutral-mid)] text-xs lg:text-sm'
+                          className='text-neutral-mid text-xs lg:text-sm'
                         >
                           I confirm that the information I have provided is true
                           and correct.
@@ -247,7 +247,7 @@ export default function EditProfile() {
                   </div>
                 ) : (
                   <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4'>
-                    <div className='border-2 border-dashed border-[var(--primary-main)] rounded-lg flex flex-col justify-center items-center p-4 lg:p-8 min-h-[150px] lg:min-h-[180px]'>
+                    <div className='border-2 border-dashed border-primary-main rounded-lg flex flex-col justify-center items-center p-4 lg:p-8 min-h-[150px] lg:min-h-[180px]'>
                       <input
                         type='file'
                         accept='image/*'
@@ -272,16 +272,16 @@ export default function EditProfile() {
                         />
                         <span className='font-medium mt-2 text-sm lg:text-base'>
                           Drag your file(s) or{' '}
-                          <span className='text-[var(--primary-main)] underline'>
+                          <span className='text-primary-main underline'>
                             browse
                           </span>
                         </span>
-                        <span className='text-xs text-[var(--neutral-mid)] mt-1'>
+                        <span className='text-xs text-neutral-mid mt-1'>
                           Max 10 MB files are allowed
                         </span>
                       </label>
                     </div>
-                    <div className='border-2 border-dashed border-[var(--primary-main)] rounded-lg flex flex-col justify-center items-center p-4 lg:p-8 min-h-[150px] lg:min-h-[180px]'>
+                    <div className='border-2 border-dashed border-primary-main rounded-lg flex flex-col justify-center items-center p-4 lg:p-8 min-h-[150px] lg:min-h-[180px]'>
                       <div className='mb-2'>
                         <Image
                           src={sampleQr}
@@ -291,7 +291,7 @@ export default function EditProfile() {
                           height={120}
                         />
                       </div>
-                      <span className='text-[var(--neutral-mid)] text-xs lg:text-sm text-center'>
+                      <span className='text-neutral-mid text-xs lg:text-sm text-center'>
                         Scan to upload Government ID via phone
                       </span>
                     </div>
@@ -305,14 +305,14 @@ export default function EditProfile() {
       <div className='mt-6 lg:mt-10 flex flex-col sm:flex-row gap-3 lg:gap-4 justify-end'>
         <Button
           variant='outline'
-          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 border-[var(--primary-main)] text-[var(--primary-main)] hover:bg-white cursor-pointer text-sm lg:text-base'
+          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer text-sm lg:text-base'
           type='button'
         >
           Discard
         </Button>
         <Button
           type='button'
-          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 bg-[var(--primary-main)] text-white hover:bg-[var(--primary-main)] border border-[var(--primary-main)] cursor-pointer text-sm lg:text-base'
+          className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
         >
           Save
         </Button>

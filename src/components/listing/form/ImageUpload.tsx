@@ -10,7 +10,7 @@ export function ImageUpload({ onChange }: ImageUploadProps) {
   return (
     <div className='space-y-4'>
       <Label>Image</Label>
-      <div className='border-2 border-dashed border-[var(--primary-main)] rounded-xl p-10 flex flex-col items-center justify-center mb-6 bg-white'>
+      <div className='border-2 border-dashed border-primary-main rounded-xl p-10 flex flex-col items-center justify-center mb-6 bg-white'>
         <input
           type='file'
           multiple

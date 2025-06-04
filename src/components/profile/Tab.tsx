@@ -14,14 +14,14 @@ import MyFavorites from './MyFavorites';
 export default function Tab() {
   return (
     <div className='w-full'>
-      <div className='mb-5 border-b border-[var(--neutral-mid)]/40 pb-5 flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between'>
+      <div className='mb-5 border-b border-neutral-mid/40 pb-5 flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between'>
         <div className='flex flex-col md:flex-row items-center gap-5'>
           <Image
             src={profileImage}
             alt='profile'
             width={100}
             height={100}
-            className='rounded-full border-[var(--primary-mid)] border-4'
+            className='rounded-full border-primary-mid border-4'
           />
           <div className=' text-center md:text-left'>
             <div className='flex items-center gap-2'>
@@ -31,14 +31,11 @@ export default function Tab() {
             <span className='caption'>Verified</span>
           </div>
         </div>
-        <Button className='h-12 px-10 text-sm font-semibold sm:w-44 md:w-auto mx-auto'>
+        <Button className='h-12 px-10 text-sm font-semibold sm:w-44 md:w-auto'>
           Create listing
         </Button>
       </div>
-      <Tabs
-        defaultValue='profile-information'
-        className='w-full overflow-x-scroll '
-      >
+      <Tabs defaultValue='profile-information' className='w-full  '>
         <TabsList
           className='mb-8'
           style={{ borderColor: 'var(--primary-main)' }}
