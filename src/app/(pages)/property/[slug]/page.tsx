@@ -5,7 +5,7 @@ import { PropertyHeader } from '@/components/listing/PropertyHeader';
 import PropertyFeatures from '@/components/listing/PropertyFeatures';
 import PropertyDescription from '@/components/listing/PropertyDescription';
 import { AgentCard } from '@/components/listing/AgentCard';
-import { PropertyImages } from '@/components/listing/PropertyImages';
+// import { PropertyImages } from '@/components/listing/PropertyImages';
 import PropertyLocation from '@/components/listing/PropertyLocation';
 
 export default async function PropertyPage({
@@ -19,7 +19,7 @@ export default async function PropertyPage({
   if (!property) return notFound();
 
   const {
-    images,
+    // images,
     price,
     title,
     isVerified,
@@ -35,7 +35,7 @@ export default async function PropertyPage({
     <div className='flex flex-col min-h-screen bg-white text-black my-10'>
       <div className='container mx-auto px-5 lg:px-0 max-w-[1300px]'>
         <div>
-          <PropertyImages images={images} title={title} />
+          {/* <PropertyImages images={images} title={title} /> */}
           <div className='grid grid-cols-1 lg:grid-cols-3 md:gap-6 mt-10'>
             <div className='col-span-2'>
               {/* Property Header */}

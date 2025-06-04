@@ -5,7 +5,7 @@ export { queryKeys } from './query-keys'
 
 export * from './hooks/use-listing-type'
 
-export { api, fetchWrapper, FetchWrapper, ApiError } from '@/lib/fetch-wrapper'
+export { api,  ApiError } from '@/lib/fetch-wrapper'
 
 export {
   useQuery,

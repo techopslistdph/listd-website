@@ -14,24 +14,28 @@ import {
 import background from '@/../public/images/hero-background.png';
 import Button from '@/components/common/Button';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useListingTypes } from '@/lib/queries/hooks/use-listing-type';
+import { PropertyType } from '@/lib/queries/server/home/type';
+import { ListingType } from '@/lib/queries/server/home/type';
 
-const LISTING_TYPES = ['Buy', 'Rent', 'Sell', 'Valuation'];
-const PROPERTY_OPTIONS = ['Condominium', 'House and lot', 'Land'];
 
-export default function Hero() {
+export default function Hero({
+  listingTypes,
+  propertyTypes,
+}: {
+  listingTypes: ListingType[];
+  propertyTypes: PropertyType[];
+}) {
   const router = useRouter();
   const { createParamsString } = useUrlParams();
-  const { data: listingTypes, isLoading } = useListingTypes();
-  const [propertyAction, setPropertyAction] = useState(LISTING_TYPES[0]);
-  const [property, setProperty] = useState(PROPERTY_OPTIONS[0]);
+  const [propertyAction, setPropertyAction] = useState(listingTypes[0].id);
+  const [property, setProperty] = useState(propertyTypes[0].name);
   const [location, setLocation] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const paramsString = createParamsString({
-      location: location.trim(),
+      search: location.trim(),
       property,
       type: propertyAction,
     });
@@ -76,30 +80,30 @@ export default function Hero() {
               <SelectValue placeholder='Buy' />
             </SelectTrigger>
             <SelectContent className='rounded-2xl shadow-lg'>
-              {LISTING_TYPES.map((option) => (
+              {listingTypes?.map((option) => (
                 <SelectItem
-                  key={option}
-                  value={option}
+                  key={option.id}
+                  value={option.id}
                   className='text-body py-3 text-neutral-text text-vase'
                 >
-                  {option}
+                  {option.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
-          {LISTING_TYPES.map((tab) => (
+          {listingTypes?.map((tab) => (
             <button
-              key={tab}
+              key={tab.id}
               className={`pb-2 cursor-pointer ${
-                propertyAction === tab
+                propertyAction === tab.id
                   ? 'border-b-2 border-primary-main text-primary-main'
                   : 'text-neutral-text border-b-2 border-transparent'
               }`}
-              onClick={() => setPropertyAction(tab)}
+              onClick={() => setPropertyAction(tab.id)}
             >
-              {tab}
+              {tab.name}
             </button>
           ))}
         </div>
@@ -140,13 +144,13 @@ export default function Hero() {
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
-                {PROPERTY_OPTIONS.map((option) => (
+                {propertyTypes?.map((option) => (
                   <SelectItem
-                    key={option}
-                    value={option}
+                    key={option.id}
+                    value={option.name}
                     className='text-body text-base py-3 text-neutral-text'
                   >
-                    {option}
+                    {option.name}
                   </SelectItem>
                 ))}
               </SelectContent>

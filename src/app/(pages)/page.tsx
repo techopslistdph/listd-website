@@ -9,12 +9,17 @@ import PropertySlider, {
 } from '@/components/home/PropertySlider';
 import Testimonial from '@/components/home/Testimonial';
 import DownloadSection from '@/components/home/DownloadSection';
+import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
 
-export default function page() {
+export default async function page() {
+  const [listingTypes, propertyTypes] = await Promise.all([
+    getListingTypes(),
+    getPropertyTypes()
+  ]);
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        <Hero />
+        <Hero listingTypes={listingTypes} propertyTypes={propertyTypes} />
         <PropertySlider
           propertySliderCards={
             propertySliderCards as unknown as PropertySliderCard[]

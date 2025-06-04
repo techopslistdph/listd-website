@@ -1,4 +1,4 @@
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import pinIcon from '../../../public/images/icons/pin.svg';
 import bedIcon from '../../../public/images/icons/bedroom.svg';
@@ -7,45 +7,18 @@ import areaIcon from '../../../public/images/icons/squaremeter.svg';
 import { PropertyImages } from './PropertyImages';
 import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
-interface Agent {
-  name: string;
-  image: StaticImageData;
-  whatsapp: string;
-  email: string;
-  isVerified: boolean;
-  position: string;
-}
 
-interface PropertyCardProps {
-  images: StaticImageData[];
-  price: string;
-  title: string;
-  location: string;
-  tag: string;
-  description: { [key: string]: string | number | boolean | undefined }[];
-  isVerified: boolean;
-  features: string[];
-  googleMap: string;
-  agent: Agent;
-  slug: string;
-  view?: 'list' | 'map';
-}
+  export default function PropertyCard({
+    propertyDetail,
+    view
+  }: {
+    propertyDetail: PropertyDetail;
+    view?: 'list' | 'map';
+  }) {
+    const { property: { images, listingTitle, listingPrice, address, scrapeContactInfo },id,numberOfBathrooms,numberOfBedrooms,floorArea } = propertyDetail;
 
-export default function PropertyCard({
-  images,
-  price,
-  title,
-  location,
-  description,
-  slug,
-  view = 'list',
-  agent,
-}: PropertyCardProps) {
-  // Extract bedrooms, baths, area, and other info from description
-  const bedrooms = description.find((d) => d.bedrooms !== undefined)?.bedrooms;
-  const baths = description.find((d) => d.baths !== undefined)?.baths;
-  const area = description.find((d) => d.area !== undefined)?.area;
 
   if (view === 'map') {
     // Horizontal card for map view
@@ -133,10 +106,10 @@ export default function PropertyCard({
       // </Link>
       <div className='flex flex-col sm:flex-row bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer max-w-full p-3 gap-4'>
         <div className='flex-shrink-0 rounded-2xl overflow-hidden w-full sm:w-[295px] h-[200px] sm:h-[280px]'>
-          <Link href={`/property/${slug}`}>
+          <Link href={`/property/${id}`}>
             <Image
-              src={images[0]}
-              alt={title}
+              src={images[0].imageUrl}
+              alt={listingTitle}
               width={195}
               height={240}
               className='object-cover w-full h-full'
@@ -159,41 +132,41 @@ export default function PropertyCard({
             </button>
 
             {/* Wrap only the title/content block in the Link */}
-            <Link href={`/property/${slug}`}>
+            <Link href={`/property/${id}`}>
               <div className='text-xl font-extrabold text-primary-main mb-1'>
-                {price}
+                {listingPrice}
               </div>
               <div className='text-lg font-semibold text-black mb-1 truncate'>
-                {title}
+                {listingTitle}
               </div>
               <div className='flex items-center text-gray-400 mb-2 gap-1'>
                 <Image src={pinIcon} alt='pin' />
-                <span className='truncate'>{location}</span>
+                <span className='truncate'>{address}</span>
               </div>
               <div className='flex items-center text-gray-400  gap-2 mb-4 '>
                 <PhoneIcon className='w-4 text-primary-main' />
-                <span className='font-medium'>{agent.name}</span>
-                {agent.isVerified && (
+                <span className='font-medium'>{scrapeContactInfo.agentName}</span>
+                {scrapeContactInfo.agentName && (
                   <Image src={verified} alt='verified' width={16} height={16} />
                 )}
               </div>
               <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2'>
-                {bedrooms !== undefined && (
+                {numberOfBedrooms !== null && (
                   <div className='flex items-center gap-1'>
                     <Image src={bedIcon} alt='bed' />
-                    <span>{bedrooms} Bedroom</span>
+                    <span>{numberOfBedrooms} Bedroom</span>
                   </div>
                 )}
-                {baths !== undefined && (
+                {numberOfBathrooms !== null && (
                   <div className='flex items-center gap-1'>
                     <Image src={bathIcon} alt='bath' />
-                    <span>{baths} Bath</span>
+                    <span>{numberOfBathrooms} Bath</span>
                   </div>
                 )}
-                {area !== undefined && (
+                {floorArea !== null && (
                   <div className='flex items-center gap-1'>
                     <Image src={areaIcon} alt='area' />
-                    <span>{area} sqm</span>
+                    <span>{floorArea} sqm</span>
                   </div>
                 )}
               </div>
@@ -202,20 +175,28 @@ export default function PropertyCard({
 
           {/* Contact buttons OUTSIDE of <Link> */}
           <div className='flex flex-col sm:flex-row gap-3 mt-2'>
-            <a
-              href={`https://wa.me/${agent.whatsapp}`}
-              className='flex-1 py-2 rounded-full border border-primary-main text-sm text-primary-main text-center font-semibold'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Whatsapp
-            </a>
-            <a
-              href={`mailto:${agent.email}`}
-              className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
-            >
-              Direct Message
-            </a>
+                {
+                  scrapeContactInfo.phoneNumber && (
+                    <a
+                      href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                      className='flex-1 py-2 rounded-full border border-primary-main text-sm text-primary-main text-center font-semibold'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      Whatsapp
+                    </a>
+                  )
+                }
+                {
+                  scrapeContactInfo.email && (
+                    <a
+                      href={`mailto:${scrapeContactInfo.email}`}
+                      className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                    >
+                      Direct Message
+                    </a>
+                  )
+                }
           </div>
         </div>
       </div>
@@ -293,47 +274,47 @@ export default function PropertyCard({
     <div className='block'>
       <div className='mx-auto rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer bg-white relative'>
         <div className='relative'>
-          <PropertyImages images={images} title={title} cardMode />
+          <PropertyImages images={images} title={listingTitle} cardMode />
         </div>
         <div className='p-4'>
           {/* Only wrap the title and property info in the Link */}
-          <Link href={`/property/${slug}`}>
+          <Link href={`/property/${id}`}>
             <div className='flex items-center justify-between mb-1'>
               <div className='w-3/4 text-lg font-semibold text-black truncate'>
-                {title}
+                {listingTitle}
               </div>
               <div className='font-extrabold text-lg text-primary-main'>
-                {price}
+                {listingPrice}
               </div>
             </div>
             <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>
               <Image src={pinIcon} alt='pin' />
-              <span className='truncate'>{location}</span>
+              <span className='truncate'>{address}</span>
             </div>
             <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
               <PhoneIcon className='w-4 text-primary-main' />
-              <span className='font-medium'>{agent.name}</span>
-              {agent.isVerified && (
+              <span className='font-medium'>{scrapeContactInfo.agentName}</span>
+              {scrapeContactInfo.agentName && (
                 <Image src={verified} alt='verified' width={16} height={16} />
               )}
             </div>
             <div className='flex text-gray-400 text-base gap-5 mb-2'>
-              {bedrooms !== undefined && (
+              {numberOfBedrooms !== null && (
                 <div className='flex flex-col gap-1'>
                   <Image src={bedIcon} alt='bed' />
-                  <span>{bedrooms} Bedroom</span>
+                  <span>{numberOfBedrooms} Bedroom</span>
                 </div>
               )}
-              {baths !== undefined && (
+              {numberOfBathrooms !== null && (
                 <div className='flex flex-col gap-1'>
                   <Image src={bathIcon} alt='bath' />
-                  <span>{baths} Bath</span>
+                  <span>{numberOfBathrooms} Bath</span>
                 </div>
               )}
-              {area !== undefined && (
+              {floorArea !== null && (
                 <div className='flex flex-col gap-1'>
                   <Image src={areaIcon} alt='area' />
-                  <span>{area} sqm</span>
+                  <span>{floorArea} sqm</span>
                 </div>
               )}
             </div>
@@ -341,20 +322,26 @@ export default function PropertyCard({
 
           {/* Contact buttons should be outside the Link */}
           <div className='flex gap-3 mt-3'>
-            <a
-              href={`https://wa.me/${agent.whatsapp}`}
-              className='flex-1 py-2 flex items-center justify-center text-sm rounded-full border border-primary-main text-primary-main font-semibold'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              Whatsapp
-            </a>
-            <a
-              href={`mailto:${agent.email}`}
-              className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
-            >
-              Direct Message
-            </a>
+              {
+                scrapeContactInfo.phoneNumber && (
+                  <a
+                    href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                    className='flex-1 py-2 flex items-center justify-center text-sm rounded-full border border-primary-main text-primary-main font-semibold'
+                  >
+                    Whatsapp
+                  </a>
+                )
+              }
+              {
+                scrapeContactInfo.email && (
+                  <a
+                    href={`mailto:${scrapeContactInfo.email}`}
+                    className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
+                  >
+                    Direct Message
+                  </a>
+                )
+              }
           </div>
         </div>
       </div>

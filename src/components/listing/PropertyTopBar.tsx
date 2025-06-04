@@ -1,25 +1,65 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { View } from '@/components/property/PropertyPage';
+import { ListingType } from '@/lib/queries/server/home/type';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { useUrlParams } from '@/hooks/useUrlParams';
+import { useDebounce } from '@/hooks/useDebounce';
+
+
 
 interface PropertyTopBarProps {
-  onViewChange: (view: 'list' | 'map') => void;
+  onViewChange: (view: View) => void;
   isSidebarOpen: boolean;
   onFilterClick: () => void;
+  listingTypes: ListingType[];
 }
+
+
+
 
 export default function PropertyTopBar({
   onViewChange,
   onFilterClick,
   isSidebarOpen,
+  listingTypes,
 }: PropertyTopBarProps) {
-  const [buyOrRent, setBuyOrRent] = useState<'buy' | 'rent'>('buy');
-  const [view, setView] = useState<'list' | 'map'>('list');
+  const router = useRouter();
+  const params = useSearchParams()
+  const {  updateParams } = useUrlParams();
+  const typeId = params.get('type')
+  const [view, setView] = useState<View>('list');
+  const activeListingType = listingTypes?.find(type => type.id === typeId)
+  const [search, setSearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search, 300);
 
-  const handleViewChange = (newView: 'list' | 'map') => {
+  useEffect(() => {
+    const paramsString = updateParams({
+      search: debouncedSearch,
+    });
+    router.push(`/property?${paramsString}`);
+  }, [debouncedSearch, updateParams, router]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+  
+
+  const handleViewChange = (newView: View) => {
     setView(newView);
     onViewChange(newView);
   };
+
+  const handleBuyOrRentChange = (listingTypeId: ListingType['id']) => {
+    const paramsString = updateParams({
+      type: listingTypeId,
+    });
+    router.push(`/property?${paramsString}`); 
+
+  };
+
 
   return (
     <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full text-base relative'>
@@ -108,6 +148,8 @@ export default function PropertyTopBar({
           type='text'
           placeholder='Search properties...'
           className='flex-1 bg-transparent outline-none text-neutral-text placeholder:text-neutral-text text-base font-light'
+          value={search}
+          onChange={handleSearchChange}
         />
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -126,26 +168,24 @@ export default function PropertyTopBar({
       </div>
       {/* Buy/Rent Toggle */}
       <div className='flex items-center bg-neutral-light rounded-2xl px-2 py-2 gap-1 w-full sm:w-auto sm:min-w-[180px] justify-center'>
-        <button
-          className={`px-6 sm:px-8 py-3 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none ${
-            buyOrRent === 'buy'
-              ? 'bg-primary-main text-white '
-              : 'bg-transparent text-black'
-          }`}
-          onClick={() => setBuyOrRent('buy')}
-        >
-          Buy
-        </button>
-        <button
-          className={`px-6 sm:px-8 py-3 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none ${
-            buyOrRent === 'rent'
-              ? 'bg-primary-main text-white'
-              : 'bg-transparent text-black'
-          }`}
-          onClick={() => setBuyOrRent('rent')}
-        >
-          Rent
-        </button>
+        {listingTypes.map((option) => {
+          const isActive = activeListingType?.name === option.name;
+console.log({isActive})          
+          return (
+            <button
+              key={option.id}
+              className={cn(
+                'px-6 sm:px-8 py-3 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none',
+                isActive
+                  ? 'bg-primary-main text-white'
+                  : 'bg-transparent text-black'
+              )}
+              onClick={() => handleBuyOrRentChange(option.id)}
+            >
+              {option.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

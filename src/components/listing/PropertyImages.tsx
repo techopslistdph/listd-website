@@ -12,9 +12,10 @@ import {
 // import { Button } from '@/components/ui/button'; // Uncomment if you have a Button component
 import { cn } from '@/lib/utils';
 import gridIcon from '@/../public/images/photos.svg';
+import {  PropertyImage } from '@/lib/queries/server/propety/type';
 
 interface PropertyImagesProps {
-  images: StaticImageData[];
+  images: PropertyImage[];
   title: string;
   cardMode?: boolean;
 }
@@ -65,7 +66,7 @@ export function PropertyImages({
     return (
       <div className='relative w-full h-[350px] rounded-2xl overflow-hidden'>
         <Image
-          src={images[currentIndex]}
+          src={images[currentIndex].imageUrl}
           alt={title}
           fill
           className='object-cover w-full h-full'
@@ -150,7 +151,7 @@ export function PropertyImages({
                 >
                   <div className='relative h-full w-full'>
                     <Image
-                      src={image}
+                      src={image.imageUrl}
                       alt={title}
                       fill
                       className='object-contain'
@@ -176,7 +177,7 @@ export function PropertyImages({
                   )}
                 >
                   <Image
-                    src={image}
+                    src={image.imageUrl}
                     alt={title}
                     fill
                     className='object-cover'
@@ -222,7 +223,7 @@ export function PropertyImages({
           onClick={() => openGallery(0)}
         >
           <Image
-            src={mainImage}
+            src={mainImage.imageUrl}
             alt={title}
             fill
             className='object-cover transition duration-300 group-hover:scale-105'
@@ -244,7 +245,7 @@ export function PropertyImages({
             onClick={() => openGallery(index + 1)}
           >
             <Image
-              src={image}
+              src={image.imageUrl}
               alt={title}
               fill
               className={cn(
