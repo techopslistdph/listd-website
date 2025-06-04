@@ -12,6 +12,7 @@ import { Slider } from '../../ui/slider';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useRouter } from 'next/navigation';
 import {
+  BATHROOM_OPTIONS,
   BEDROOM_OPTIONS,
   PROPERTY_TYPES_WITH_BEDROOM_FILTER,
   PROPERTY_TYPES_WITH_PARKING_FILTER,
@@ -29,6 +30,7 @@ const PropertySidebar = () => {
   const propertyType = getParam('property');
   const router = useRouter();
   const activeBedrooms = getParam('minBedrooms') || getParam('maxBedrooms');
+  const activeBathrooms = getParam('minBathrooms') || getParam('maxBathrooms');
   const showBedroomBathroomFilters =
     PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
   const showParkingFilters = PROPERTY_TYPES_WITH_PARKING_FILTER.includes(
@@ -47,10 +49,8 @@ const PropertySidebar = () => {
   }, []);
 
   const handleBedroomChange = (bedrooms: string) => {
-    /**
-     * If the user clicks on 4+ bedrooms, we need to delete the maxBedrooms parameter
-     */
-    if (bedrooms === BEDROOM_OPTIONS[4].value) {
+
+    if (bedrooms === BEDROOM_OPTIONS[BEDROOM_OPTIONS.length - 1].value) {
       const params = updateParams({
         maxBedrooms: null,
         minBedrooms: bedrooms,
@@ -66,8 +66,21 @@ const PropertySidebar = () => {
     router.push(`/property?${params}`);
   };
 
-  const handleBathroomChange = (bathroom: number | string) => {
-    console.log({ bathroom });
+  const handleBathroomChange = (bathroom: string) => {
+    if (bathroom === BATHROOM_OPTIONS[BATHROOM_OPTIONS.length - 1].value) {
+      const params = updateParams({
+        maxBathrooms: null,
+        minBathrooms: bathroom,
+      });
+      router.push(`/property?${params}`);
+      return;
+    }
+
+    const params = updateParams({
+      minBathrooms: bathroom,
+      maxBathrooms: bathroom,
+    });
+    router.push(`/property?${params}`);
   };
 
   const handleParkingChange = (parking: number | string) => {
@@ -137,15 +150,17 @@ const PropertySidebar = () => {
           <div>
             <div className='font-bold text-xl mb-3'>Bathrooms</div>
             <div className='flex gap-2 flex-wrap'>
-              {[1, 2, 3, 4, '5+'].map(label => (
+              {BATHROOM_OPTIONS.map(option => (
                 <button
-                  key={label}
+                  key={option.value}
                   className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                    true ? 'bg-primary-main text-white' : ''
+                    activeBathrooms === option.value
+                      ? 'bg-primary-main text-white'
+                      : ''
                   }`}
-                  onClick={() => handleBathroomChange(label)}
+                  onClick={() => handleBathroomChange(option.value)}
                 >
-                  {label}
+                  {option.label}
                 </button>
               ))}
             </div>

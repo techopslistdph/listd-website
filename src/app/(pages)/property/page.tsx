@@ -14,6 +14,8 @@ export default async function Page({
     search?: string;
     maxBedrooms?: string;
     minBedrooms?: string;
+    minBathrooms?: string;
+    maxBathrooms?: string;
   }>;
 }) {
   const searchParams = await searchParamsPromise;
@@ -24,6 +26,8 @@ export default async function Page({
       search: searchParams.search,
       maxBedrooms: searchParams.maxBedrooms,
       minBedrooms: searchParams.minBedrooms,
+      minBathrooms: searchParams.minBathrooms,
+      maxBathrooms: searchParams.maxBathrooms,
     }),
     getListingTypes(),
   ]);
