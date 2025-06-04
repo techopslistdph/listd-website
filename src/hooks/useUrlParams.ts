@@ -59,9 +59,21 @@ export function useUrlParams() {
   }, []);
 
   const updateParams = useCallback((newParams: ParamsObject): string => {
+    console.log({newParams})
     const currentParams = getAllParams();
     const mergedParams = { ...currentParams, ...newParams };
     return createParamsString(mergedParams);
+  }, [getAllParams, createParamsString]);
+
+  const deleteParams = useCallback((keys: string[]): string => {
+    const currentParams = getAllParams();
+    const remainingParams = { ...currentParams };
+    
+    keys.forEach(key => {
+      delete remainingParams[key];
+    });
+    
+    return createParamsString(remainingParams);
   }, [getAllParams, createParamsString]);
 
   return {
@@ -69,5 +81,6 @@ export function useUrlParams() {
     getAllParams,
     createParamsString,
     updateParams,
+    deleteParams,
   };
 } 

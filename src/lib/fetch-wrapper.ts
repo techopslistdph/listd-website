@@ -45,9 +45,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
   } catch {
     data = null
   }
-
-  console.log('===================', response)
-
   if (!response.ok) {
     const errorData = data as { message?: string; error?: string }
     const errorMessage = errorData?.message || errorData?.error || response.statusText || 'Request failed'

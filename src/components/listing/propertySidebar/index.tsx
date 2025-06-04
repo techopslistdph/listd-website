@@ -1,37 +1,18 @@
 'use client';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, } from 'react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '../../ui/select';
 import { properties } from '@/app/data';
-import { Slider } from '../ui/slider';
+import { Slider } from '../../ui/slider';
+import { useUrlParams } from '@/hooks/useUrlParams';
+import { useRouter } from 'next/navigation';
+import { BEDROOM_OPTIONS, PROPERTY_TYPES_WITH_BEDROOM_FILTER, PROPERTY_TYPES_WITH_PARKING_FILTER } from './types';
 
-interface PropertySidebarProps {
-  onFilterChange: (filters: {
-    propertyTypes: string[];
-    bedrooms: (number | string)[];
-    bathrooms: (number | string)[];
-    parking: (number | string)[];
-    priceRange: { min: string; max: string };
-    squareFeet: { min: string; max: string };
-    features: string[];
-  }) => void;
-  initialPropertyType?: string[];
-}
-
-interface Filters {
-  propertyTypes: string[];
-  bedrooms: (number | string)[];
-  bathrooms: (number | string)[];
-  parking: (number | string)[];
-  priceRange: { min: string; max: string };
-  squareFeet: { min: string; max: string };
-  features: string[];
-}
 
 function formatPrice(value: string) {
   const num = Number(value);
@@ -40,19 +21,15 @@ function formatPrice(value: string) {
   return num;
 }
 
-const PropertySidebar = ({
-  onFilterChange,
-  initialPropertyType = ['Condominium'],
-}: PropertySidebarProps) => {
-  const [filters, setFilters] = useState<Filters>({
-    propertyTypes: initialPropertyType,
-    bedrooms: [],
-    bathrooms: [],
-    parking: [],
-    priceRange: { min: '', max: '' },
-    squareFeet: { min: '', max: '' },
-    features: [],
-  });
+
+
+const PropertySidebar = () => {
+  const { getParam, updateParams } = useUrlParams();
+  const propertyType = getParam('property');
+  const router = useRouter();
+  const activeBedrooms = getParam('minBedrooms') || getParam('maxBedrooms');
+  const showBedroomBathroomFilters = PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
+  const showParkingFilters = PROPERTY_TYPES_WITH_PARKING_FILTER.includes(propertyType || '');
 
   // Get unique features from all properties
   const uniqueFeatures = useMemo(() => {
@@ -65,81 +42,59 @@ const PropertySidebar = ({
     return Array.from(featuresSet).sort();
   }, []);
 
-  const handleBedroomChange = (bedroom: number | string) => {
-    setFilters((prev) => {
-      const updated = prev.bedrooms.includes(bedroom)
-        ? prev.bedrooms.filter((b) => b !== bedroom)
-        : [...prev.bedrooms, bedroom];
-      return { ...prev, bedrooms: updated };
+  const handleBedroomChange = (bedrooms: string) => {
+
+    /**
+     * If the user clicks on 4+ bedrooms, we need to delete the maxBedrooms parameter
+     */
+    if(bedrooms === BEDROOM_OPTIONS[4].value) {
+      const params = updateParams({
+        maxBedrooms: null,
+        minBedrooms: bedrooms,
+      });
+      router.push(`/property?${params}`);
+      return;
+    }
+
+    const params = updateParams({
+      minBedrooms: bedrooms,
+      maxBedrooms: bedrooms,
     });
+    router.push(`/property?${params}`);
+
   };
 
+
+
   const handleBathroomChange = (bathroom: number | string) => {
-    setFilters((prev) => {
-      const updated = prev.bathrooms.includes(bathroom)
-        ? prev.bathrooms.filter((b) => b !== bathroom)
-        : [...prev.bathrooms, bathroom];
-      return { ...prev, bathrooms: updated };
-    });
+    console.log({bathroom})
   };
 
   const handleParkingChange = (parking: number | string) => {
-    setFilters((prev) => {
-      const updated = prev.parking.includes(parking)
-        ? prev.parking.filter((p) => p !== parking)
-        : [...prev.parking, parking];
-      return { ...prev, parking: updated };
-    });
+    console.log({parking})
   };
 
   const handlePriceRangeChange = (type: 'min' | 'max', value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      priceRange: { ...prev.priceRange, [type]: value },
-    }));
+    console.log({type, value})
   };
 
   const handleSquareFeetChange = (type: 'min' | 'max', value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      squareFeet: { ...prev.squareFeet, [type]: value },
-    }));
+    console.log({type, value})
   };
 
   const handleFeatureChange = (feature: string) => {
-    setFilters((prev) => {
-      const updated = prev.features.includes(feature)
-        ? prev.features.filter((f) => f !== feature)
-        : [...prev.features, feature];
-      return { ...prev, features: updated };
-    });
+    console.log({feature})
   };
 
   const handleApplyFilters = () => {
-    onFilterChange(filters);
+    console.log('apply filters')
   };
 
   const handleResetFilters = () => {
-    const reset = {
-      propertyTypes: initialPropertyType,
-      bedrooms: [],
-      bathrooms: [],
-      parking: [],
-      priceRange: { min: '', max: '' },
-      squareFeet: { min: '', max: '' },
-      features: [],
-    };
-    setFilters(reset);
-    onFilterChange(reset);
+    console.log('reset filters')
   };
 
-  const showBedroomBathroomFilters = filters.propertyTypes.some(
-    (type) => type === 'Condominium' || type === 'House and Lot'
-  );
 
-  const showParkingFilters = filters.propertyTypes.some(
-    (type) => type === 'Warehouse' || type === 'House and Lot'
-  );
 
   return (
     <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 sm:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
@@ -160,47 +115,51 @@ const PropertySidebar = ({
         </div>
       </div> */}
 
-      {showBedroomBathroomFilters && (
-        <>
-          <div>
+      {
+        showBedroomBathroomFilters && (
+          <>
+                    <div>
             <div className='font-bold text-xl mb-3'>Bedrooms</div>
             <div className='flex gap-2 flex-wrap'>
-              {['Studio', 1, 2, 3, '4+'].map((label) => (
+              {BEDROOM_OPTIONS.map((option) => (
                 <button
-                  key={label}
+                  key={option.value}
                   className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                    filters.bedrooms.includes(label)
+                 activeBedrooms === option.value
                       ? 'bg-primary-main text-white'
                       : ''
                   }`}
-                  onClick={() => handleBedroomChange(label)}
+                  onClick={() => handleBedroomChange(option.value)}
                 >
-                  {label}
+                  {option.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <div>
-            <div className='font-bold text-xl mb-3'>Bathrooms</div>
-            <div className='flex gap-2 flex-wrap'>
-              {[1, 2, 3, 4, '5+'].map((label) => (
-                <button
-                  key={label}
-                  className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                    filters.bathrooms.includes(label)
-                      ? 'bg-primary-main text-white'
-                      : ''
-                  }`}
-                  onClick={() => handleBathroomChange(label)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+
+<div>
+<div className='font-bold text-xl mb-3'>Bathrooms</div>
+<div className='flex gap-2 flex-wrap'>
+  {[1, 2, 3, 4, '5+'].map((label) => (
+    <button
+      key={label}
+      className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
+        true
+          ? 'bg-primary-main text-white'
+          : ''
+      }`}
+      onClick={() => handleBathroomChange(label)}
+    >
+      {label}
+    </button> 
+  ))}
+</div>
+</div></>
+        )
+      }
+
+
 
       {showParkingFilters && (
         <div>
@@ -210,7 +169,7 @@ const PropertySidebar = ({
               <button
                 key={label}
                 className={`border border-primary-main cursor-pointer text-primary-main rounded-full px-3 py-1 text-sm font-medium ${
-                  filters.parking.includes(label)
+                true
                     ? 'bg-primary-main text-white'
                     : ''
                 }`}
@@ -231,8 +190,8 @@ const PropertySidebar = ({
             max={10000000}
             step={500000}
             value={[
-              filters.priceRange.min ? Number(filters.priceRange.min) : 500000,
-              filters.priceRange.max ? Number(filters.priceRange.max) : 4000000,
+              500000,
+              4000000,
             ]}
             onValueChange={([min, max]) => {
               handlePriceRangeChange('min', String(min));
@@ -241,31 +200,31 @@ const PropertySidebar = ({
           />
           <div className='flex items-center justify-between mt-2'>
             <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
-              {formatPrice(filters.priceRange.min || '500000')}
+              {formatPrice('500000')}
             </div>
             <span className='mx-2 text-2xl font-bold'>-</span>
             <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
-              {formatPrice(filters.priceRange.max || '4000000')}
+              {formatPrice('4000000')}
             </div>
           </div>
         </div>
       </div>
 
       <div>
-        <div className='font-bold text-xl mb-3'>Square Feet</div>
+        <div className='font-bold text-xl mb-3'>Square Meter</div>
         <div className='flex flex-col gap-2'>
           <input
             type='text'
             placeholder='Minimum'
             className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
-            value={filters.squareFeet.min}
+            value={'500000'}
             onChange={(e) => handleSquareFeetChange('min', e.target.value)}
           />
           <input
             type='text'
             placeholder='Maximum'
             className='rounded-full focus:outline-none px-4 py-3 bg-neutral-light'
-            value={filters.squareFeet.max}
+            value={'4000000'}
             onChange={(e) => handleSquareFeetChange('max', e.target.value)}
           />
         </div>
@@ -275,7 +234,8 @@ const PropertySidebar = ({
         <div className='font-bold text-xl mb-3'>Features & Amenities</div>
         <Select
           onValueChange={handleFeatureChange}
-          value={filters.features.length > 0 ? filters.features[0] : ''}
+          // Todo: fetch features from server
+          value={ ''}
         >
           <SelectTrigger className='rounded-full focus:outline-none text-base px-4 py-6 bg-neutral-light w-full'>
             <SelectValue placeholder='feature & amenities' />

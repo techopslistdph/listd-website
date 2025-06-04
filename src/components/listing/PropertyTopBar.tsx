@@ -168,9 +168,8 @@ export default function PropertyTopBar({
       </div>
       {/* Buy/Rent Toggle */}
       <div className='flex items-center bg-neutral-light rounded-2xl px-2 py-2 gap-1 w-full sm:w-auto sm:min-w-[180px] justify-center'>
-        {listingTypes.map((option) => {
+        {listingTypes?.map((option) => {
           const isActive = activeListingType?.name === option.name;
-console.log({isActive})          
           return (
             <button
               key={option.id}

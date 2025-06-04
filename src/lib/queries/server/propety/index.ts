@@ -8,6 +8,7 @@ import { API_ENDPOINTS } from "../api-endpoints";
 
 const getCondominiums = async (queryParams: string) => {
     const response = await api.get<PropertyListResponse | ErrorResponse>(`${API_ENDPOINTS.condominium.list}?${queryParams}`);
+    console.log({url:`${API_ENDPOINTS.condominium.list}?${queryParams}`})
     if ('error' in response) {
       throw new Error(response.error.message);
     }
@@ -52,10 +53,14 @@ export const getProperties = async ({
     property,
     type,
     search,
+    maxBedrooms,
+    minBedrooms,
 }: {
   property: keyof typeof PROPERTY_TYPES_MAPPING;
   type: string;
   search?: string;
+  maxBedrooms?: string;
+  minBedrooms?: string;
 }) => {
     const fetchProperties = PROPERTY_TYPES_MAPPING[property];
     const queryParams = new URLSearchParams();
@@ -65,6 +70,15 @@ export const getProperties = async ({
     if (type) {
         queryParams.append('type', type);
     }
+
+    if(maxBedrooms) {
+        queryParams.append('maxBedrooms', maxBedrooms);
+    }
+
+    if(minBedrooms) {
+        queryParams.append('minBedrooms', minBedrooms);
+    }
+
     const response = await fetchProperties(queryParams.toString());
     return response.data;
 };

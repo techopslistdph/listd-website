@@ -11,6 +11,8 @@ export default async function Page({
     property: keyof typeof PROPERTY_TYPES_MAPPING;
     type: string;
     search?: string;
+    maxBedrooms?: string;
+    minBedrooms?: string;
   }>;
 }) {
   const searchParams = await searchParamsPromise;
@@ -19,6 +21,8 @@ export default async function Page({
       property: searchParams.property,
       type: searchParams.type,
       search: searchParams.search,
+      maxBedrooms: searchParams.maxBedrooms,
+      minBedrooms: searchParams.minBedrooms,
     }),
     getListingTypes()
   ]);

@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
+import PropertySidebar from '../listing/propertySidebar';
 
  export type View = 'list' | 'map';
 
@@ -30,12 +31,10 @@ export function PropertyPage({
           onFilterClick={() => setSidebarOpen((v) => !v)}
         />
       </div>
-      {/* {sidebarOpen && (
+      {sidebarOpen && (
         <PropertySidebar
-          onFilterChange={handleFilterChange}
-          initialPropertyType={initialPropertyType}
         />
-      )} */}
+      )}
       {/* Main Content */}
       <main className='flex-1'>
         <div className='hidden sm:block mb-5'>
