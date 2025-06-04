@@ -5,30 +5,26 @@ import {
   PROPERTY_TYPES_MAPPING,
 } from '@/lib/queries/server/propety';
 
+type SearchParams = {
+  property: keyof typeof PROPERTY_TYPES_MAPPING;
+  type: string;
+  search?: string;
+  maxBedrooms?: string;
+  minBedrooms?: string;
+  minBathrooms?: string;
+  maxBathrooms?: string; 
+  minPrice?: string;
+  maxPrice?: string;
+}
+
 export default async function Page({
   searchParams: searchParamsPromise,
 }: {
-  searchParams: Promise<{
-    property: keyof typeof PROPERTY_TYPES_MAPPING;
-    type: string;
-    search?: string;
-    maxBedrooms?: string;
-    minBedrooms?: string;
-    minBathrooms?: string;
-    maxBathrooms?: string;
-  }>;
+  searchParams: Promise<SearchParams>;
 }) {
   const searchParams = await searchParamsPromise;
   const [properties, listingTypes] = await Promise.all([
-    getProperties({
-      property: searchParams.property,
-      type: searchParams.type,
-      search: searchParams.search,
-      maxBedrooms: searchParams.maxBedrooms,
-      minBedrooms: searchParams.minBedrooms,
-      minBathrooms: searchParams.minBathrooms,
-      maxBathrooms: searchParams.maxBathrooms,
-    }),
+    getProperties(searchParams),
     getListingTypes(),
   ]);
 

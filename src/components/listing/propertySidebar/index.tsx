@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../ui/select';
+} from '@/components/ui/select';
 import { properties } from '@/app/data';
 import { Slider } from '../../ui/slider';
 import { useUrlParams } from '@/hooks/useUrlParams';
@@ -26,7 +26,7 @@ function formatPrice(value: string) {
 }
 
 const PropertySidebar = () => {
-  const { getParam, updateParams } = useUrlParams();
+  const { getParam, updateParams, deleteParams } = useUrlParams();
   const propertyType = getParam('property');
   const router = useRouter();
   const activeBedrooms = getParam('minBedrooms') || getParam('maxBedrooms');
@@ -37,7 +37,6 @@ const PropertySidebar = () => {
     propertyType || ''
   );
 
-  // Get unique features from all properties
   const uniqueFeatures = useMemo(() => {
     const featuresSet = new Set<string>();
     properties.forEach(property => {
@@ -104,7 +103,8 @@ const PropertySidebar = () => {
   };
 
   const handleResetFilters = () => {
-    console.log('reset filters');
+    const params = deleteParams(['minBedrooms', 'maxBedrooms', 'minBathrooms', 'maxBathrooms']);
+    router.push(`/property?${params}`);
   };
 
   return (

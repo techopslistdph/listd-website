@@ -53,12 +53,7 @@ export const PROPERTY_TYPES_MAPPING = {
 
 export const getProperties = async ({
   property,
-  type,
-  search,
-  maxBedrooms,
-  minBedrooms,
-  minBathrooms,
-  maxBathrooms,
+  ...rest
 }: {
   property: keyof typeof PROPERTY_TYPES_MAPPING;
   type: string;
@@ -67,31 +62,17 @@ export const getProperties = async ({
   minBedrooms?: string;
   minBathrooms?: string;
   maxBathrooms?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }) => {
   const fetchProperties = PROPERTY_TYPES_MAPPING[property];
+  
   const queryParams = new URLSearchParams();
-  if (search) {
-    queryParams.append('search', search);
-  }
-  if (type) {
-    queryParams.append('type', type);
-  }
-
-  if (maxBedrooms) {
-    queryParams.append('maxBedrooms', maxBedrooms);
-  }
-
-  if (minBedrooms) {
-    queryParams.append('minBedrooms', minBedrooms);
-  }
-
-  if (minBathrooms) {
-    queryParams.append('minBathrooms', minBathrooms);
-  }
-
-  if (maxBathrooms) {
-    queryParams.append('maxBathrooms', maxBathrooms);
-  }
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value !== undefined) {
+      queryParams.append(key, value);
+    }
+  });
 
   const response = await fetchProperties(queryParams.toString());
   return response.data;
