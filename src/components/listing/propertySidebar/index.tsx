@@ -2,7 +2,7 @@
 import React from 'react';
 
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 import {
   BATHROOM_OPTIONS,
   BEDROOM_OPTIONS,
@@ -95,12 +95,14 @@ const PropertySidebar = () => {
       {showBedroomBathroomFilters && (
         <>
           <NumberFilter
+            label='Bedrooms'
             options={BEDROOM_OPTIONS}
             activeValue={activeBedrooms || ''}
             onChange={handleBedroomChange}
           />
 
           <NumberFilter
+            label='Bathrooms'
             options={BATHROOM_OPTIONS}
             activeValue={activeBathrooms || ''}
             onChange={handleBathroomChange}
@@ -110,6 +112,7 @@ const PropertySidebar = () => {
 
       {showParkingFilters && (
         <NumberFilter
+          label='Parking'
           options={PARKING_OPTIONS}
           activeValue={''}
           onChange={handleParkingChange}

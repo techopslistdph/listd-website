@@ -1,10 +1,10 @@
 import { useDebounce } from '@/hooks/useDebounce';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useState } from 'react';
 
 export const InputFilter = () => {
-  const router = useRouter();
+  const {push} = useRouter();
   const { getParam, updateParams } = useUrlParams();
 
   const minFloorArea = getParam('minFloorArea');
@@ -30,7 +30,7 @@ export const InputFilter = () => {
         minFloorArea: debouncedFloorAreaMin || null,
         maxFloorArea: debouncedFloorAreaMax || null,
       });
-      router.push(`/property?${params}`);
+      push(`/property?${params}`);
     }
   }, [
     debouncedFloorAreaMin,
@@ -38,7 +38,7 @@ export const InputFilter = () => {
     minFloorArea,
     maxFloorArea,
     updateParams,
-    router,
+    push,
   ]);
 
   const handleSquareFeetChange = (type: 'min' | 'max', value: string) => {

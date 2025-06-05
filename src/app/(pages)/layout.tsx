@@ -5,7 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { QueryProvider } from '@/lib/queries';
 import Main from './main';
 import { Toaster } from 'sonner';
-import ProgressBarProviders from '@/components/providers/ProgressBarProvider';
+import NextTopLoader from 'nextjs-toploader';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -27,12 +27,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang='en'>
         <body className={`${poppins.variable} antialiased`}>
+        <NextTopLoader  color='#33239f' height={2} showSpinner={false} />
           <QueryProvider>
             <Toaster position='top-right' />
-              <ProgressBarProviders>
               <Main>{children}</Main>
-            </ProgressBarProviders>
-          </QueryProvider>
+            </QueryProvider>
+          
         </body>
       </html>
     </ClerkProvider>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { View } from '@/components/property/PropertyPage';
 import { ListingType } from '@/lib/queries/server/home/type';
 import {  useSearchParams } from 'next/navigation';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 
 import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
@@ -23,7 +23,7 @@ export default function PropertyTopBar({
   isSidebarOpen,
   listingTypes,
 }: PropertyTopBarProps) {
-  const router = useRouter();
+  const {push} = useRouter();
   const params = useSearchParams();
   const { updateParams, getParam } = useUrlParams();
   const typeId = params.get('type');
@@ -33,7 +33,6 @@ export default function PropertyTopBar({
   const [search, setSearch] = useState<string>(searchQuery || '');
   const debouncedSearch = useDebounce(search, 300);
 
-
   
 
 
@@ -41,8 +40,8 @@ export default function PropertyTopBar({
     const paramsString = updateParams({
       search: debouncedSearch,
     });
-    router.push(`/property?${paramsString}`);
-  }, [debouncedSearch, updateParams, router]);
+    push(`/property?${paramsString}`);
+  }, [debouncedSearch, updateParams, push]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -57,7 +56,7 @@ export default function PropertyTopBar({
     const paramsString = updateParams({
       type: listingTypeId,
     });
-    router.push(`/property?${paramsString}`);
+    push(`/property?${paramsString}`);
   };
 
   return (

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 import { Container } from '@/components/common/Container';
 import { Input } from '@/components/ui/input';
 import {

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 
 function formatPrice(value: string) {
   const num = Number(value);
@@ -14,7 +14,7 @@ function formatPrice(value: string) {
 }
 
 export const RangeSlider = () => {
-  const router = useRouter();
+  const {push} = useRouter();
   const { getParam, updateParams } = useUrlParams();
 
   const minPrice = Number(getParam('minPrice')) || 0;
@@ -34,9 +34,9 @@ export const RangeSlider = () => {
         minPrice: min.toString(),
         maxPrice: max.toString(),
       });
-      router.push(`/property?${params}`);
+      push(`/property?${params}`);
     }
-  }, [debouncedPriceRange, minPrice, maxPrice, updateParams, router]);
+  }, [debouncedPriceRange, minPrice, maxPrice, updateParams, push]);
 
   const handlePriceRangeSliderChange = (values: number[]) => {
     setPriceRange(values);

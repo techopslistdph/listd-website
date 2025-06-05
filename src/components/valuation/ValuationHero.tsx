@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/select';
 import Button from '../common/Button';
 import { Label } from '../ui/label';
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from 'nextjs-toploader/app';
 
 const steps = [
   {

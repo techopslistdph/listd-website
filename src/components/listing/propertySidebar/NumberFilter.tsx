@@ -1,15 +1,17 @@
 export const NumberFilter = ({
   options,
   activeValue,
-  onChange,
+  onChange,     
+  label,
 }: {
   options: { label: string; value: string }[];
   activeValue: string;
   onChange: (value: string) => void;
-}) => {
+  label: string;
+  }) => {
   return (
     <div>
-      <div className='font-bold text-xl mb-3'>Bedrooms</div>
+      <div className='font-bold text-xl mb-3'>{label}</div>
       <div className='flex gap-2 flex-wrap'>
         {options.map(option => (
           <button

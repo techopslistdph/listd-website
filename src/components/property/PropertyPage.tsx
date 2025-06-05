@@ -24,12 +24,12 @@ export function PropertyPage({
   return (
     <div className='min-h-screen container xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 sm:px-0 py-5 sm:pt-5'>
       <div className='block sm:hidden'>
-        <PropertyTopBar
+        {/* <PropertyTopBar
           listingTypes={listingTypes}
           onViewChange={setView}
           isSidebarOpen={sidebarOpen}
           onFilterClick={() => setSidebarOpen(v => !v)}
-        />
+        /> */}
       </div>
       {sidebarOpen && <PropertySidebar />}
       {/* Main Content */}
