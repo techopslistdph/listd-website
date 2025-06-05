@@ -10,7 +10,7 @@ import {
   DrawingManager,
   Polygon,
 } from '@react-google-maps/api';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
 import {
   getBoundingBox,
   getBoundingBoxCenter,

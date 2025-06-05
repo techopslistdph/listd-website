@@ -2,7 +2,7 @@
 import React from 'react';
 
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
 import {
   BATHROOM_OPTIONS,
   BEDROOM_OPTIONS,

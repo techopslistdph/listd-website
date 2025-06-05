@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { View } from '@/components/property/PropertyPage';
 import { ListingType } from '@/lib/queries/server/home/type';
-import { useRouter, useSearchParams } from 'next/navigation';
+import {  useSearchParams } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
+
 import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -23,12 +25,17 @@ export default function PropertyTopBar({
 }: PropertyTopBarProps) {
   const router = useRouter();
   const params = useSearchParams();
-  const { updateParams } = useUrlParams();
+  const { updateParams, getParam } = useUrlParams();
   const typeId = params.get('type');
+  const searchQuery = getParam('search');
   const [view, setView] = useState<View>('list');
   const activeListingType = listingTypes?.find(type => type.id === typeId);
-  const [search, setSearch] = useState<string>('');
+  const [search, setSearch] = useState<string>(searchQuery || '');
   const debouncedSearch = useDebounce(search, 300);
+
+
+  
+
 
   useEffect(() => {
     const paramsString = updateParams({
@@ -140,7 +147,7 @@ export default function PropertyTopBar({
           type='text'
           placeholder='Search properties...'
           className='flex-1 bg-transparent outline-none text-neutral-text placeholder:text-neutral-text text-base font-light'
-          value={search}
+          value={searchQuery || ''}
           onChange={handleSearchChange}
         />
         <svg

@@ -1,6 +1,6 @@
 import { useDebounce } from '@/hooks/useDebounce';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
 import { useEffect, useState } from 'react';
 
 export const InputFilter = () => {

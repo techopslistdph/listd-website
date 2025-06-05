@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
 
 function formatPrice(value: string) {
   const num = Number(value);
