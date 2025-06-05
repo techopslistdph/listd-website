@@ -1,8 +1,15 @@
+export interface PropertyDetailResponse {
+  success: boolean;
+  data: PropertyDetail;
+}
+
 export interface PropertyListResponse {
   success: boolean;
   data: PropertyDetail[];
   meta: PaginationMeta;
 }
+
+
 
 export interface PropertyDetail {
   id: string;

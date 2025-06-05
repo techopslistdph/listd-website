@@ -8,15 +8,18 @@ import { useState } from 'react';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from '../listing/propertySidebar';
+import { SearchParams } from '@/lib/queries/server/propety';
 
 export type View = 'list' | 'map';
 
 export function PropertyPage({
   properties,
   listingTypes,
+  propertyType,
 }: {
   properties: PropertyDetail[];
   listingTypes: ListingType[];
+  propertyType: SearchParams['property'];
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -24,12 +27,12 @@ export function PropertyPage({
   return (
     <div className='min-h-screen container xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 sm:px-0 py-5 sm:pt-5'>
       <div className='block sm:hidden'>
-        {/* <PropertyTopBar
+        <PropertyTopBar
           listingTypes={listingTypes}
           onViewChange={setView}
           isSidebarOpen={sidebarOpen}
           onFilterClick={() => setSidebarOpen(v => !v)}
-        /> */}
+        />
       </div>
       {sidebarOpen && <PropertySidebar />}
       {/* Main Content */}
@@ -50,7 +53,7 @@ export function PropertyPage({
         ) : view === 'list' ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
             {properties.map((property, idx) => (
-              <PropertyCard key={idx} propertyDetail={property} view='list' />
+              <PropertyCard key={idx} propertyDetail={property} view='list' propertyType={propertyType} />
             ))}
           </div>
         ) : (
@@ -61,7 +64,7 @@ export function PropertyPage({
             </div>
             <div className='space-y-6'>
               {properties.map((property, idx) => (
-                <PropertyCard key={idx} propertyDetail={property} view='map' />
+                <PropertyCard key={idx} propertyDetail={property} view='map' propertyType={propertyType} />
               ))}
             </div>
           </div>

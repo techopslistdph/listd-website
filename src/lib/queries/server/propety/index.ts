@@ -1,6 +1,6 @@
 import { api } from '@/lib/fetch-wrapper';
 import { ErrorResponse } from '../type';
-import { PropertyListResponse } from './type';
+import {  PropertyDetailResponse, PropertyListResponse } from './type';
 import { API_ENDPOINTS } from '../api-endpoints';
 
 const getCondominiums = async (queryParams: string) => {
@@ -44,11 +44,61 @@ const getLots = async (queryParams: string) => {
   return response;
 };
 
+
+
+const condominiumById = async (id: string) => {
+  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+    `${API_ENDPOINTS.condominium.byId(id)}`
+  );
+  if ('error' in response) {
+    throw new Error(response.error.message);
+  }
+  return response;
+};
+
+const houseAndLotById = async (id: string) => {
+  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+    `${API_ENDPOINTS.houseAndLot.byId(id)}`
+  );
+  if ('error' in response) {
+    throw new Error(response.error.message);
+  }
+  return response;
+};
+
+const warehouseById = async (id: string) => {
+  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+    `${API_ENDPOINTS.warehouse.byId(id)}`
+  );
+  if ('error' in response) {
+    throw new Error(response.error.message);
+  }
+  return response;
+};
+
+const vacantLotById = async (id: string) => {
+  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+    `${API_ENDPOINTS.vacantLot.byId(id)}`
+  );
+  if ('error' in response) {
+    throw new Error(response.error.message);
+  }
+  return response;
+};
+
+
 export const PROPERTY_TYPES_MAPPING = {
   condominium: getCondominiums,
   'house-and-lot': getHouseAndLots,
   warehouse: getWarehouses,
   'vacant-lot': getLots,
+};
+
+export const PROPERTY_TYPES_BY_ID_MAPPING = {
+  condominium: condominiumById,
+  'house-and-lot': houseAndLotById,
+  warehouse: warehouseById,
+  'vacant-lot': vacantLotById,
 };
 
 export type SearchParams = {
@@ -78,3 +128,10 @@ export const getProperties = async ({ property, ...rest }: SearchParams) => {
   const response = await fetchProperties(queryParams.toString());
   return response.data;
 };
+
+
+export const getPropertyById = async ({ property, id }: { property: SearchParams['property'], id: string }) => {
+  const fetchProperty = PROPERTY_TYPES_BY_ID_MAPPING[property];
+  const response = await fetchProperty(id);
+  return response.data
+};  

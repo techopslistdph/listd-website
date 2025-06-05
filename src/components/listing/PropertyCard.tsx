@@ -8,13 +8,27 @@ import { PropertyImages } from './PropertyImages';
 import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import { SearchParams } from '@/lib/queries/server/propety';
+
+// Utility function to format price
+const formatPrice = (price: number): string => {
+  if (price >= 1000000) {
+    return (price / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+  } else if (price >= 1000) {
+    return (price / 1000).toFixed(1).replace(/\.?0+$/, '') + 'K';
+  } else {
+    return price.toString();
+  }
+};
 
 export default function PropertyCard({
   propertyDetail,
   view,
+  propertyType,
 }: {
   propertyDetail: PropertyDetail;
   view?: 'list' | 'map';
+  propertyType: SearchParams['property'];
 }) {
   const {
     property: {
@@ -116,7 +130,7 @@ export default function PropertyCard({
       // </Link>
       <div className='flex flex-col sm:flex-row bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer max-w-full p-3 gap-4'>
         <div className='flex-shrink-0 rounded-2xl overflow-hidden w-full sm:w-[295px] h-[200px] sm:h-[280px]'>
-          <Link href={`/property/${id}`}>
+          <Link href={`/property/${id}?property=${propertyType}`}>
             <Image
               src={images[0].imageUrl}
               alt={listingTitle}
@@ -142,9 +156,9 @@ export default function PropertyCard({
             </button>
 
             {/* Wrap only the title/content block in the Link */}
-            <Link href={`/property/${id}`}>
+            <Link href={`/property/${id}?property=${propertyType}`}>
               <div className='text-xl font-extrabold text-primary-main mb-1'>
-                {listingPrice}
+              ₱ {formatPrice(listingPrice)}
               </div>
               <div className='text-lg font-semibold text-black mb-1 truncate'>
                 {listingTitle}
@@ -286,13 +300,13 @@ export default function PropertyCard({
         </div>
         <div className='p-4'>
           {/* Only wrap the title and property info in the Link */}
-          <Link href={`/property/${id}`}>
+          <Link href={`/property/${id}?property=${propertyType}`}>
             <div className='flex items-center justify-between mb-1'>
               <div className='w-3/4 text-lg font-semibold text-black truncate'>
                 {listingTitle}
               </div>
               <div className='font-extrabold text-lg text-primary-main'>
-                {listingPrice}
+              {formatPrice(listingPrice)}
               </div>
             </div>
             <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>

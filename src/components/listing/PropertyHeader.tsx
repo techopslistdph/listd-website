@@ -1,13 +1,16 @@
 import Image, { StaticImageData } from 'next/image';
 import { Heart, Share2, Trash2 } from 'lucide-react';
+import { formatPrice } from '@/utils/numberUtils';
 
 interface PropertyHeaderProps {
-  price: string;
+  price: number;
   title: string;
   isVerified: boolean;
   location: string;
   pinIcon: StaticImageData;
 }
+
+
 
 export function PropertyHeader({
   price,
@@ -21,7 +24,7 @@ export function PropertyHeader({
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
           <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
-            {price}
+          ₱ {formatPrice(price)}
           </div>
         </div>
         <div className='flex items-center gap-2 lg:gap-6'>

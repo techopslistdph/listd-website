@@ -13,5 +13,5 @@ export default async function Page({
     getListingTypes(),
   ]);
 
-  return <PropertyPage properties={properties} listingTypes={listingTypes} />;
+  return <PropertyPage properties={properties} listingTypes={listingTypes} propertyType={searchParams.property} />;
 }
