@@ -9,6 +9,7 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from '../listing/propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
+import PropertyMap from '../map/PropertyMap';
 
 export type View = 'list' | 'map';
 
@@ -53,18 +54,28 @@ export function PropertyPage({
         ) : view === 'list' ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
             {properties.map((property, idx) => (
-              <PropertyCard key={idx} propertyDetail={property} view='list' propertyType={propertyType} />
+              <PropertyCard
+                key={idx}
+                propertyDetail={property}
+                view='list'
+                propertyType={propertyType}
+              />
             ))}
           </div>
         ) : (
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
-            <div className='rounded-xl w-full h-[480px] overflow-hidden'>
-              {/* <PropertyMap properties={properties} minHeight='480px' /> */}
+            <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
+              <PropertyMap properties={properties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
               {properties.map((property, idx) => (
-                <PropertyCard key={idx} propertyDetail={property} view='map' propertyType={propertyType} />
+                <PropertyCard
+                  key={idx}
+                  propertyDetail={property}
+                  view='map'
+                  propertyType={propertyType}
+                />
               ))}
             </div>
           </div>

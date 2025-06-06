@@ -21,13 +21,13 @@ import {
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
 import DrawOnMapIcon from '../../../public/images/icons/draw-on-map-icon';
-import { Listing } from '@/app/data';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
 import Image from 'next/image';
 
 interface IMapProps {
   minHeight?: string;
-  data?: Listing[];
+  properties?: PropertyDetail[];
 }
 
 type Location = {
@@ -37,7 +37,7 @@ type Location = {
 
 const PropertyMap: React.FC<IMapProps> = ({
   minHeight = '600px',
-  data = [],
+  properties = [],
 }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
@@ -223,17 +223,19 @@ const PropertyMap: React.FC<IMapProps> = ({
           )}
 
           {selectedLocation && (
-            <div className='absolute bottom-20 z-10 m-auto left-0 right-0 max-w-lg bg-white shadow rounded-lg max-h-[500px] overflow-hidden overflow-y-auto'>
+            <div className='absolute bottom-20 z-10 m-auto left-0 right-0 bg-white shadow rounded-lg max-h-[500px] overflow-hidden overflow-y-auto'>
               <X
                 size={24}
                 className='shadow cursor-pointer sticky float-end mr-2 top-2 w-8 h-8 bg-white text-primary rounded-full'
                 onClick={() => setSelectedLocation(null)}
               />
-              {data
+              {properties
                 .filter(
                   item =>
-                    Number(item.latitude) === selectedLocation?.latitude &&
-                    Number(item.longitude) === selectedLocation?.longitude
+                    Number(item.property.latitude) ===
+                      selectedLocation?.latitude &&
+                    Number(item.property.longitude) ===
+                      selectedLocation?.longitude
                 )
                 .map((item, index) => (
                   <div
@@ -242,16 +244,16 @@ const PropertyMap: React.FC<IMapProps> = ({
                     onClick={() => router.push(`listings/${item.id}`)}
                   >
                     <Image
-                      src={item.images[0].src}
+                      src={item.property.images[0].imageUrl}
                       alt={`Preview image`}
                       className='w-full h-56 object-cover rounded-lg z-10'
                       width={100}
                       height={100}
                     />
                     <p className='font-bold text-primary text-xl my-2'>
-                      {item.price}
+                      {item.property.listingPriceFormatted}
                     </p>
-                    <p>{item.title}</p>
+                    <p>{item.property.listingTitle}</p>
                   </div>
                 ))}
             </div>
@@ -295,7 +297,7 @@ const PropertyMap: React.FC<IMapProps> = ({
             />
             <MarkerClustererComponent
               setSelectedLocation={setSelectedLocation}
-              data={data}
+              data={properties}
             />
             <Polygon path={polygon_path} options={polygonOptions} />
           </GoogleMap>
