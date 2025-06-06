@@ -9,8 +9,6 @@ export interface PropertyListResponse {
   meta: PaginationMeta;
 }
 
-
-
 export interface PropertyDetail {
   id: string;
   buildingSize: number;
@@ -21,6 +19,20 @@ export interface PropertyDetail {
   isLiked: boolean;
   numberOfBedrooms: number | null;
   numberOfBathrooms: number | null;
+  numberOfParkingSpaces: number | null;
+  hasSwimmingPool: boolean;
+  hasGarden: boolean;
+  hasTerrace: boolean;
+  hasBalcony: boolean;
+  hasSecurity: boolean;
+  numberOfFloors: number | null;
+  numberOfGarages: number | null;
+  numberOfLivingRooms: number | null;
+  numberOfDiningRooms: number | null;
+  numberOfKitchens: number | null;
+  numberOfMaidRooms: number | null;
+  yearBuilt: number | null;
+  furnishingStatus: string | null;
   property: PropertyDetails;
 }
 
@@ -38,6 +50,8 @@ interface PropertyDetails {
   listingTypeName: string;
   scrapeContactInfo: ScrapeContactInfo;
   images: PropertyImage[];
+  listingDescription: string;
+  listingDescriptionMarkdown: string;
 }
 
 interface ScrapeContactInfo {
