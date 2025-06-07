@@ -14,7 +14,6 @@ import { useRouter } from 'nextjs-toploader/app';
 import {
   getBoundingBox,
   getBoundingBoxCenter,
-  convertBoundingBoxToString,
   calculateDistanceStatistics,
   calculateDistances,
 } from '@/utils/mapUtils';
@@ -99,7 +98,6 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const onSearchHandle = () => {
     if (!polygon) return;
-    console.log(polygon);
     const path = polygon
       .getPath()
       .getArray()
@@ -109,60 +107,17 @@ const PropertyMap: React.FC<IMapProps> = ({
       }));
 
     const boundingBox = getBoundingBox(path);
-    const minLatitude = boundingBox.south;
-    const maxLatitude = boundingBox.north;
-    const minLongitude = boundingBox.west;
-    const maxLongitude = boundingBox.east;
-    console.log(minLatitude, maxLatitude, minLongitude, maxLongitude);
-    // Update URL params for bounding box
-    const paramsString = updateParams({
-      minLatitude,
-      maxLatitude,
-      minLongitude,
-      maxLongitude,
-    });
-    router.push(`/property?${paramsString}`);
+    const minLatitude = boundingBox.minLat;
+    const maxLatitude = boundingBox.maxLat;
+    const minLongitude = boundingBox.minLng;
+    const maxLongitude = boundingBox.maxLng;
 
     const search_latitude = getBoundingBoxCenter(getBoundingBox(path)).latitude;
     const search_longitude = getBoundingBoxCenter(
       getBoundingBox(path)
     ).longitude;
 
-    const bounding_box = convertBoundingBoxToString(getBoundingBox(path));
-
-    const propertiesInPolygon = properties.filter(property => {
-      const propertyLat = Number(property.property.latitude);
-      const propertyLng = Number(property.property.longitude);
-      return google.maps.geometry.poly.containsLocation(
-        new google.maps.LatLng(propertyLat, propertyLng),
-        polygon
-      );
-    });
-    console.log('Properties within polygon:', propertiesInPolygon);
-
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'search_latitude',
-      search_latitude
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'search_longitude',
-      search_longitude
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'bounding_box',
-      bounding_box
-    );
-
     const polygon_center = getBoundingBoxCenter(getBoundingBox(path));
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'polygon_path',
-      path as { latitude: number; longitude: number }[]
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'polygon_center',
-      polygon_center
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery('zoom', zoom - 1);
 
     const distancesFromPolylineToPolyCenter = calculateDistances(
       polygon_center,
@@ -172,10 +127,17 @@ const PropertyMap: React.FC<IMapProps> = ({
       distancesFromPolylineToPolyCenter
     );
 
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'max_distance_km',
-      distanceStatistics.max
-    );
+    // Update URL params for all coordinates and radius
+    const paramsString = updateParams({
+      minLatitude,
+      maxLatitude,
+      minLongitude,
+      maxLongitude,
+      latitude: search_latitude,
+      longitude: search_longitude,
+      radius: distanceStatistics.max * 1000, // Convert km to meters for API
+    });
+    router.push(`/property?${paramsString}`);
   };
 
   const onCancelHandle = () => {
@@ -191,6 +153,9 @@ const PropertyMap: React.FC<IMapProps> = ({
       'maxLatitude',
       'minLongitude',
       'maxLongitude',
+      'latitude',
+      'longitude',
+      'radius',
     ]);
     router.push(`/property?${paramsString}`);
   };
