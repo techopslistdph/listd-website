@@ -24,6 +24,7 @@ import DrawOnMapIcon from '../../../public/images/icons/draw-on-map-icon';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
 import Image from 'next/image';
+import { useUrlParams } from '@/hooks/useUrlParams';
 
 interface IMapProps {
   minHeight?: string;
@@ -42,11 +43,12 @@ const PropertyMap: React.FC<IMapProps> = ({
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
     id: 'google-map-script',
-    libraries: ['places', 'drawing'],
+    libraries: ['places', 'drawing', 'geometry'],
   });
 
   const rootStore = useStore();
   const router = useRouter();
+  const { updateParams, deleteParams } = useUrlParams();
 
   const [enableDraw, setEnableDraw] = useState<boolean>(false);
   const [showDrawButton, setShowDrawButton] = useState<boolean>(true);
@@ -106,11 +108,37 @@ const PropertyMap: React.FC<IMapProps> = ({
         longitude: coord.lng(),
       }));
 
+    const boundingBox = getBoundingBox(path);
+    const minLatitude = boundingBox.south;
+    const maxLatitude = boundingBox.north;
+    const minLongitude = boundingBox.west;
+    const maxLongitude = boundingBox.east;
+    console.log(minLatitude, maxLatitude, minLongitude, maxLongitude);
+    // Update URL params for bounding box
+    const paramsString = updateParams({
+      minLatitude,
+      maxLatitude,
+      minLongitude,
+      maxLongitude,
+    });
+    router.push(`/property?${paramsString}`);
+
     const search_latitude = getBoundingBoxCenter(getBoundingBox(path)).latitude;
     const search_longitude = getBoundingBoxCenter(
       getBoundingBox(path)
     ).longitude;
+
     const bounding_box = convertBoundingBoxToString(getBoundingBox(path));
+
+    const propertiesInPolygon = properties.filter(property => {
+      const propertyLat = Number(property.property.latitude);
+      const propertyLng = Number(property.property.longitude);
+      return google.maps.geometry.poly.containsLocation(
+        new google.maps.LatLng(propertyLat, propertyLng),
+        polygon
+      );
+    });
+    console.log('Properties within polygon:', propertiesInPolygon);
 
     rootStore.propertyListingQuery.updatePropertyListingQuery(
       'search_latitude',
@@ -156,6 +184,15 @@ const PropertyMap: React.FC<IMapProps> = ({
     setShowControls(false);
     setShowDrawButton(true);
     polygon?.setMap(null);
+
+    // Remove bounding box params from URL
+    const paramsString = deleteParams([
+      'minLatitude',
+      'maxLatitude',
+      'minLongitude',
+      'maxLongitude',
+    ]);
+    router.push(`/property?${paramsString}`);
   };
 
   const onMapLoad = (map: google.maps.Map) => {
