@@ -48,9 +48,14 @@ export function PropertyPage({
         </div>
         {/* Property Cards Grid */}
         {properties.length === 0 ? (
-          <div className='text-center text-gray-500 py-20 text-lg'>
-            No properties found matching your filters.
-          </div>
+          <>
+            <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
+              <PropertyMap properties={properties} minHeight='480px' />
+            </div>
+            <div className='text-center text-gray-500 py-20 text-lg'>
+              No properties found matching your filters.
+            </div>
+          </>
         ) : view === 'list' ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
             {properties.map((property, idx) => (

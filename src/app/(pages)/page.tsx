@@ -16,6 +16,7 @@ export default async function page() {
     getListingTypes(),
     getPropertyTypes(),
   ]);
+
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
