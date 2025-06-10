@@ -14,7 +14,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className='min-h-screen grid grid-cols-1 md:grid-cols-2'>
-      <div className='flex flex-col justify-center w-full max-w-xl mx-auto px-8 py-12 bg-white'>
+      <div className='flex flex-col  w-full max-w-xl mx-auto px-8 py-12 bg-white'>
         <Link href={'/'}>
           <p className='text-2xl font-semibold text-[var(--primary-main)] ursor-pointer'>
             Listd
