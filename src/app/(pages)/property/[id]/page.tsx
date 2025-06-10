@@ -1,14 +1,13 @@
 import { notFound } from 'next/navigation';
-import { properties } from '@/app/data';
 import pinIcon from '../../../../../public/images/icons/pin.svg';
 import { PropertyHeader } from '@/components/listing/PropertyHeader';
 import PropertyFeatures from '@/components/listing/PropertyFeatures';
 import PropertyDescription from '@/components/listing/PropertyDescription';
-import { AgentCard } from '@/components/listing/AgentCard';
-// import { PropertyImages } from '@/components/listing/PropertyImages';
-import PropertyLocation from '@/components/listing/PropertyLocation';
 import { getPropertyById, SearchParams } from '@/lib/queries/server/propety';
 import { PropertyImages } from '@/components/listing/PropertyImages';
+import { processPropertyDetails } from '@/utils/property';
+import { AgentCard } from '@/components/listing/AgentCard';
+import { PropertyMap } from '@/components/listing/PropertyMap';
 
 export default async function PropertyPage({
   params,
@@ -18,28 +17,36 @@ export default async function PropertyPage({
   searchParams: Promise<{ property: SearchParams['property'] }>;
 }) {
   const resolvedParams = await params;
-  const {property: propertyType} = await searchParams;
-  console.log({resolvedParams, propertyType});
+  const { property: propertyType } = await searchParams;
 
-  const propertyDetail = await getPropertyById({ property: propertyType, id: resolvedParams.id });
-  console.log({propertyDetail});
+  const propertyDetail = await getPropertyById({
+    property: propertyType,
+    id: resolvedParams.id,
+  });
   if (!propertyDetail) return notFound();
 
   const {
     property: {
       images,
       listingDescription,
-      listingDescriptionMarkdown,
       listingTitle,
       listingPrice,
       address,
       scrapeContactInfo,
+      latitude,
+      longitude,
     },
-    id,
-    numberOfBathrooms,
-    numberOfBedrooms,
-    floorArea,
   } = propertyDetail;
+
+  const { features, details } = processPropertyDetails(propertyDetail);
+
+  const agent = {
+    name: scrapeContactInfo?.agentName,
+    whatsapp: scrapeContactInfo?.phoneNumber?.replace(/\D/g, ''),
+    email: scrapeContactInfo?.email,
+    isVerified: true,
+    position: scrapeContactInfo?.agencyName || 'Real Estate Agent',
+  };
 
   return (
     <div className='flex flex-col min-h-screen bg-white text-black my-10'>
@@ -57,17 +64,24 @@ export default async function PropertyPage({
                 pinIcon={pinIcon}
               />
               {/* Features */}
-              {/* <PropertyFeatures features={features} /> */}
+              {features.length > 0 && <PropertyFeatures features={features} />}
               {/* Description */}
               <PropertyDescription
                 description={listingDescription}
-                details={listingDescriptionMarkdown}
+                details={details}
               />
-              {/* <PropertyLocation googleMap={googleMap} /> */}
+              {/* Map */}
+              {latitude && longitude && (
+                <PropertyMap
+                  latitude={latitude}
+                  longitude={longitude}
+                  title={listingTitle}
+                />
+              )}
             </div>
             {/* Right Column - Agent Card */}
             <div className='lg:col-span-1'>
-              {/* <AgentCard agent={agent} /> */}
+              <AgentCard agent={agent} />
             </div>
           </div>
         </div>

@@ -10,8 +10,6 @@ interface PropertyHeaderProps {
   pinIcon: StaticImageData;
 }
 
-
-
 export function PropertyHeader({
   price,
   title,
@@ -23,9 +21,11 @@ export function PropertyHeader({
     <div className='flex flex-col gap-2 p-5 rounded-lg mb-2 border'>
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
-          <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
-          ₱ {formatPrice(price)}
-          </div>
+          {price && (
+            <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
+              ₱ {formatPrice(price)}
+            </div>
+          )}
         </div>
         <div className='flex items-center gap-2 lg:gap-6'>
           <button
@@ -56,10 +56,12 @@ export function PropertyHeader({
           </span>
         )}
       </div>
-      <div className='flex items-center text-gray-400 gap-2 mt-1'>
-        <Image src={pinIcon} alt='pin' width={15} height={15} />{' '}
-        <p className='text-sm md:text-base'>{location}</p>
-      </div>
+      {location && (
+        <div className='flex items-center text-gray-400 gap-2 mt-1'>
+          <Image src={pinIcon} alt='pin' width={15} height={15} />{' '}
+          <p className='text-sm md:text-base'>{location}</p>
+        </div>
+      )}
     </div>
   );
 }
