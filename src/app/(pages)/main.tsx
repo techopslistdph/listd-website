@@ -12,7 +12,10 @@ import {
 
 export default function Main({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const hideNavAndFooter = pathname === '/login' || pathname === '/signup';
+  const hideNavAndFooter =
+    pathname === '/login' ||
+    pathname === '/signup' ||
+    pathname === '/forgot-password';
 
   return (
     <>

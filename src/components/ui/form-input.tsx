@@ -16,6 +16,7 @@ interface FormInputProps<T extends FieldValues> {
   description?: string;
   disabled?: boolean;
   placeholder?: string;
+  readonly?: boolean;
   required?: boolean;
 }
 
@@ -26,6 +27,7 @@ export const FormInput = <T extends FieldValues>({
   description,
   disabled = false,
   placeholder,
+  readonly = false,
   required = true,
 }: FormInputProps<T>) => {
   const form = useFormContext<T>();
@@ -47,6 +49,7 @@ export const FormInput = <T extends FieldValues>({
               placeholder={placeholder}
               disabled={disabled}
               {...field}
+              readOnly={readonly}
             />
           </FormControl>
           <FormMessage />

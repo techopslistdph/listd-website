@@ -97,7 +97,7 @@ export default function LoginPage() {
           />
           <div className='flex items-center justify-between mb-2'>
             <Link
-              href='#'
+              href='/forgot-password'
               className='text-sm text-[var(--primary-main)] font-bold'
             >
               Forgot your password?
