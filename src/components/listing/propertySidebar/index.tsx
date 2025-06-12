@@ -86,6 +86,13 @@ const PropertySidebar = () => {
       'maxPrice',
       'minFloorArea',
       'maxFloorArea',
+      'latitude',
+      'longitude',
+      'radius',
+      'minLatitude',
+      'maxLatitude',
+      'minLongitude',
+      'maxLongitude',
     ]);
     router.push(`/property?${params}`);
   };
@@ -127,7 +134,11 @@ const PropertySidebar = () => {
         <Button className='px-4' onClick={handleApplyFilters}>
           Apply Filters
         </Button>
-        <Button variant='outlined' className='px-4' onClick={handleResetFilters}>
+        <Button
+          variant='outlined'
+          className='px-4'
+          onClick={handleResetFilters}
+        >
           Reset Filters
         </Button>
       </div>

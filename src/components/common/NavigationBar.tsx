@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from './Button';
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from '../ui/sheet';
-import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, useAuth } from '@clerk/nextjs';
 import UserProfileCard from './UserProfileCard';
 
 export default function NavigationBar({
@@ -10,6 +10,8 @@ export default function NavigationBar({
 }: {
   navigtionItems: { label: string; href: string }[];
 }) {
+  const clerk = useAuth();
+  console.log(clerk);
   return (
     <div className='flex justify-between items-center p-4 md:p-8 container mx-auto max-w-[1300px]'>
       <div className='flex items-center gap-4'>

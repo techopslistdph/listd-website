@@ -14,20 +14,20 @@ import { useRouter } from 'nextjs-toploader/app';
 import {
   getBoundingBox,
   getBoundingBoxCenter,
-  convertBoundingBoxToString,
   calculateDistanceStatistics,
   calculateDistances,
 } from '@/utils/mapUtils';
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
 import DrawOnMapIcon from '../../../public/images/icons/draw-on-map-icon';
-import { Listing } from '@/app/data';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
 import Image from 'next/image';
+import { useUrlParams } from '@/hooks/useUrlParams';
 
 interface IMapProps {
   minHeight?: string;
-  data?: Listing[];
+  properties?: PropertyDetail[];
 }
 
 type Location = {
@@ -37,16 +37,17 @@ type Location = {
 
 const PropertyMap: React.FC<IMapProps> = ({
   minHeight = '600px',
-  data = [],
+  properties = [],
 }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
     id: 'google-map-script',
-    libraries: ['places', 'drawing'],
+    libraries: ['places', 'drawing', 'geometry'],
   });
 
   const rootStore = useStore();
   const router = useRouter();
+  const { updateParams, deleteParams } = useUrlParams();
 
   const [enableDraw, setEnableDraw] = useState<boolean>(false);
   const [showDrawButton, setShowDrawButton] = useState<boolean>(true);
@@ -97,7 +98,6 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const onSearchHandle = () => {
     if (!polygon) return;
-    console.log(polygon);
     const path = polygon
       .getPath()
       .getArray()
@@ -106,35 +106,18 @@ const PropertyMap: React.FC<IMapProps> = ({
         longitude: coord.lng(),
       }));
 
+    const boundingBox = getBoundingBox(path);
+    const minLatitude = boundingBox.minLat;
+    const maxLatitude = boundingBox.maxLat;
+    const minLongitude = boundingBox.minLng;
+    const maxLongitude = boundingBox.maxLng;
+
     const search_latitude = getBoundingBoxCenter(getBoundingBox(path)).latitude;
     const search_longitude = getBoundingBoxCenter(
       getBoundingBox(path)
     ).longitude;
-    const bounding_box = convertBoundingBoxToString(getBoundingBox(path));
-
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'search_latitude',
-      search_latitude
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'search_longitude',
-      search_longitude
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'bounding_box',
-      bounding_box
-    );
 
     const polygon_center = getBoundingBoxCenter(getBoundingBox(path));
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'polygon_path',
-      path as { latitude: number; longitude: number }[]
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'polygon_center',
-      polygon_center
-    );
-    rootStore.propertyListingQuery.updatePropertyListingQuery('zoom', zoom - 1);
 
     const distancesFromPolylineToPolyCenter = calculateDistances(
       polygon_center,
@@ -144,10 +127,17 @@ const PropertyMap: React.FC<IMapProps> = ({
       distancesFromPolylineToPolyCenter
     );
 
-    rootStore.propertyListingQuery.updatePropertyListingQuery(
-      'max_distance_km',
-      distanceStatistics.max
-    );
+    // Update URL params for all coordinates and radius
+    const paramsString = updateParams({
+      minLatitude,
+      maxLatitude,
+      minLongitude,
+      maxLongitude,
+      latitude: search_latitude,
+      longitude: search_longitude,
+      radius: distanceStatistics.max * 1000, // Convert km to meters for API
+    });
+    router.push(`/property?${paramsString}`);
   };
 
   const onCancelHandle = () => {
@@ -156,6 +146,18 @@ const PropertyMap: React.FC<IMapProps> = ({
     setShowControls(false);
     setShowDrawButton(true);
     polygon?.setMap(null);
+
+    // Remove bounding box params from URL
+    const paramsString = deleteParams([
+      'minLatitude',
+      'maxLatitude',
+      'minLongitude',
+      'maxLongitude',
+      'latitude',
+      'longitude',
+      'radius',
+    ]);
+    router.push(`/property?${paramsString}`);
   };
 
   const onMapLoad = (map: google.maps.Map) => {
@@ -223,17 +225,19 @@ const PropertyMap: React.FC<IMapProps> = ({
           )}
 
           {selectedLocation && (
-            <div className='absolute bottom-20 z-10 m-auto left-0 right-0 max-w-lg bg-white shadow rounded-lg max-h-[500px] overflow-hidden overflow-y-auto'>
+            <div className='absolute bottom-20 z-10 m-auto left-0 right-0 bg-white shadow rounded-lg max-h-[500px] overflow-hidden overflow-y-auto'>
               <X
                 size={24}
                 className='shadow cursor-pointer sticky float-end mr-2 top-2 w-8 h-8 bg-white text-primary rounded-full'
                 onClick={() => setSelectedLocation(null)}
               />
-              {data
+              {properties
                 .filter(
                   item =>
-                    Number(item.latitude) === selectedLocation?.latitude &&
-                    Number(item.longitude) === selectedLocation?.longitude
+                    Number(item.property.latitude) ===
+                      selectedLocation?.latitude &&
+                    Number(item.property.longitude) ===
+                      selectedLocation?.longitude
                 )
                 .map((item, index) => (
                   <div
@@ -242,16 +246,16 @@ const PropertyMap: React.FC<IMapProps> = ({
                     onClick={() => router.push(`listings/${item.id}`)}
                   >
                     <Image
-                      src={item.images[0].src}
+                      src={item.property.images[0].imageUrl}
                       alt={`Preview image`}
                       className='w-full h-56 object-cover rounded-lg z-10'
                       width={100}
                       height={100}
                     />
                     <p className='font-bold text-primary text-xl my-2'>
-                      {item.price}
+                      {item.property.listingPriceFormatted}
                     </p>
-                    <p>{item.title}</p>
+                    <p>{item.property.listingTitle}</p>
                   </div>
                 ))}
             </div>
@@ -295,7 +299,7 @@ const PropertyMap: React.FC<IMapProps> = ({
             />
             <MarkerClustererComponent
               setSelectedLocation={setSelectedLocation}
-              data={data}
+              data={properties}
             />
             <Polygon path={polygon_path} options={polygonOptions} />
           </GoogleMap>
