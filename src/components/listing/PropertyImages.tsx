@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { useState, useCallback } from 'react';
@@ -66,10 +67,9 @@ export function PropertyImages({
     return (
       <div className='relative w-full h-[350px] rounded-2xl overflow-hidden'>
         {images.length > 1 ? (
-          <Image
+          <img
             src={images[currentIndex]?.imageUrl}
             alt={title}
-            fill
             className='object-cover w-full h-full'
             sizes='100vw'
           />
@@ -156,13 +156,11 @@ export function PropertyImages({
                   )}
                 >
                   <div className='relative h-full w-full'>
-                    <Image
+                    <img
                       src={image.imageUrl}
                       alt={title}
-                      fill
-                      className='object-contain'
+                      className='object-contain h-full w-full'
                       sizes='100vw'
-                      priority={idx === currentIndex}
                     />
                   </div>
                 </div>
@@ -182,11 +180,10 @@ export function PropertyImages({
                       : 'border-transparent opacity-70 hover:opacity-100'
                   )}
                 >
-                  <Image
+                  <img
                     src={image.imageUrl}
                     alt={title}
-                    fill
-                    className='object-cover'
+                    className='object-cover h-full w-full'
                     sizes='64px'
                   />
                 </div>
@@ -228,13 +225,11 @@ export function PropertyImages({
           className='relative col-span-2 row-span-2 cursor-pointer overflow-hidden group rounded-tl-3xl rounded-bl-3xl'
           onClick={() => openGallery(0)}
         >
-          <Image
+          <img
             src={mainImage.imageUrl}
             alt={title}
-            fill
-            className='object-cover transition duration-300 group-hover:scale-105'
+            className='object-cover transition duration-300 group-hover:scale-105 h-full w-full'
             sizes='(max-width: 768px) 100vw, 50vw'
-            priority
           />
           <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition duration-300'></div>
         </div>
@@ -250,12 +245,11 @@ export function PropertyImages({
             )}
             onClick={() => openGallery(index + 1)}
           >
-            <Image
+            <img
               src={image.imageUrl}
               alt={title}
-              fill
               className={cn(
-                'object-cover transition duration-300 group-hover:scale-105'
+                'object-cover transition duration-300 group-hover:scale-105 h-full w-full'
               )}
               sizes='25vw'
             />

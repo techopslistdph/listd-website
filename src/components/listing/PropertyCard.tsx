@@ -50,7 +50,7 @@ export default function PropertyCard({
       <div className='grid sm:grid-cols-3 bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer  p-3 gap-4'>
         <div className=' rounded-2xl overflow-hidden w-full sm:w-[295px] md:w-full h-[200px] sm:h-[280px]'>
           <Link href={`/property/${id}?property=${propertyType}`}>
-            <Image
+            <img
               src={images[0].imageUrl}
               alt={listingTitle}
               width={195}
@@ -87,28 +87,32 @@ export default function PropertyCard({
                 <span className='truncate'>{address}</span>
               </div>
               <div className='flex items-center text-gray-400  gap-2 mb-4 '>
-                <PhoneIcon className='w-4 text-primary-main' />
-                <span className='font-medium'>
-                  {scrapeContactInfo.agentName}
-                </span>
-                {scrapeContactInfo.agentName && (
+                {scrapeContactInfo?.agentName && (
+                  <div className='flex items-center gap-1'>
+                    <PhoneIcon className='w-4 text-primary-main' />
+                    <span className='font-medium'>
+                      {scrapeContactInfo?.agentName}
+                    </span>
+                  </div>
+                )}
+                {scrapeContactInfo?.agentName && (
                   <Image src={verified} alt='verified' width={16} height={16} />
                 )}
               </div>
               <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2'>
-                {numberOfBedrooms !== null && (
+                {numberOfBedrooms !== null && numberOfBedrooms !== 0 && (
                   <div className='flex items-center gap-1'>
                     <Image src={bedIcon} alt='bed' />
                     <span>{numberOfBedrooms} Bedroom</span>
                   </div>
                 )}
-                {numberOfBathrooms !== null && (
+                {numberOfBathrooms !== null && numberOfBathrooms !== 0 && (
                   <div className='flex items-center gap-1'>
                     <Image src={bathIcon} alt='bath' />
                     <span>{numberOfBathrooms} Bath</span>
                   </div>
                 )}
-                {floorArea !== null && (
+                {floorArea !== null && floorArea !== 0 && (
                   <div className='flex items-center gap-1'>
                     <Image src={areaIcon} alt='area' />
                     <span>{floorArea} sqm</span>
@@ -120,9 +124,9 @@ export default function PropertyCard({
 
           {/* Contact buttons OUTSIDE of <Link> */}
           <div className='flex flex-col sm:flex-row gap-3 mt-2'>
-            {scrapeContactInfo.phoneNumber && (
+            {scrapeContactInfo?.phoneNumber && (
               <a
-                href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                href={`https://wa.me/${scrapeContactInfo?.phoneNumber}`}
                 className='flex-1 py-2 rounded-full border border-primary-main text-sm text-primary-main text-center font-semibold'
                 target='_blank'
                 rel='noopener noreferrer'
@@ -130,9 +134,9 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {scrapeContactInfo.email && (
+            {scrapeContactInfo?.email && (
               <a
-                href={`mailto:${scrapeContactInfo.email}`}
+                href={`mailto:${scrapeContactInfo?.email}`}
                 className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
               >
                 Direct Message
@@ -155,38 +159,46 @@ export default function PropertyCard({
           {/* Only wrap the title and property info in the Link */}
           <Link href={`/property/${id}?property=${propertyType}`}>
             <div className='flex items-center justify-between mb-1'>
-              <div className='w-3/4 text-lg font-semibold text-black truncate'>
+              <div className='w-3/4 text-lg font-semibold text-black truncate capitalize'>
                 {listingTitle}
               </div>
-              <div className='font-extrabold text-lg text-primary-main'>
-                {formatPrice(listingPrice)}
-              </div>
-            </div>
-            <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>
-              <Image src={pinIcon} alt='pin' />
-              <span className='truncate'>{address}</span>
-            </div>
-            <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
-              <PhoneIcon className='w-4 text-primary-main' />
-              <span className='font-medium'>{scrapeContactInfo.agentName}</span>
-              {scrapeContactInfo.agentName && (
-                <Image src={verified} alt='verified' width={16} height={16} />
+              {listingPrice && (
+                <div className='font-extrabold text-lg text-primary-main'>
+                  {formatPrice(listingPrice)}
+                </div>
               )}
             </div>
+            {address && (
+              <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>
+                <Image src={pinIcon} alt='pin' />
+                <span className='truncate'>{address}</span>
+              </div>
+            )}
+            {scrapeContactInfo?.agentName && (
+              <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
+                <PhoneIcon className='w-4 text-primary-main' />
+                <span className='font-medium'>
+                  {scrapeContactInfo?.agentName}
+                </span>
+                {scrapeContactInfo?.agentName && (
+                  <Image src={verified} alt='verified' width={16} height={16} />
+                )}
+              </div>
+            )}
             <div className='flex text-gray-400 text-base gap-5 mb-2'>
-              {numberOfBedrooms !== null && (
+              {numberOfBedrooms !== null && numberOfBedrooms !== 0 && (
                 <div className='flex flex-col gap-1'>
                   <Image src={bedIcon} alt='bed' />
                   <span>{numberOfBedrooms} Bedroom</span>
                 </div>
               )}
-              {numberOfBathrooms !== null && (
+              {numberOfBathrooms !== null && numberOfBathrooms !== 0 && (
                 <div className='flex flex-col gap-1'>
                   <Image src={bathIcon} alt='bath' />
                   <span>{numberOfBathrooms} Bath</span>
                 </div>
               )}
-              {floorArea !== null && (
+              {floorArea !== null && floorArea !== 0 && (
                 <div className='flex flex-col gap-1'>
                   <Image src={areaIcon} alt='area' />
                   <span>{floorArea} sqm</span>
@@ -197,17 +209,17 @@ export default function PropertyCard({
 
           {/* Contact buttons should be outside the Link */}
           <div className='flex gap-3 mt-3'>
-            {scrapeContactInfo.phoneNumber && (
+            {scrapeContactInfo?.phoneNumber && (
               <a
-                href={`https://wa.me/${scrapeContactInfo.phoneNumber}`}
+                href={`https://wa.me/${scrapeContactInfo?.phoneNumber}`}
                 className='flex-1 py-2 flex items-center justify-center text-sm rounded-full border border-primary-main text-primary-main font-semibold'
               >
                 Whatsapp
               </a>
             )}
-            {scrapeContactInfo.email && (
+            {scrapeContactInfo?.email && (
               <a
-                href={`mailto:${scrapeContactInfo.email}`}
+                href={`mailto:${scrapeContactInfo?.email}`}
                 className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
               >
                 Direct Message

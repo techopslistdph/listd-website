@@ -39,15 +39,13 @@ export default async function PropertyPage({
   } = propertyDetail;
 
   const { features, details } = processPropertyDetails(propertyDetail);
-
   const agent = {
     name: scrapeContactInfo?.agentName,
-    whatsapp: scrapeContactInfo?.phoneNumber?.replace(/\D/g, ''),
-    email: scrapeContactInfo?.email,
+    whatsapp: scrapeContactInfo?.phoneNumber?.replace(/\D/g, '') || '',
+    email: scrapeContactInfo?.email || '',
     isVerified: true,
     position: scrapeContactInfo?.agencyName || 'Real Estate Agent',
   };
-
   return (
     <div className='flex flex-col min-h-screen bg-white text-black my-10'>
       <div className='container mx-auto px-5 lg:px-0 max-w-[1300px]'>
@@ -59,19 +57,21 @@ export default async function PropertyPage({
               <PropertyHeader
                 price={listingPrice}
                 title={listingTitle}
-                isVerified={!!scrapeContactInfo.agentName}
+                isVerified={!!scrapeContactInfo?.agentName}
                 location={address}
                 pinIcon={pinIcon}
               />
               {/* Features */}
               {features.length > 0 && <PropertyFeatures features={features} />}
               {/* Description */}
-              <PropertyDescription
-                description={listingDescription}
-                details={details}
-              />
+              {listingDescription && details && (
+                <PropertyDescription
+                  description={listingDescription}
+                  details={details}
+                />
+              )}
               {/* Map */}
-              {latitude && longitude && (
+              {latitude !== 0 && longitude !== 0 && (
                 <PropertyMap
                   latitude={latitude}
                   longitude={longitude}
@@ -80,9 +80,11 @@ export default async function PropertyPage({
               )}
             </div>
             {/* Right Column - Agent Card */}
-            <div className='lg:col-span-1'>
-              <AgentCard agent={agent} />
-            </div>
+            {agent?.name && (
+              <div className='lg:col-span-1'>
+                <AgentCard agent={agent} />
+              </div>
+            )}
           </div>
         </div>
       </div>
