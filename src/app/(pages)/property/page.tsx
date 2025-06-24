@@ -1,6 +1,7 @@
 import { PropertyPage } from '@/components/property/PropertyPage';
 import { getListingTypes } from '@/lib/queries/server/home';
 import { getProperties, SearchParams } from '@/lib/queries/server/propety';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
 export default async function Page({
   searchParams: searchParamsPromise,
@@ -15,7 +16,7 @@ export default async function Page({
 
   return (
     <PropertyPage
-      properties={properties}
+      properties={properties as unknown as PropertyDetail[]}
       listingTypes={listingTypes}
       propertyType={searchParams.property}
     />

@@ -10,6 +10,7 @@ import PropertySlider, {
 import Testimonial from '@/components/home/Testimonial';
 import DownloadSection from '@/components/home/DownloadSection';
 import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export default async function page() {
   const [listingTypes, propertyTypes] = await Promise.all([
@@ -19,7 +20,13 @@ export default async function page() {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className='flex items-center justify-center'>
+            <LoadingSpinner size='lg' />
+          </div>
+        }
+      >
         <Hero listingTypes={listingTypes} propertyTypes={propertyTypes} />
         <PropertySlider
           propertySliderCards={
