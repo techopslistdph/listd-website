@@ -10,22 +10,23 @@ import MyListing from './MyListing';
 import ValuationListing from './ValuationListing';
 import LoginSecurity from './LoginSecurity';
 import MyFavorites from './MyFavorites';
+import { UserProfile } from '@/lib/queries/server/user/types';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-export default function Tab() {
+export default function Tab({ userProfile }: { userProfile: UserProfile }) {
   return (
     <div className='w-full'>
       <div className='mb-5 border-b border-neutral-mid/40 pb-5 flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between'>
         <div className='flex flex-col md:flex-row items-center gap-5'>
-          <Image
-            src={profileImage}
-            alt='profile'
-            width={100}
-            height={100}
-            className='rounded-full border-primary-mid border-4'
-          />
+          <Avatar className='w-16 h-16 rounded-full border-primary-mid border-4'>
+            <AvatarImage
+              src={userProfile.profile?.avatarUrl || profileImage.src}
+            />
+            <AvatarFallback>{userProfile.name.charAt(0)}</AvatarFallback>
+          </Avatar>
           <div className=' text-center md:text-left'>
             <div className='flex items-center gap-2'>
-              <h5 className='heading-5'>John Doe</h5>
+              <h5 className='heading-5'>{userProfile.name}</h5>
               <Image src={verifiedIcon} alt='verified' width={24} height={24} />
             </div>
             <span className='caption'>Verified</span>
@@ -50,10 +51,10 @@ export default function Tab() {
           <TabsTrigger value='login-security'>Login Security</TabsTrigger>
         </TabsList>
         <TabsContent value='profile-information'>
-          <ProfileInformation />
+          <ProfileInformation userProfile={userProfile} />
         </TabsContent>
         <TabsContent value='edit-profile'>
-          <EditProfile />
+          <EditProfile userProfile={userProfile} />
         </TabsContent>
         <TabsContent value='my-listing'>
           <MyListing />

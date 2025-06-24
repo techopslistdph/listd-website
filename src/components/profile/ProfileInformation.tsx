@@ -1,24 +1,30 @@
-export default function ProfileInformation() {
+import { UserProfile } from '@/lib/queries/server/user/types';
+
+export default function ProfileInformation({
+  userProfile,
+}: {
+  userProfile: UserProfile;
+}) {
   const information = [
     {
       label: 'First Name',
-      value: 'John',
+      value: userProfile.profile?.firstName,
     },
     {
       label: 'Last Name',
-      value: 'Doe',
+      value: userProfile.profile?.lastName,
     },
     {
       label: 'Email',
-      value: 'john.doe@example.com',
+      value: userProfile.email,
     },
     {
       label: 'Company Name',
-      value: 'Not Provided',
+      value: userProfile.profile?.companyName || 'Not Provided',
     },
     {
       label: 'Government ID (Optional)',
-      value: 'Provided',
+      value: userProfile.profile?.governmentIdUrl || 'Not Provided',
     },
   ];
 

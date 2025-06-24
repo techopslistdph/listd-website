@@ -1,53 +1,154 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+// import { Label } from '../ui/label';
+// import { Button } from '../ui/button';
+// import {
+//   Select,
+//   SelectTrigger,
+//   SelectContent,
+//   SelectItem,
+//   SelectValue,
+// } from '../ui/select';
+// import { CheckIcon } from 'lucide-react';
+// import upload from '@/../public/images/icons/upload.svg';
+// import Image from 'next/image';
+// import sampleQr from '@/../public/images/sample-qr.png';
+import { UserProfile } from '@/lib/queries/server/user/types';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
+import { useUpdateProfile } from '@/lib/queries/hooks/use-user-profile';
 import { Button } from '../ui/button';
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from '../ui/select';
-import { CheckIcon } from 'lucide-react';
-import upload from '@/../public/images/icons/upload.svg';
-import Image from 'next/image';
-import sampleQr from '@/../public/images/sample-qr.png';
+import { toast } from 'sonner';
 
-export default function EditProfile() {
-  const [showGovIdFields, setShowGovIdFields] = useState(false);
-  const [govIdType, setGovIdType] = useState('Passport');
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+const userSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().email(),
+  companyName: z.string().min(1),
+});
+
+export type UserSchemaType = z.infer<typeof userSchema>;
+
+export default function EditProfile({
+  userProfile,
+}: {
+  userProfile: UserProfile;
+}) {
+  const form = useForm<z.infer<typeof userSchema>>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      ...userProfile.profile,
+      email: userProfile.email,
+      companyName: userProfile.profile?.companyName || 'Not Provided',
+    },
+  });
+
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  const onSubmit = (data: UserSchemaType) => {
+    updateProfile(
+      {
+        ...data,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Profile updated successfully');
+        },
+        onError: error => {
+          toast.error(error?.message || 'Failed to update profile');
+        },
+      }
+    );
+  };
+  // const [showGovIdFields, setShowGovIdFields] = useState(false);
+  // const [govIdType, setGovIdType] = useState('Passport');
+  // const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   return (
     <div>
-      <div className='grid md:grid-cols-2 gap-4 lg:gap-10'>
-        <div className='space-y-2 lg:space-y-4'>
-          <Label className='text-sm lg:text-base'>First Name</Label>
-          <Input defaultValue='John' className='text-sm lg:text-base' />
-        </div>
-        <div className='space-y-2 lg:space-y-4'>
-          <Label className='text-sm lg:text-base'>Last Name</Label>
-          <Input defaultValue='Doe' className='text-sm lg:text-base' />
-        </div>
-        <div className='space-y-2 lg:space-y-4'>
-          <Label className='text-sm lg:text-base'>Phone Number</Label>
-          <Input defaultValue='Not Provided' className='text-sm lg:text-base' />
-        </div>
-        <div className='space-y-2 lg:space-y-4'>
-          <Label className='text-sm lg:text-base'>Email Address</Label>
-          <Input
-            defaultValue='john.doe@example.com'
-            className='text-sm lg:text-base'
-          />
-        </div>
-        <div className='space-y-2 lg:space-y-4'>
-          <Label className='text-sm lg:text-base'>Company Name</Label>
-          <Input defaultValue='Not Provided' className='text-sm lg:text-base' />
-        </div>
-        <div className='space-y-2 lg:space-y-4'>
+      <div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className='grid md:grid-cols-2 gap-4 lg:gap-10'>
+              <FormField
+                control={form.control}
+                name='firstName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} className='text-sm lg:text-base' />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='lastName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} className='text-sm lg:text-base' />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='phone'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} className='text-sm lg:text-base' />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input {...field} className='text-sm lg:text-base' />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='companyName'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} className='text-sm lg:text-base' />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className='mt-6 lg:mt-10 flex flex-col sm:flex-row gap-3 lg:gap-4 justify-end'>
+              <Button
+                type='submit'
+                className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
+                disabled={isPending}
+              >
+                {isPending ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+
+        {/* <div className='space-y-2 lg:space-y-4'>
           <Label className='text-sm lg:text-base'>
             Government ID (Optional)
           </Label>
@@ -62,9 +163,9 @@ export default function EditProfile() {
               Replace
             </Button>
           </div>
-        </div>
+        </div> */}
       </div>
-      <div>
+      {/* <div>
         {showGovIdFields && (
           <div className='mt-4 lg:mt-6'>
             <Label className='font-semibold text-base lg:text-lg mb-2 block'>
@@ -316,7 +417,7 @@ export default function EditProfile() {
         >
           Save
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }

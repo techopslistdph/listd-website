@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useUser, useClerk } from '@clerk/nextjs';
+import { useClerk } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LogOut, User } from 'lucide-react';
 import {
@@ -12,19 +12,22 @@ import {
 } from '../ui/dropdown-menu';
 import { getInitials, toTitleCase } from '@/lib/utils';
 import Link from 'next/link';
+import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
+import { Skeleton } from '../ui/skeleton';
 
 export default function UserProfileCard() {
-  const { user } = useUser();
+  const { data: userProfile, isLoading } = useGetProfile();
   const { signOut } = useClerk();
 
-  if (!user) return null;
+  if (isLoading) return <Skeleton className='h-8 w-8' />;
+  if (!userProfile) return null;
 
   const userInitials = getInitials(
-    user.fullName,
-    user.emailAddresses[0]?.emailAddress
+    userProfile.data?.name,
+    userProfile.data?.email
   );
   const displayName =
-    toTitleCase(user.fullName) || user.emailAddresses[0]?.emailAddress;
+    toTitleCase(userProfile.data?.name) || userProfile.data?.email;
 
   const handleLogout = () => {
     signOut();
@@ -38,7 +41,10 @@ export default function UserProfileCard() {
             {displayName}
           </span>
           <Avatar className='h-8 w-8'>
-            <AvatarImage src={user.imageUrl} alt={user.fullName || 'User'} />
+            <AvatarImage
+              src={userProfile.data?.profile?.avatarUrl}
+              alt={userProfile.data?.name || 'User'}
+            />
             <AvatarFallback className='bg-purple-100 text-purple-600 font-semibold text-xs'>
               {userInitials}
             </AvatarFallback>
