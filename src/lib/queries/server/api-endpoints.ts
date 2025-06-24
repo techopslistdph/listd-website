@@ -43,16 +43,16 @@ export const API_ENDPOINTS = {
   },
 
   houseAndLot: {
-    list: `${API_BASE_URL}/house-and-lot`,
-    create: `${API_BASE_URL}/house-and-lot`,
-    complete: `${API_BASE_URL}/house-and-lot/complete`,
-    draft: `${API_BASE_URL}/house-and-lot/draft`,
-    byId: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
-    update: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
-    delete: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
-    byUser: (userId: string) => `${API_BASE_URL}/house-and-lot/user/${userId}`,
+    list: `${API_BASE_URL}/house-and-lots`,
+    create: `${API_BASE_URL}/house-and-lots`,
+    complete: `${API_BASE_URL}/house-and-lots/complete`,
+    draft: `${API_BASE_URL}/house-and-lots/draft`,
+    byId: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
+    update: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
+    delete: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
+    byUser: (userId: string) => `${API_BASE_URL}/house-and-lots/user/${userId}`,
     drafts: (userId: string) =>
-      `${API_BASE_URL}/house-and-lot/user/${userId}/drafts`,
+      `${API_BASE_URL}/house-and-lots/user/${userId}/drafts`,
   },
 
   warehouse: {
