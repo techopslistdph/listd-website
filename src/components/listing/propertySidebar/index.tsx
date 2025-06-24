@@ -98,7 +98,7 @@ const PropertySidebar = () => {
   };
 
   return (
-    <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 sm:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
+    <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
       {showBedroomBathroomFilters && (
         <>
           <NumberFilter
