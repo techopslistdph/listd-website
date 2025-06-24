@@ -57,22 +57,23 @@ export default function PropertyTopBar({
   };
 
   return (
-    <div className='flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full text-base relative'>
+    <div className='flex flex-col md:flex-row flex-wrap md:flex-nowrap items-center gap-4 sm:gap-6 w-full text-base relative'>
       {/* Filter Button (visible on all screens) */}
 
       {/* View Toggle */}
-      <div className='flex items-center bg-neutral-light rounded-2xl px-2 py-2 gap-1 w-full sm:w-auto sm:min-w-[120px] justify-center'>
+      <div className='flex items-center bg-neutral-light rounded-2xl p-1 gap-1 w-full md:w-auto justify-center h-10 sm:h-12'>
         {/* Filter Button for Mobile */}
         <button
-          className={`px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none ${
+          className={cn(
+            'h-full px-4 py-3 sm:px-6 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
             isSidebarOpen ? 'bg-primary-main' : 'bg-transparent'
-          } flex items-center justify-center`}
+          )}
           onClick={onFilterClick}
         >
           {/* List View SVG */}
           <svg
             width='16'
-            height='16'
+            height='19'
             viewBox='0 0 24 24'
             fill='none'
             xmlns='http://www.w3.org/2000/svg'
@@ -96,9 +97,10 @@ export default function PropertyTopBar({
           </svg>
         </button>
         <button
-          className={`px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none ${
+          className={cn(
+            'h-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
             view === 'list' ? 'bg-primary-main' : 'bg-transparent'
-          } flex items-center justify-center`}
+          )}
           onClick={() => handleViewChange('list')}
         >
           {/* List View SVG */}
@@ -116,9 +118,10 @@ export default function PropertyTopBar({
           </svg>
         </button>
         <button
-          className={`px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none ${
+          className={cn(
+            'h-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
             view === 'map' ? 'bg-primary-main' : 'bg-transparent'
-          } flex items-center justify-center`}
+          )}
           onClick={() => handleViewChange('map')}
         >
           {/* Map View SVG */}
@@ -138,11 +141,11 @@ export default function PropertyTopBar({
       </div>
 
       {/* Search Bar */}
-      <div className='flex items-center flex-1 bg-neutral-light rounded-full px-4 sm:px-6 py-3 text-xl w-full'>
+      <div className='h-10 gap-1 sm:h-12 md:flex-1 flex items-center min-w-0 bg-neutral-light rounded-2xl px-4 sm:px-6 py-3 text-xl w-full md:w-auto lg:flex-1'>
         <input
           type='text'
           placeholder='Search properties...'
-          className='flex-1 bg-transparent outline-none text-neutral-text placeholder:text-neutral-text text-base font-light'
+          className='w-full bg-transparent outline-none text-neutral-text text-base font-light'
           value={search || ''}
           onChange={handleSearchChange}
         />
@@ -162,14 +165,14 @@ export default function PropertyTopBar({
         </svg>
       </div>
       {/* Buy/Rent Toggle */}
-      <div className='flex items-center bg-neutral-light rounded-2xl px-2 py-2 gap-1 w-full sm:w-auto sm:min-w-[180px] justify-center'>
+      <div className='flex items-center bg-neutral-light rounded-2xl p-1 gap-1 w-full md:w-auto justify-center h-10 sm:h-12'>
         {listingTypes?.map(option => {
           const isActive = activeListingType?.name === option.name;
           return (
             <button
               key={option.id}
               className={cn(
-                'px-6 sm:px-8 py-3 rounded-xl transition-all cursor-pointer flex-1 sm:flex-none',
+                'h-full px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
                 isActive
                   ? 'bg-primary-main text-white'
                   : 'bg-transparent text-black'

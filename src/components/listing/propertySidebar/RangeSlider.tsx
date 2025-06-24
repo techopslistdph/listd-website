@@ -14,7 +14,7 @@ function formatPrice(value: string) {
 }
 
 export const RangeSlider = () => {
-  const {push} = useRouter();
+  const { push } = useRouter();
   const { getParam, updateParams } = useUrlParams();
 
   const minPrice = Number(getParam('minPrice')) || 0;
@@ -53,12 +53,12 @@ export const RangeSlider = () => {
           value={priceRange}
           onValueChange={handlePriceRangeSliderChange}
         />
-        <div className='flex items-center justify-between mt-2'>
-          <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
+        <div className='flex xl:flex-nowrap justify-center mt-2'>
+          <div className='lg:w-full bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-1/4 flex items-center justify-center'>
             {formatPrice(priceRange[0].toString())}
           </div>
           <span className='mx-2 text-2xl font-bold'>-</span>
-          <div className='bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-36 flex items-center justify-center'>
+          <div className='lg:w-full bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-1/4 flex items-center justify-center'>
             {formatPrice(priceRange[1].toString())}
           </div>
         </div>
