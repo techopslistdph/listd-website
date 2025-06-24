@@ -19,6 +19,9 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
+import { useUpdateProfile } from '@/lib/queries/hooks/use-user-profile';
+import { Button } from '../ui/button';
+import { toast } from 'sonner';
 
 const userSchema = z.object({
   firstName: z.string().min(1),
@@ -26,8 +29,9 @@ const userSchema = z.object({
   phone: z.string().min(1),
   email: z.string().email(),
   companyName: z.string().min(1),
-  governmentIdUrl: z.string().optional(),
 });
+
+export type UserSchemaType = z.infer<typeof userSchema>;
 
 export default function EditProfile({
   userProfile,
@@ -43,6 +47,23 @@ export default function EditProfile({
     },
   });
 
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  const onSubmit = (data: UserSchemaType) => {
+    updateProfile(
+      {
+        ...data,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Profile updated successfully');
+        },
+        onError: error => {
+          toast.error(error?.message || 'Failed to update profile');
+        },
+      }
+    );
+  };
   // const [showGovIdFields, setShowGovIdFields] = useState(false);
   // const [govIdType, setGovIdType] = useState('Passport');
   // const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -52,7 +73,7 @@ export default function EditProfile({
     <div>
       <div>
         <Form {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className='grid md:grid-cols-2 gap-4 lg:gap-10'>
               <FormField
                 control={form.control}
@@ -114,6 +135,15 @@ export default function EditProfile({
                   </FormItem>
                 )}
               />
+            </div>
+            <div className='mt-6 lg:mt-10 flex flex-col sm:flex-row gap-3 lg:gap-4 justify-end'>
+              <Button
+                type='submit'
+                className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full sm:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
+                disabled={isPending}
+              >
+                {isPending ? 'Saving...' : 'Save'}
+              </Button>
             </div>
           </form>
         </Form>

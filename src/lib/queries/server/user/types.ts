@@ -9,8 +9,8 @@ export interface UserProfile {
   name: string;
   email: string;
   profile: UserProfileDetails;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface UserProfileDetails {
@@ -25,6 +25,6 @@ export interface UserProfileDetails {
   address: string;
   longitude: number;
   latitude: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

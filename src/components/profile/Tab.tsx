@@ -14,7 +14,6 @@ import { UserProfile } from '@/lib/queries/server/user/types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function Tab({ userProfile }: { userProfile: UserProfile }) {
-  console.log({ userProfile });
   return (
     <div className='w-full'>
       <div className='mb-5 border-b border-neutral-mid/40 pb-5 flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between'>

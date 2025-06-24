@@ -1,14 +1,24 @@
+'use client';
 import { Container } from '@/components/common/Container';
 import Tab from '@/components/profile/Tab';
-import { getUserProfile } from '@/lib/queries/server/user';
+import TabSkeleton from '@/components/profile/TabSkeleton';
+import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 
-export default async function UserProfilePage() {
-  const userProfile = await getUserProfile();
+export default function UserProfilePage() {
+  const { data: userProfile, isLoading, error } = useGetProfile();
 
-  if (!userProfile.success || !userProfile.data) {
+  if (isLoading) {
+    return (
+      <Container>
+        <TabSkeleton />
+      </Container>
+    );
+  }
+
+  if (error || !userProfile?.data) {
     return (
       <div className='text-center text-error-main text-xl py-20 flex items-center justify-center'>
-        Error: {userProfile?.message || 'User profile not found'}
+        Error: {error?.message || 'User profile not found'}
       </div>
     );
   }
