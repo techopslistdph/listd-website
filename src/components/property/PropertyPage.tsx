@@ -26,8 +26,8 @@ export function PropertyPage({
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className='min-h-screen container xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 sm:px-0 py-5 sm:pt-5'>
-      <div className='block sm:hidden'>
+    <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
+      <div className='sm:block lg:hidden'>
         <PropertyTopBar
           listingTypes={listingTypes}
           onViewChange={setView}
@@ -37,8 +37,8 @@ export function PropertyPage({
       </div>
       {sidebarOpen && <PropertySidebar />}
       {/* Main Content */}
-      <main className='flex-1'>
-        <div className='hidden sm:block mb-5'>
+      <main className='flex-1 lg:min-w-140'>
+        <div className='hidden sm:hidden lg:block mb-5'>
           <PropertyTopBar
             listingTypes={listingTypes}
             isSidebarOpen={sidebarOpen}
@@ -57,7 +57,7 @@ export function PropertyPage({
             </div>
           </>
         ) : view === 'list' ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
             {properties.map((property, idx) => (
               <PropertyCard
                 key={idx}

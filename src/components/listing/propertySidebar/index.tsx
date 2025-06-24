@@ -98,7 +98,7 @@ const PropertySidebar = () => {
   };
 
   return (
-    <aside className='sm:max-w-80 pt-5 flex flex-col gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
+    <aside className='pt-5 flex flex-col lg:max-w-74 xl:max-w-85 gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
       {showBedroomBathroomFilters && (
         <>
           <NumberFilter
@@ -130,13 +130,13 @@ const PropertySidebar = () => {
       <InputFilter />
       <SelectFilter />
 
-      <div className='flex gap-2'>
-        <Button className='px-4' onClick={handleApplyFilters}>
+      <div className='flex flex-col xl:flex-row gap-2'>
+        <Button className='flex px-4 justify-center' onClick={handleApplyFilters}>
           Apply Filters
         </Button>
         <Button
           variant='outlined'
-          className='px-4'
+          className='flex px-4 justify-center'
           onClick={handleResetFilters}
         >
           Reset Filters
