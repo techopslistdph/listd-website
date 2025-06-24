@@ -23,7 +23,8 @@ export default async function PropertyPage({
     property: propertyType,
     id: resolvedParams.id,
   });
-  if (!propertyDetail) return notFound();
+  console.log('propertyDetail', propertyDetail);
+  if (!propertyDetail.success || !propertyDetail.data) return notFound();
 
   const {
     property: {
@@ -36,9 +37,9 @@ export default async function PropertyPage({
       latitude,
       longitude,
     },
-  } = propertyDetail;
+  } = propertyDetail.data;
 
-  const { features, details } = processPropertyDetails(propertyDetail);
+  const { features, details } = processPropertyDetails(propertyDetail.data);
   const agent = {
     name: scrapeContactInfo?.agentName,
     whatsapp: scrapeContactInfo?.phoneNumber?.replace(/\D/g, '') || '',

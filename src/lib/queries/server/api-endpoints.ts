@@ -60,7 +60,7 @@ export const API_ENDPOINTS = {
     create: `${API_BASE_URL}/warehouses`,
     complete: `${API_BASE_URL}/warehouses/complete`,
     draft: `${API_BASE_URL}/warehouses/draft`,
-    byId: (id: string) => `/warehouses/${id}`,
+    byId: (id: string) => `${API_BASE_URL}/warehouses/${id}`,
     update: (id: string) => `${API_BASE_URL}/warehouses/${id}`,
     delete: (id: string) => `${API_BASE_URL}/warehouses/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/warehouses/user/${userId}`,

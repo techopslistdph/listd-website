@@ -1,4 +1,4 @@
-import { api } from '@/lib/fetch-wrapper';
+import { api, ApiError } from '@/lib/fetch-wrapper';
 import { ErrorResponse } from '../type';
 import { PropertyDetailResponse, PropertyListResponse } from './type';
 import { API_ENDPOINTS } from '../api-endpoints';
@@ -45,43 +45,99 @@ const getLots = async (queryParams: string) => {
 };
 
 const condominiumById = async (id: string) => {
-  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
-    `${API_ENDPOINTS.condominium.byId(id)}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
+  try {
+    const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+      `${API_ENDPOINTS.condominium.byId(id)}`
+    );
+
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message: 'An unexpected error occurred',
+    };
   }
-  return response;
 };
 
 const houseAndLotById = async (id: string) => {
-  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
-    `${API_ENDPOINTS.houseAndLot.byId(id)}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
+  try {
+    const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+      `${API_ENDPOINTS.houseAndLot.byId(id)}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+
+    return {
+      success: false,
+      data: null,
+      message: 'An unexpected error occurred',
+    };
   }
-  return response;
 };
 
 const warehouseById = async (id: string) => {
-  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
-    `${API_ENDPOINTS.warehouse.byId(id)}`
+  console.log('id', id);
+  console.log(
+    'API_ENDPOINTS.warehouse.byId(id)',
+    API_ENDPOINTS.warehouse.byId(id)
   );
-  if ('error' in response) {
-    throw new Error(response.error.message);
+  try {
+    const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+      `${API_ENDPOINTS.warehouse.byId(id)}`
+    );
+
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message: 'An unexpected error occurred',
+    };
   }
-  return response;
 };
 
 const vacantLotById = async (id: string) => {
-  const response = await api.get<PropertyDetailResponse | ErrorResponse>(
-    `${API_ENDPOINTS.vacantLot.byId(id)}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
+  try {
+    const response = await api.get<PropertyDetailResponse | ErrorResponse>(
+      `${API_ENDPOINTS.vacantLot.byId(id)}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message: 'An unexpected error occurred',
+    };
   }
-  return response;
 };
 
 export const PROPERTY_TYPES_MAPPING = {
@@ -136,6 +192,7 @@ export const getPropertyById = async ({
   id: string;
 }) => {
   const fetchProperty = PROPERTY_TYPES_BY_ID_MAPPING[property];
+  console.log('property', property);
   const response = await fetchProperty(id);
-  return response.data;
+  return response;
 };
