@@ -1,13 +1,8 @@
-export const API_BASE_URL = `${process.env.BACKEND_API_HOST}/api/${process.env.BACKEND_API_VERSION}`;
+export const API_BASE_URL = `${process.env.BACKEND_API_HOST}/api`;
 export const API_ENDPOINTS = {
   users: {
-    me: '/users/me',
-    byId: (id: string) => `${API_BASE_URL}/users/${id}`,
-    update: `${API_BASE_URL}/users/update`,
-    updateAvatar: `${API_BASE_URL}/users/update-avatar`,
-    updateCover: `${API_BASE_URL}/users/update-cover`,
-    updatePassword: `${API_BASE_URL}/users/update-password`,
-    delete: `${API_BASE_URL}/users/delete`,
+    me: `${API_BASE_URL}/users/profile`,
+    update: `${API_BASE_URL}/users/profile`,
   },
 
   listingTypes: {
@@ -48,16 +43,16 @@ export const API_ENDPOINTS = {
   },
 
   houseAndLot: {
-    list: `${API_BASE_URL}/house-and-lots`,
-    create: `${API_BASE_URL}/house-and-lots`,
-    complete: `${API_BASE_URL}/house-and-lots/complete`,
-    draft: `${API_BASE_URL}/house-and-lots/draft`,
-    byId: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
-    update: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
-    delete: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
-    byUser: (userId: string) => `${API_BASE_URL}/house-and-lots/user/${userId}`,
+    list: `${API_BASE_URL}/house-and-lot`,
+    create: `${API_BASE_URL}/house-and-lot`,
+    complete: `${API_BASE_URL}/house-and-lot/complete`,
+    draft: `${API_BASE_URL}/house-and-lot/draft`,
+    byId: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
+    update: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
+    delete: (id: string) => `${API_BASE_URL}/house-and-lot/${id}`,
+    byUser: (userId: string) => `${API_BASE_URL}/house-and-lot/user/${userId}`,
     drafts: (userId: string) =>
-      `${API_BASE_URL}/house-and-lots/user/${userId}/drafts`,
+      `${API_BASE_URL}/house-and-lot/user/${userId}/drafts`,
   },
 
   warehouse: {
@@ -104,6 +99,11 @@ export const API_ENDPOINTS = {
     status: (jobId: string) => `${API_BASE_URL}/jobs/${jobId}/status`,
   },
 
+  nearby: {
+    list: (lat: number, lng: number) =>
+      `${API_BASE_URL}/properties/nearby?latitude=${lat}&longitude=${lng}`,
+  },
+
   amenities: {
     list: `${API_BASE_URL}/amenities`,
     create: `${API_BASE_URL}/amenities`,
@@ -118,6 +118,13 @@ export const API_ENDPOINTS = {
     byId: (id: string) => `${API_BASE_URL}/features/${id}`,
     update: (id: string) => `${API_BASE_URL}/features/${id}`,
     delete: (id: string) => `${API_BASE_URL}/features/${id}`,
+  },
+
+  building: {
+    autoComplete: `${API_BASE_URL}/buildings/autocomplete`,
+    details: (placeId: string) =>
+      `${API_BASE_URL}/buildings/details/${placeId}`,
+    nearby: `${API_BASE_URL}/buildings/nearby`,
   },
 } as const;
 
