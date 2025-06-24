@@ -7,7 +7,6 @@ const getCondominiums = async (queryParams: string) => {
   const response = await api.get<PropertyListResponse | ErrorResponse>(
     `${API_ENDPOINTS.condominium.list}?${queryParams}`
   );
-  console.log({ url: `${API_ENDPOINTS.condominium.list}?${queryParams}` });
   if ('error' in response) {
     throw new Error(response.error.message);
   }

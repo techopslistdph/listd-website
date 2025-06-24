@@ -1,6 +1,7 @@
 export interface PropertyDetailResponse {
   success: boolean;
   data: PropertyDetail;
+  message?: string;
 }
 
 export interface PropertyListResponse {

@@ -42,7 +42,7 @@ export default function NavigationBar({
         </Sheet>
         <Link href={'/'}>
           {' '}
-          <p className='text-2xl font-bold text-priary-main'>Listd</p>
+          <p className='text-2xl font-bold text-primary-main'>Listd</p>
         </Link>
         <div className='hidden md:flex items-center gap-10 ml-8'>
           {navigtionItems.map(item => (

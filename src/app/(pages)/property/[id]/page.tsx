@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import pinIcon from '../../../../../public/images/icons/pin.svg';
 import { PropertyHeader } from '@/components/listing/PropertyHeader';
 import PropertyFeatures from '@/components/listing/PropertyFeatures';
@@ -8,6 +7,7 @@ import { PropertyImages } from '@/components/listing/PropertyImages';
 import { processPropertyDetails } from '@/utils/property';
 import { AgentCard } from '@/components/listing/AgentCard';
 import { PropertyMap } from '@/components/listing/PropertyMap';
+import Link from 'next/link';
 
 export default async function PropertyPage({
   params,
@@ -23,8 +23,23 @@ export default async function PropertyPage({
     property: propertyType,
     id: resolvedParams.id,
   });
-  console.log('propertyDetail', propertyDetail);
-  if (!propertyDetail.success || !propertyDetail.data) return notFound();
+  if (!propertyDetail.success || !propertyDetail.data)
+    return (
+      <div className='flex flex-col items-center justify-center h-[80vh]'>
+        <h1 className='text-4xl font-bold text-primary-main capitalize mb-2'>
+          {propertyType} not found
+        </h1>
+        <p className=' text-neutral text-lg'>
+          The property you are looking for does not exist.
+        </p>
+        <Link
+          href='/'
+          className=' bg-primary-main rounded-xl py-4 px-8 text-white mt-5 hover:bg-secondary-main transition-all duration-300'
+        >
+          Go back to home
+        </Link>
+      </div>
+    );
 
   const {
     property: {
