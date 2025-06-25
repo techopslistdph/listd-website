@@ -25,8 +25,6 @@ export function PropertyPage({
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  console.log('properties', properties);
-
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>

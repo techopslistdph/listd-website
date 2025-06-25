@@ -4,9 +4,16 @@ export interface PropertyDetailResponse {
   message?: string;
 }
 
+export interface NearbyPropertiesResponse {
+  success: boolean;
+  data: PropertyDetail[];
+  message?: string;
+}
+
 export interface PropertyListResponse {
   success: boolean;
   data: PropertyDetail[];
+  message?: string;
   meta: PaginationMeta;
 }
 
@@ -37,7 +44,7 @@ export interface PropertyDetail {
   property: PropertyDetails;
 }
 
-interface PropertyDetails {
+export interface PropertyDetails {
   id: string;
   listingTitle: string;
   listingPrice: number;
