@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from 'next/image';
 import Link from 'next/link';
 import pinIcon from '../../../public/images/icons/pin.svg';
@@ -9,6 +10,8 @@ import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { SearchParams } from '@/lib/queries/server/propety';
+import { useLikeProperty } from '@/lib/queries/hooks/use-property';
+import { useState } from 'react';
 
 // Utility function to format price
 const formatPrice = (price: number): string => {
@@ -32,6 +35,7 @@ export default function PropertyCard({
 }) {
   const {
     property: {
+      id: propertyId,
       images,
       listingTitle,
       listingPrice,
@@ -42,8 +46,25 @@ export default function PropertyCard({
     numberOfBathrooms,
     numberOfBedrooms,
     floorArea,
+    isLiked: initialIsLiked,
   } = propertyDetail;
 
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const { mutate: likeProperty } = useLikeProperty(propertyId);
+
+  const handleLikeProperty = () => {
+    setIsLiked(prev => !prev);
+    likeProperty(undefined, {
+      onSuccess: response => {
+        if (response.success && 'liked' in response) {
+          setIsLiked(response.liked);
+        }
+      },
+      onError: error => {
+        console.error('Failed to like property:', error);
+      },
+    });
+  };
   if (view === 'map') {
     // Horizontal card for map view
     return (
@@ -51,7 +72,7 @@ export default function PropertyCard({
         <div className=' rounded-2xl overflow-hidden w-full sm:w-[295px] md:w-full h-[200px] sm:h-[280px]'>
           <Link href={`/property/${id}?property=${propertyType}`}>
             <img
-              src={images[0].imageUrl}
+              src={images[0]?.imageUrl}
               alt={listingTitle}
               width={195}
               height={240}
@@ -63,15 +84,24 @@ export default function PropertyCard({
         <div className='w-full flex flex-col sm:h-[280px] justify-around col-span-2'>
           <div className='relative'>
             <button
+              onClick={() => handleLikeProperty()}
               type='button'
-              className='absolute -top-2 sm:-top-5 right-4 bg-white rounded-full p-2 sm:p-3 z-20 flex items-center justify-center shadow-md hover:bg-primary-main/10 transition-colors'
+              className='absolute -top-2 sm:-top-5 right-4 bg-white rounded-full p-2 sm:p-3 z-20 flex items-center justify-center shadow-md hover:bg-primary-main/10 transition-colors cursor-pointer'
               aria-label='Favorite'
             >
-              <Heart
-                className='w-5 h-5 text-primary-main'
-                strokeWidth={3}
-                fill='white'
-              />
+              {isLiked ? (
+                <Heart
+                  className='w-5 h-5 text-primary-main'
+                  strokeWidth={3}
+                  fill='text-primary-main'
+                />
+              ) : (
+                <Heart
+                  className='w-5 h-5 text-primary-main'
+                  strokeWidth={3}
+                  fill='white'
+                />
+              )}
             </button>
 
             {/* Wrap only the title/content block in the Link */}
@@ -153,7 +183,13 @@ export default function PropertyCard({
     <div className='block'>
       <div className='mx-auto rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer bg-white relative'>
         <div className='relative'>
-          <PropertyImages images={images} title={listingTitle} cardMode />
+          <PropertyImages
+            images={images}
+            title={listingTitle}
+            cardMode
+            handleLikeProperty={handleLikeProperty}
+            isLiked={isLiked}
+          />
         </div>
         <div className='p-4'>
           {/* Only wrap the title and property info in the Link */}

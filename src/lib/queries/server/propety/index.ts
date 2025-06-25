@@ -2,10 +2,19 @@ import { api, ApiError } from '@/lib/fetch-wrapper';
 import { ErrorResponse } from '../type';
 import { PropertyDetailResponse, PropertyListResponse } from './type';
 import { API_ENDPOINTS } from '../api-endpoints';
+import { getClerkToken } from '@/lib/auth/clerk';
 
 const getCondominiums = async (queryParams: string) => {
+  const { jwt: token } = await getClerkToken();
+
+  api.setAuthToken(token);
   const response = await api.get<PropertyListResponse | ErrorResponse>(
-    `${API_ENDPOINTS.condominium.list}?${queryParams}`
+    `${API_ENDPOINTS.condominium.list}?${queryParams}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   if ('error' in response) {
     throw new Error(response.error.message);
@@ -14,6 +23,9 @@ const getCondominiums = async (queryParams: string) => {
 };
 
 const getHouseAndLots = async (queryParams: string) => {
+  const { jwt: token } = await getClerkToken();
+
+  api.setAuthToken(token);
   const response = await api.get<PropertyListResponse | ErrorResponse>(
     `${API_ENDPOINTS.houseAndLot.list}?${queryParams}`
   );
@@ -24,6 +36,9 @@ const getHouseAndLots = async (queryParams: string) => {
 };
 
 const getWarehouses = async (queryParams: string) => {
+  const { jwt: token } = await getClerkToken();
+
+  api.setAuthToken(token);
   const response = await api.get<PropertyListResponse | ErrorResponse>(
     `${API_ENDPOINTS.warehouse.list}?${queryParams}`
   );
@@ -34,6 +49,9 @@ const getWarehouses = async (queryParams: string) => {
 };
 
 const getLots = async (queryParams: string) => {
+  const { jwt: token } = await getClerkToken();
+
+  api.setAuthToken(token);
   const response = await api.get<PropertyListResponse | ErrorResponse>(
     `${API_ENDPOINTS.vacantLot.list}?${queryParams}`
   );
@@ -191,7 +209,6 @@ export const getPropertyById = async ({
   id: string;
 }) => {
   const fetchProperty = PROPERTY_TYPES_BY_ID_MAPPING[property];
-  console.log('property', property);
   const response = await fetchProperty(id);
   return response;
 };

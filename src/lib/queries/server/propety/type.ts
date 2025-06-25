@@ -10,6 +10,16 @@ export interface NearbyPropertiesResponse {
   message?: string;
 }
 
+export type PropertyLikeResponse = {
+  success: boolean;
+  data: {
+    propertyId: string;
+    liked: boolean;
+  };
+  liked: boolean;
+  message: string;
+};
+
 export interface PropertyListResponse {
   success: boolean;
   data: PropertyDetail[];
