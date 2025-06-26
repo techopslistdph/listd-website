@@ -16,8 +16,8 @@ import gridIcon from '@/../public/images/photos.svg';
 import { PropertyImage } from '@/lib/queries/server/propety/type';
 
 interface PropertyImagesProps {
-  isLiked: boolean;
-  handleLikeProperty: () => void;
+  isLiked?: boolean;
+  handleLikeProperty?: () => void;
   images: PropertyImage[];
   title: string;
   cardMode?: boolean;
@@ -27,8 +27,8 @@ export function PropertyImages({
   images,
   title,
   cardMode = false,
-  isLiked,
-  handleLikeProperty,
+  isLiked = false,
+  handleLikeProperty = () => {},
 }: PropertyImagesProps) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -86,7 +86,7 @@ export function PropertyImages({
         <button
           onClick={handleLikeProperty}
           type='button'
-          className='absolute top-4 right-4 bg-white rounded-full p-3 z-20 flex items-center justify-center shadow-md hover:bg-primary-main/10 transition-colors'
+          className='absolute top-4 right-4 bg-white rounded-full p-2 sm:p-3 z-20 flex items-center justify-center shadow-md hover:bg-primary-main transition-colors cursor-pointer'
           aria-label='Favorite'
         >
           {isLiked ? (

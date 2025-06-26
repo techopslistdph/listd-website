@@ -1,5 +1,5 @@
 import Image, { StaticImageData } from 'next/image';
-import { Heart, Share2, Trash2 } from 'lucide-react';
+import { Heart, Share2 } from 'lucide-react';
 import { formatPrice } from '@/utils/numberUtils';
 
 interface PropertyHeaderProps {
@@ -8,6 +8,8 @@ interface PropertyHeaderProps {
   isVerified: boolean;
   location: string;
   pinIcon: StaticImageData;
+  isLiked: boolean;
+  handleLikeProperty: () => void;
 }
 
 export function PropertyHeader({
@@ -16,6 +18,8 @@ export function PropertyHeader({
   isVerified,
   location,
   pinIcon,
+  isLiked = false,
+  handleLikeProperty = () => {},
 }: PropertyHeaderProps) {
   return (
     <div className='flex flex-col gap-2 p-5 rounded-lg mb-2 border'>
@@ -31,20 +35,17 @@ export function PropertyHeader({
           <button
             type='button'
             className='hover:text-primary-main cursor-pointer [&>svg]:hover:fill-primary-main'
+            onClick={() => handleLikeProperty()}
           >
-            <Heart className='w-5 h-5' />
+            <Heart
+              className={`w-5 h-5 ${isLiked ? 'fill-primary-main' : ''}`}
+            />
           </button>
           <button
             type='button'
             className='hover:text-primary-main cursor-pointer [&>svg]:hover:fill-primary-main'
           >
             <Share2 className='w-5 h-5' />
-          </button>
-          <button
-            type='button'
-            className='hover:text-primary-main cursor-pointer [&>svg]:hover:fill-primary-main'
-          >
-            <Trash2 className='w-5 h-5' />
           </button>
         </div>
       </div>

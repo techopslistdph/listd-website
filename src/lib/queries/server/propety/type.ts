@@ -34,7 +34,6 @@ export interface PropertyDetail {
   floorArea: number | null;
   ceilingHeight: number | null;
   loadingDocks: number | null;
-  isLiked: boolean;
   numberOfBedrooms: number | null;
   numberOfBathrooms: number | null;
   numberOfParkingSpaces: number | null;
@@ -52,6 +51,7 @@ export interface PropertyDetail {
   yearBuilt: number | null;
   furnishingStatus: string | null;
   property: PropertyDetails;
+  isLiked: boolean;
 }
 
 export interface PropertyDetails {

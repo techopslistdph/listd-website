@@ -51,7 +51,7 @@ export default function PropertyDescription({
       </button>
       {open && (
         <div className=' mt-5'>
-          <div className='mb-5 text-neutral-mid'>{description}</div>
+          <div className='mb-5 text-neutral-main'>{description}</div>
           {details.length > 0 && (
             <div className='flex gap-8  flex-wrap items-center'>
               {details?.map((item, idx) => {

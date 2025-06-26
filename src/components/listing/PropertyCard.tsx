@@ -12,6 +12,7 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { SearchParams } from '@/lib/queries/server/propety';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 import { useState } from 'react';
+import { User } from '@clerk/nextjs/server';
 
 // Utility function to format price
 const formatPrice = (price: number): string => {
@@ -28,10 +29,12 @@ export default function PropertyCard({
   propertyDetail,
   view,
   propertyType,
+  user,
 }: {
   propertyDetail: PropertyDetail;
   view?: 'list' | 'map';
   propertyType: SearchParams['property'];
+  user: User | null | undefined;
 }) {
   const {
     property: {
@@ -53,6 +56,10 @@ export default function PropertyCard({
   const { mutate: likeProperty } = useLikeProperty(propertyId);
 
   const handleLikeProperty = () => {
+    if (!user) {
+      window.open('/login', '_blank');
+      return;
+    }
     setIsLiked(prev => !prev);
     likeProperty(undefined, {
       onSuccess: response => {
@@ -65,6 +72,7 @@ export default function PropertyCard({
       },
     });
   };
+
   if (view === 'map') {
     // Horizontal card for map view
     return (

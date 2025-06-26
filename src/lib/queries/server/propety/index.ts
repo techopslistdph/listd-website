@@ -4,65 +4,146 @@ import { PropertyDetailResponse, PropertyListResponse } from './type';
 import { API_ENDPOINTS } from '../api-endpoints';
 import { getClerkToken } from '@/lib/auth/clerk';
 
-const getCondominiums = async (queryParams: string) => {
-  const { jwt: token } = await getClerkToken();
-
-  api.setAuthToken(token);
-  const response = await api.get<PropertyListResponse | ErrorResponse>(
-    `${API_ENDPOINTS.condominium.list}?${queryParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
-  }
-  return response.data;
-};
-
-const getHouseAndLots = async (queryParams: string) => {
-  const { jwt: token } = await getClerkToken();
-
-  api.setAuthToken(token);
-  const response = await api.get<PropertyListResponse | ErrorResponse>(
-    `${API_ENDPOINTS.houseAndLot.list}?${queryParams}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
-  }
-  return response.data;
-};
-
-const getWarehouses = async (queryParams: string) => {
-  const { jwt: token } = await getClerkToken();
-
-  api.setAuthToken(token);
-  const response = await api.get<PropertyListResponse | ErrorResponse>(
-    `${API_ENDPOINTS.warehouse.list}?${queryParams}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
-  }
-  return response.data;
-};
-
-const getLots = async (queryParams: string) => {
-  const { jwt: token } = await getClerkToken();
-
-  api.setAuthToken(token);
-  const response = await api.get<PropertyListResponse | ErrorResponse>(
-    `${API_ENDPOINTS.vacantLot.list}?${queryParams}`
-  );
-  if ('error' in response) {
-    throw new Error(response.error.message);
-  }
-  return response.data;
-};
-
-const condominiumById = async (id: string) => {
+const getCondominiums = async (
+  queryParams: string,
+  sessionId: string | null
+) => {
   try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
+
+    const response = await api.get<PropertyListResponse | ErrorResponse>(
+      `${API_ENDPOINTS.condominium.list}?${queryParams}`
+    );
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response.error.message,
+      };
+    }
+    return {
+      success: true,
+      ...response.data,
+      message: 'Properties fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+const getHouseAndLots = async (
+  queryParams: string,
+  sessionId: string | null
+) => {
+  try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
+
+    const response = await api.get<PropertyListResponse | ErrorResponse>(
+      `${API_ENDPOINTS.houseAndLot.list}?${queryParams}`
+    );
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response.error.message,
+      };
+    }
+    return {
+      success: true,
+      ...response.data,
+      message: 'Properties fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+const getWarehouses = async (queryParams: string, sessionId: string | null) => {
+  try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
+
+    const response = await api.get<PropertyListResponse | ErrorResponse>(
+      `${API_ENDPOINTS.warehouse.list}?${queryParams}`
+    );
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response.error.message,
+      };
+    }
+    return {
+      success: true,
+      ...response.data,
+      message: 'Properties fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+const getLots = async (queryParams: string, sessionId: string | null) => {
+  try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
+
+    const response = await api.get<PropertyListResponse | ErrorResponse>(
+      `${API_ENDPOINTS.vacantLot.list}?${queryParams}`
+    );
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response.error.message,
+      };
+    }
+    return {
+      success: true,
+      ...response.data,
+      message: 'Properties fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+const condominiumById = async (id: string, sessionId: string | null) => {
+  try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
     const response = await api.get<PropertyDetailResponse | ErrorResponse>(
       `${API_ENDPOINTS.condominium.byId(id)}`
     );
@@ -84,8 +165,12 @@ const condominiumById = async (id: string) => {
   }
 };
 
-const houseAndLotById = async (id: string) => {
+const houseAndLotById = async (id: string, sessionId: string | null) => {
   try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
     const response = await api.get<PropertyDetailResponse | ErrorResponse>(
       `${API_ENDPOINTS.houseAndLot.byId(id)}`
     );
@@ -107,13 +192,12 @@ const houseAndLotById = async (id: string) => {
   }
 };
 
-const warehouseById = async (id: string) => {
-  console.log('id', id);
-  console.log(
-    'API_ENDPOINTS.warehouse.byId(id)',
-    API_ENDPOINTS.warehouse.byId(id)
-  );
+const warehouseById = async (id: string, sessionId: string | null) => {
   try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
     const response = await api.get<PropertyDetailResponse | ErrorResponse>(
       `${API_ENDPOINTS.warehouse.byId(id)}`
     );
@@ -135,8 +219,12 @@ const warehouseById = async (id: string) => {
   }
 };
 
-const vacantLotById = async (id: string) => {
+const vacantLotById = async (id: string, sessionId: string | null) => {
   try {
+    if (sessionId) {
+      const { jwt: token } = await getClerkToken();
+      api.setAuthToken(token);
+    }
     const response = await api.get<PropertyDetailResponse | ErrorResponse>(
       `${API_ENDPOINTS.vacantLot.byId(id)}`
     );
@@ -185,7 +273,10 @@ export type SearchParams = {
   maxFloorArea?: string;
 };
 
-export const getProperties = async ({ property, ...rest }: SearchParams) => {
+export const getProperties = async (
+  { property, ...rest }: SearchParams,
+  sessionId: string | null
+) => {
   const fetchProperties = PROPERTY_TYPES_MAPPING[property];
 
   const queryParams = new URLSearchParams();
@@ -195,20 +286,44 @@ export const getProperties = async ({ property, ...rest }: SearchParams) => {
     }
   });
 
-  const response = (await fetchProperties(
-    queryParams.toString()
-  )) as unknown as PropertyListResponse;
-  return response.data;
+  try {
+    const response = (await fetchProperties(
+      queryParams.toString(),
+      sessionId
+    )) as unknown as PropertyListResponse;
+
+    if (!response.success) {
+      return {
+        success: false,
+        data: null,
+        message: response.message,
+      };
+    }
+    return {
+      success: true,
+      data: response.data,
+      message: 'Properties fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
 };
 
 export const getPropertyById = async ({
   property,
   id,
+  sessionId,
 }: {
   property: SearchParams['property'];
   id: string;
+  sessionId: string | null;
 }) => {
   const fetchProperty = PROPERTY_TYPES_BY_ID_MAPPING[property];
-  const response = await fetchProperty(id);
+  const response = await fetchProperty(id, sessionId);
   return response;
 };
