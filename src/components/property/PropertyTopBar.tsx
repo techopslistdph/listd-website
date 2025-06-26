@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { View } from '@/components/property/PropertyPage';
+import { View } from '@/components/property/Properties';
 import { ListingType } from '@/lib/queries/server/home/type';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';

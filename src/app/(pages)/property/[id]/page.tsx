@@ -1,12 +1,8 @@
-import pinIcon from '../../../../../public/images/icons/pin.svg';
-import { PropertyHeader } from '@/components/listing/PropertyHeader';
-import PropertyFeatures from '@/components/listing/PropertyFeatures';
-import PropertyDescription from '@/components/listing/PropertyDescription';
+import Property from '@/components/property/Property';
 import { getPropertyById, SearchParams } from '@/lib/queries/server/propety';
-import { PropertyImages } from '@/components/listing/PropertyImages';
 import { processPropertyDetails } from '@/utils/property';
-import { AgentCard } from '@/components/listing/AgentCard';
-import { PropertyMap } from '@/components/listing/PropertyMap';
+import { auth } from '@clerk/nextjs/server';
+
 import Link from 'next/link';
 
 export default async function PropertyPage({
@@ -18,10 +14,12 @@ export default async function PropertyPage({
 }) {
   const resolvedParams = await params;
   const { property: propertyType } = await searchParams;
+  const { userId, sessionId } = await auth();
 
   const propertyDetail = await getPropertyById({
     property: propertyType,
     id: resolvedParams.id,
+    sessionId: sessionId || null,
   });
   if (!propertyDetail.success || !propertyDetail.data)
     return (
@@ -51,9 +49,10 @@ export default async function PropertyPage({
       scrapeContactInfo,
       latitude,
       longitude,
+      id: propertyId,
     },
+    isLiked: initialIsLiked,
   } = propertyDetail.data;
-
   const { features, details } = processPropertyDetails(propertyDetail.data);
   const agent = {
     name: scrapeContactInfo?.agentName,
@@ -62,48 +61,24 @@ export default async function PropertyPage({
     isVerified: true,
     position: scrapeContactInfo?.agencyName || 'Real Estate Agent',
   };
+
   return (
     <div className='flex flex-col min-h-screen bg-white text-black my-10'>
-      <div className='container mx-auto px-5 lg:px-0 max-w-[1300px]'>
-        <div>
-          <PropertyImages images={images} title={listingTitle} />
-          <div className='grid grid-cols-1 lg:grid-cols-3 md:gap-6 mt-10'>
-            <div className='col-span-2'>
-              {/* Property Header */}
-              <PropertyHeader
-                price={listingPrice}
-                title={listingTitle}
-                isVerified={!!scrapeContactInfo?.agentName}
-                location={address}
-                pinIcon={pinIcon}
-              />
-              {/* Features */}
-              {features.length > 0 && <PropertyFeatures features={features} />}
-              {/* Description */}
-              {listingDescription && details && (
-                <PropertyDescription
-                  description={listingDescription}
-                  details={details}
-                />
-              )}
-              {/* Map */}
-              {latitude !== 0 && longitude !== 0 && (
-                <PropertyMap
-                  latitude={latitude}
-                  longitude={longitude}
-                  title={listingTitle}
-                />
-              )}
-            </div>
-            {/* Right Column - Agent Card */}
-            {agent?.name && (
-              <div className='lg:col-span-1'>
-                <AgentCard agent={agent} />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <Property
+        propertyId={propertyId}
+        userId={userId || ''}
+        agent={agent}
+        features={features}
+        details={details}
+        listingDescription={listingDescription}
+        isPropertyLiked={initialIsLiked}
+        listingPrice={listingPrice}
+        listingTitle={listingTitle}
+        address={address}
+        latitude={latitude}
+        longitude={longitude}
+        images={images}
+      />
     </div>
   );
 }

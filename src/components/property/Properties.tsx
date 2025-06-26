@@ -1,29 +1,56 @@
 'use client';
 import PropertyCard from '@/components/listing/PropertyCard';
 // import PropertySidebar from '@/components/listing/PropertySidebar';
-import PropertyTopBar from '@/components/listing/PropertyTopBar';
+import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
 // import PropertyMap from '@/components/map/PropertyMap';
 
-import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import {
+  PropertyDetail,
+  PropertyListResponse,
+} from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
-import PropertySidebar from '../listing/propertySidebar';
+import PropertySidebar from './propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
 import PropertyMap from '../map/PropertyMap';
+import { useUser } from '@clerk/nextjs';
+import { User } from '@clerk/nextjs/server';
 
 export type View = 'list' | 'map';
 
-export function PropertyPage({
+export function Properties({
   properties,
   listingTypes,
   propertyType,
 }: {
-  properties: PropertyDetail[];
+  properties: PropertyListResponse;
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user } = useUser();
+
+  // filter properties that have images and has valid image url
+  const filterProperties = properties.data.filter(
+    (property: PropertyDetail) => {
+      // Check if property has images
+      if (property.property.images.length === 0) {
+        return false;
+      }
+
+      // Check if ALL images have valid HTTP/HTTPS URLs
+      const allImagesValid = property.property.images.every(image => {
+        const imageUrl = image?.imageUrl;
+        return (
+          imageUrl &&
+          (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))
+        );
+      });
+
+      return allImagesValid;
+    }
+  );
 
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
@@ -46,11 +73,16 @@ export function PropertyPage({
             onViewChange={setView}
           />
         </div>
+        {!properties.success && (
+          <div className='flex justify-center items-center py-10 text-error-main'>
+            <p className='text-lg'>Error: {properties?.message}</p>
+          </div>
+        )}
         {/* Property Cards Grid */}
-        {properties.length === 0 ? (
+        {filterProperties?.length === 0 ? (
           <>
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={properties} minHeight='480px' />
+              <PropertyMap properties={filterProperties} minHeight='480px' />
             </div>
             <div className='text-center text-gray-500 py-20 text-lg'>
               No properties found matching your filters.
@@ -58,8 +90,9 @@ export function PropertyPage({
           </>
         ) : view === 'list' ? (
           <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-            {properties.map((property, idx) => (
+            {filterProperties?.map((property, idx) => (
               <PropertyCard
+                user={user as unknown as User}
                 key={idx}
                 propertyDetail={property}
                 view='list'
@@ -71,11 +104,12 @@ export function PropertyPage({
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={properties} minHeight='480px' />
+              <PropertyMap properties={filterProperties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
-              {properties.map((property, idx) => (
+              {filterProperties?.map((property, idx) => (
                 <PropertyCard
+                  user={user as unknown as User}
                   key={idx}
                   propertyDetail={property}
                   view='map'
