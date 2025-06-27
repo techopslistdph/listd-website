@@ -14,17 +14,6 @@ import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 import { useState } from 'react';
 import { User } from '@clerk/nextjs/server';
 
-// Utility function to format price
-const formatPrice = (price: number): string => {
-  if (price >= 1000000) {
-    return (price / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
-  } else if (price >= 1000) {
-    return (price / 1000).toFixed(1).replace(/\.?0+$/, '') + 'K';
-  } else {
-    return price.toString();
-  }
-};
-
 export default function PropertyCard({
   propertyDetail,
   view,
@@ -44,6 +33,7 @@ export default function PropertyCard({
       listingPrice,
       address,
       scrapeContactInfo,
+      listingPriceFormatted,
     },
     id,
     numberOfBathrooms,
@@ -53,7 +43,7 @@ export default function PropertyCard({
   } = propertyDetail;
 
   const [isLiked, setIsLiked] = useState(initialIsLiked);
-  const { mutate: likeProperty } = useLikeProperty(propertyId);
+  const { mutate: likeProperty } = useLikeProperty();
 
   const handleLikeProperty = () => {
     if (!user) {
@@ -61,7 +51,7 @@ export default function PropertyCard({
       return;
     }
     setIsLiked(prev => !prev);
-    likeProperty(undefined, {
+    likeProperty(propertyId, {
       onSuccess: response => {
         if (response.success && 'liked' in response) {
           setIsLiked(response.liked);
@@ -69,6 +59,7 @@ export default function PropertyCard({
       },
       onError: error => {
         console.error('Failed to like property:', error);
+        setIsLiked(initialIsLiked);
       },
     });
   };
@@ -115,7 +106,7 @@ export default function PropertyCard({
             {/* Wrap only the title/content block in the Link */}
             <Link href={`/property/${id}?property=${propertyType}`}>
               <div className='text-xl font-extrabold text-primary-main mb-1'>
-                ₱ {formatPrice(listingPrice)}
+                {listingPriceFormatted}
               </div>
               <div className='text-lg font-semibold text-black mb-1 truncate'>
                 {listingTitle}
@@ -208,7 +199,7 @@ export default function PropertyCard({
               </div>
               {listingPrice && (
                 <div className='font-extrabold text-lg text-primary-main'>
-                  {formatPrice(listingPrice)}
+                  {listingPriceFormatted}
                 </div>
               )}
             </div>

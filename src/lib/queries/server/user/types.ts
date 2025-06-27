@@ -1,6 +1,10 @@
 export interface UserProfileResponse {
   success: boolean;
   data: UserProfile;
+  message: string;
+  error?: {
+    message: string;
+  };
 }
 
 export interface UserProfile {

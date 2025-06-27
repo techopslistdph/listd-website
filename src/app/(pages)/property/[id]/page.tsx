@@ -44,7 +44,7 @@ export default async function PropertyPage({
       images,
       listingDescription,
       listingTitle,
-      listingPrice,
+      listingPriceFormatted,
       address,
       scrapeContactInfo,
       latitude,
@@ -72,7 +72,7 @@ export default async function PropertyPage({
         details={details}
         listingDescription={listingDescription}
         isPropertyLiked={initialIsLiked}
-        listingPrice={listingPrice}
+        listingPriceFormatted={listingPriceFormatted}
         listingTitle={listingTitle}
         address={address}
         latitude={latitude}

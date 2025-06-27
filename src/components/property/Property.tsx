@@ -16,7 +16,7 @@ export default function Property({
   features,
   details,
   listingDescription,
-  listingPrice,
+  listingPriceFormatted,
   listingTitle,
   address,
   latitude,
@@ -28,7 +28,7 @@ export default function Property({
 }: {
   isPropertyLiked: boolean;
   propertyId: string;
-  listingPrice: number;
+  listingPriceFormatted: string;
   listingTitle: string;
   address: string;
   latitude: number;
@@ -47,14 +47,14 @@ export default function Property({
   userId: string;
 }) {
   const [isLiked, setIsLiked] = useState(isPropertyLiked);
-  const { mutate: likeProperty } = useLikeProperty(propertyId);
+  const { mutate: likeProperty } = useLikeProperty();
   const handleLikeProperty = () => {
     if (!userId) {
       window.open('/login', '_blank');
       return;
     }
     setIsLiked(prev => !prev);
-    likeProperty(undefined, {
+    likeProperty(propertyId, {
       onSuccess: response => {
         if (response.success && 'liked' in response) {
           setIsLiked(response.liked);
@@ -62,6 +62,7 @@ export default function Property({
       },
       onError: error => {
         console.error('Failed to like property:', error);
+        setIsLiked(isPropertyLiked);
       },
     });
   };
@@ -75,7 +76,7 @@ export default function Property({
             <PropertyHeader
               isLiked={isLiked}
               handleLikeProperty={handleLikeProperty}
-              price={listingPrice}
+              listingPriceFormatted={listingPriceFormatted}
               title={listingTitle}
               isVerified={!!agent?.name}
               location={address}
