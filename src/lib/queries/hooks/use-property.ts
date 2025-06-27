@@ -6,7 +6,6 @@ import {
   PropertyListResponse,
 } from '../server/propety/type';
 import { SearchParams } from '../server/propety';
-// import { API_ENDPOINTS } from '../server/api-endpoints';
 
 const property = {
   getNearbyProperties: async (location: {
@@ -19,6 +18,13 @@ const property = {
         `/api/nearby-properties?latitude=${lat}&longitude=${lng}&pageSize=15`
       );
 
+      if ('error' in response) {
+        return {
+          success: false,
+          data: null,
+          message: response?.error?.message || 'An unexpected error occurred',
+        };
+      }
       return {
         success: true,
         ...response.data,
@@ -45,6 +51,7 @@ const property = {
       const response = await api.post<PropertyLikeResponse>(
         `/api/property-likes/${propertyId}/toggle`
       );
+
       return {
         success: true,
         ...response.data,
@@ -78,15 +85,22 @@ export const useNearbyProperties = (location: {
   });
 };
 
-export const useLikeProperty = (propertyId: string) => {
+export const useLikeProperty = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (propertyId: string) => {
       return property.likeProperty(propertyId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['properties'] });
+      // Invalidate user liked properties
+      queryClient.invalidateQueries({
+        queryKey: ['userLikedProperties'],
+      });
+
+      // Invalidate general properties queries
+      queryClient.invalidateQueries({
+        queryKey: ['properties'],
+      });
     },
   });
 };

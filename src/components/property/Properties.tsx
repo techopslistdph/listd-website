@@ -1,20 +1,16 @@
 'use client';
 import PropertyCard from '@/components/listing/PropertyCard';
-// import PropertySidebar from '@/components/listing/PropertySidebar';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
-// import PropertyMap from '@/components/map/PropertyMap';
 
-import {
-  PropertyDetail,
-  PropertyListResponse,
-} from '@/lib/queries/server/propety/type';
+import { PropertyListResponse } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from './propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
 import PropertyMap from '../map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
+import { filterProperties } from '@/lib/utils/filterProperty';
 
 export type View = 'list' | 'map';
 
@@ -32,25 +28,7 @@ export function Properties({
   const { user } = useUser();
 
   // filter properties that have images and has valid image url
-  const filterProperties = properties.data.filter(
-    (property: PropertyDetail) => {
-      // Check if property has images
-      if (property.property.images.length === 0) {
-        return false;
-      }
-
-      // Check if ALL images have valid HTTP/HTTPS URLs
-      const allImagesValid = property.property.images.every(image => {
-        const imageUrl = image?.imageUrl;
-        return (
-          imageUrl &&
-          (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))
-        );
-      });
-
-      return allImagesValid;
-    }
-  );
+  const filteredProperties = filterProperties(properties.data);
 
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
@@ -82,7 +60,7 @@ export function Properties({
         {filterProperties?.length === 0 ? (
           <>
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filterProperties} minHeight='480px' />
+              <PropertyMap properties={filteredProperties} minHeight='480px' />
             </div>
             <div className='text-center text-gray-500 py-20 text-lg'>
               No properties found matching your filters.
@@ -90,7 +68,7 @@ export function Properties({
           </>
         ) : view === 'list' ? (
           <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-            {filterProperties?.map((property, idx) => (
+            {filteredProperties?.map((property, idx) => (
               <PropertyCard
                 user={user as unknown as User}
                 key={idx}
@@ -104,10 +82,10 @@ export function Properties({
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filterProperties} minHeight='480px' />
+              <PropertyMap properties={filteredProperties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
-              {filterProperties?.map((property, idx) => (
+              {filteredProperties?.map((property, idx) => (
                 <PropertyCard
                   user={user as unknown as User}
                   key={idx}

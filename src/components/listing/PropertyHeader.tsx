@@ -1,9 +1,9 @@
 import Image, { StaticImageData } from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
-import { formatPrice } from '@/utils/numberUtils';
+import { handleShareProperty } from '@/lib/utils/ShareProperty';
 
 interface PropertyHeaderProps {
-  price: number;
+  listingPriceFormatted: string;
   title: string;
   isVerified: boolean;
   location: string;
@@ -13,7 +13,7 @@ interface PropertyHeaderProps {
 }
 
 export function PropertyHeader({
-  price,
+  listingPriceFormatted,
   title,
   isVerified,
   location,
@@ -25,9 +25,9 @@ export function PropertyHeader({
     <div className='flex flex-col gap-2 p-5 rounded-lg mb-2 border'>
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
-          {price && (
+          {listingPriceFormatted && (
             <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
-              ₱ {formatPrice(price)}
+              {listingPriceFormatted}
             </div>
           )}
         </div>
@@ -44,6 +44,9 @@ export function PropertyHeader({
           <button
             type='button'
             className='hover:text-primary-main cursor-pointer [&>svg]:hover:fill-primary-main'
+            onClick={() =>
+              handleShareProperty(title, location, listingPriceFormatted)
+            }
           >
             <Share2 className='w-5 h-5' />
           </button>

@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
     const url = new URL(request.url);
     let path = url.pathname.replace('/api', '');
     const search = url?.search;
-
     // if theres search params, add them to the url
     if (search) {
       const searchParams = new URLSearchParams(search);

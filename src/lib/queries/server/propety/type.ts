@@ -8,6 +8,9 @@ export interface NearbyPropertiesResponse {
   success: boolean;
   data: PropertyDetail[];
   message?: string;
+  error?: {
+    message: string;
+  };
 }
 
 export type PropertyLikeResponse = {
