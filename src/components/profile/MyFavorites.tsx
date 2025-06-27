@@ -56,11 +56,11 @@ export default function MyFavorites() {
   if (!userLikedProperties?.success) {
     return (
       <div>
-        <h1 className='text-2xl lg:text-3xl font-bold mb-1'>
-          Manage your Valuation
+        <h1 className='text-xl lg:text-2xl font-semibold mb-1'>
+          Manage your Favorites
         </h1>
-        <p className='text-sm lg:text-base text-gray-400 mb-4 lg:mb-6'>
-          Organize and update your property valuation
+        <p className='text-sm lg:text-base text-gray-400 mb-6'>
+          Organize and update your property listings
         </p>
         <div className='text-red-500 text-center mt-12 text-lg'>
           Error: {userLikedProperties?.message}
@@ -75,11 +75,11 @@ export default function MyFavorites() {
   return (
     <div className='lg:p-8'>
       {/* Title and subtitle */}
-      <h1 className='text-2xl lg:text-3xl font-bold mb-1'>
-        Manage your Valuation
+      <h1 className='text-xl lg:text-2xl font-semibold mb-1'>
+        Manage your Listing
       </h1>
-      <p className='text-sm lg:text-base text-gray-400 mb-4 lg:mb-6'>
-        Organize and update your property valuation
+      <p className='text-sm lg:text-base text-gray-400 mb-6'>
+        Organize and update your property listings
       </p>
       {/* Property List */}
       <div className='flex flex-col gap-4 lg:gap-8'>
