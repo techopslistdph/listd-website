@@ -6,9 +6,16 @@ export type PropertyType =
   | 'house and lot'
   | 'land';
 
+export type FurnishingStatus =
+  | 'fully_furnished'
+  | 'semi_furnished'
+  | 'unfurnished';
+
 export type FormData = {
   // Step 1
   propertyType: PropertyType;
+  propertyTypeId: string;
+  listingTypeId: string;
   buildingName: string;
   state: string;
   city: string;
@@ -23,18 +30,20 @@ export type FormData = {
   bedrooms: number;
   bathrooms: number;
   parking: number;
-  fullyFurnished: boolean;
+  fullyFurnished: FurnishingStatus;
   facingWest: boolean;
   amenities: string[];
   features: string[];
   security: string[];
+  longitude: number;
+  latitude: number;
   images: File[];
   // Step 2
   title: string;
   description: string;
   forSale: boolean;
   // Step 3
-  package: string;
+  package: 'free' | 'paid';
   period: string;
   grossAskingPrice: string;
   downPaymentPercent: string;
@@ -45,6 +54,8 @@ export type FormData = {
 
 export const initialFormData: FormData = {
   propertyType: 'condominium',
+  propertyTypeId: '',
+  listingTypeId: '',
   buildingName: '',
   state: '',
   city: '',
@@ -52,6 +63,8 @@ export const initialFormData: FormData = {
   street: '',
   zipCode: '',
   floorNo: '',
+  longitude: 0,
+  latitude: 0,
   floorArea: '',
   lotSize: '',
   lotType: [],
@@ -59,7 +72,7 @@ export const initialFormData: FormData = {
   bedrooms: 0,
   bathrooms: 0,
   parking: 0,
-  fullyFurnished: false,
+  fullyFurnished: 'unfurnished',
   facingWest: false,
   amenities: [],
   features: [],

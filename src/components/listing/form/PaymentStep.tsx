@@ -1,4 +1,3 @@
-import { FormData } from '../types';
 import { Input } from '@/components/ui/input';
 import { Label } from '../../ui/label';
 import freelistingIcon from '@/../public/images/icons/freelisting.svg';
@@ -6,29 +5,40 @@ import packagenameIcon from '@/../public/images/icons/packagename.svg';
 import Image from 'next/image';
 import { ActionButtons } from './ActionButtons';
 
+import { UseFormReturn } from 'react-hook-form';
+import { ListingFormData } from './Schema';
+
 interface PaymentStepProps {
-  data: FormData;
-  onChange: (field: keyof FormData, value: unknown) => void;
   onNext: () => void;
   onBack: () => void;
+  onChange: (field: keyof ListingFormData, value: unknown) => void;
   onDraft: () => void;
+  handleSubmit: () => void;
+  isSubmitting: boolean;
+  form: UseFormReturn<ListingFormData>;
 }
 
 export function PaymentStep({
-  data,
+  onBack,
   onChange,
-  onNext,
+  form,
+  handleSubmit,
   onDraft,
+  isSubmitting,
 }: PaymentStepProps) {
   return (
-    <div>
+    <div className='bg-white'>
       <h2 className='heading-5 mb-4'>Payment Packages</h2>
       <div className='mb-6'>
         <div
           className={`border rounded-lg p-4 mb-2 flex items-center gap-4 cursor-pointer ${
-            data.package === 'free' ? 'border-primary-mid' : 'border-gray-200'
+            form.getValues('package') === 'free'
+              ? 'border-primary-mid'
+              : 'border-gray-200'
           }`}
-          onClick={() => onChange('package', 'free')}
+          onClick={() => {
+            onChange('package', 'free');
+          }}
         >
           <Image src={freelistingIcon} alt='freelisting' />
           <div>
@@ -43,9 +53,13 @@ export function PaymentStep({
         </div>
         <div
           className={`border rounded-lg p-4 flex items-center gap-4 cursor-pointer ${
-            data.package === 'paid' ? 'border-primary-mid' : 'border-gray-200'
+            form.getValues('package') === 'paid'
+              ? 'border-primary-mid'
+              : 'border-gray-200'
           }`}
-          onClick={() => onChange('package', 'paid')}
+          onClick={() => {
+            onChange('package', 'paid');
+          }}
         >
           <Image src={packagenameIcon} alt='package name icon' />
           <div>
@@ -55,7 +69,7 @@ export function PaymentStep({
         </div>
       </div>
       {/* Only show period selection if package is not free */}
-      {data.package !== 'free' && (
+      {form.getValues('package') !== 'free' && (
         <>
           <h3 className='font-bold mb-2'>Choose a period for your property</h3>
           <div className='mb-6 flex flex-col gap-4'>
@@ -63,7 +77,7 @@ export function PaymentStep({
               <div
                 key={days}
                 className={`border rounded-lg p-4 flex items-center shadow-lg shadow-primary-main/10 justify-between cursor-pointer ${
-                  data.period === days
+                  form.getValues('period') === days
                     ? 'border-primary-mid'
                     : 'border-transparent'
                 }`}
@@ -88,13 +102,18 @@ export function PaymentStep({
           <Label>Gross Asking Price</Label>
           <Input
             placeholder='PHP'
-            value={data.grossAskingPrice}
+            value={form.getValues('grossAskingPrice')}
             onChange={e => onChange('grossAskingPrice', e.target.value)}
             className='mb-1'
           />
         </div>
       </div>
-      <ActionButtons onDraft={onDraft} onNext={onNext} />
+      <ActionButtons
+        onDraft={onDraft}
+        onNext={handleSubmit}
+        onBack={onBack}
+        isLoading={isSubmitting}
+      />
     </div>
   );
 }

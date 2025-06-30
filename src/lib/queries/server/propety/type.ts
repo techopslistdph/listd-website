@@ -28,6 +28,24 @@ export interface PropertyListResponse {
   data: PropertyDetail[];
   message?: string;
   meta: PaginationMeta;
+  error?: {
+    message: string;
+  };
+}
+
+export interface BarangayCityResponse {
+  success: boolean;
+  data: {
+    data: {
+      id: string;
+      name: string;
+      psgcCode: string;
+    }[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
 }
 
 export interface PropertyDetail {

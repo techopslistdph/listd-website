@@ -21,7 +21,7 @@ const getCondominiums = async (
       return {
         success: false,
         data: null,
-        message: response.error.message,
+        message: response?.error?.message || 'An unexpected error occurred',
       };
     }
     return {
@@ -56,7 +56,7 @@ const getHouseAndLots = async (
       return {
         success: false,
         data: null,
-        message: response.error.message,
+        message: response?.error?.message || 'An unexpected error occurred',
       };
     }
     return {
@@ -88,7 +88,7 @@ const getWarehouses = async (queryParams: string, sessionId: string | null) => {
       return {
         success: false,
         data: null,
-        message: response.error.message,
+        message: response?.error?.message || 'An unexpected error occurred',
       };
     }
     return {
@@ -120,7 +120,7 @@ const getLots = async (queryParams: string, sessionId: string | null) => {
       return {
         success: false,
         data: null,
-        message: response.error.message,
+        message: response?.error?.message || 'An unexpected error occurred',
       };
     }
     return {

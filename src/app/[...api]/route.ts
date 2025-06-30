@@ -5,16 +5,20 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
-
     const url = new URL(request.url);
     let path = url.pathname.replace('/api', '');
     const search = url?.search;
+
     // if theres search params, add them to the url
     if (search) {
       const searchParams = new URLSearchParams(search);
       const params = searchParams.toString();
       path += `?${params}`;
     }
+
+    // Check if this is a file upload request
+    const contentType = request.headers.get('content-type') || '';
+    const isFileUpload = contentType.includes('multipart/form-data');
 
     // if the user is logged in, add the token to the request
     if (!!session?.userId) {
@@ -23,26 +27,57 @@ export async function POST(request: NextRequest) {
       // Extract the path from the request URL
       // Forward the request to the backend
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
-      const response = await fetch(backendUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      return NextResponse.json(data, { status: response.status });
+
+      if (isFileUpload) {
+        // Handle file upload - forward the FormData directly
+        const formData = await request.formData();
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        const data = await response.json();
+        return NextResponse.json(data?.data, { status: response.status });
+      } else {
+        // Handle JSON requests
+        const body = await request.json();
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          ...(!!body && { body: JSON.stringify(body) }),
+        });
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
+      }
     } else {
       // if the user is not logged in, add the token to the request
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
-      const response = await fetch(backendUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      return NextResponse.json(data, { status: response.status });
+
+      if (isFileUpload) {
+        // Handle file upload without auth
+        const formData = await request.formData();
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
+      } else {
+        // Handle JSON requests without auth
+        const response = await fetch(backendUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        return NextResponse.json(data, { status: response.status });
+      }
     }
   } catch (error) {
     console.error('Error fetching data:', error);

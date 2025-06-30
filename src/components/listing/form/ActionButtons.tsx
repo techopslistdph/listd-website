@@ -4,9 +4,15 @@ interface ActionButtonsProps {
   onDraft: () => void;
   onNext: () => void;
   onBack?: () => void;
+  isLoading?: boolean;
 }
 
-export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
+export function ActionButtons({
+  onDraft,
+  onNext,
+  onBack,
+  isLoading,
+}: ActionButtonsProps) {
   return (
     <div className='flex flex-col md:flex-row items-center justify-end gap-4 mt-8'>
       {onBack && (
@@ -24,6 +30,7 @@ export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
         className='rounded-full py-5 px-8 w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
         type='button'
         onClick={onDraft}
+        disabled={isLoading}
       >
         Save as draft
       </Button>
@@ -31,8 +38,9 @@ export function ActionButtons({ onDraft, onNext, onBack }: ActionButtonsProps) {
         type='button'
         className='rounded-full py-5 px-8 w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
         onClick={onNext}
+        disabled={isLoading}
       >
-        Continue
+        {isLoading ? 'Submitting...' : 'Continue'}
       </Button>
     </div>
   );
