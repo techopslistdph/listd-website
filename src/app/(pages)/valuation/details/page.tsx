@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { backgroundImage } from '@/lib/getBackgroundImage';
 import { ResultsStep } from '@/components/listing/form/ResultsStep';
 import HowListdValuate from '@/components/common/HowListdValuate';
+import { ListingFormData } from '@/components/listing/form/Schema';
 
 export default function ValuationDetailsPage() {
   return (
@@ -24,9 +25,9 @@ export default function ValuationDetailsPage() {
 
 function ValuationDetailsContent() {
   const searchParams = useSearchParams();
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ListingFormData>({
     ...initialFormData,
-    propertyType: (searchParams.get('type') as PropertyType) || 'condominium',
+    propertyType: (searchParams.get('type') as PropertyType) || 'Condominium',
   });
   const [step, setStep] = useState<Step>(0);
 
@@ -42,7 +43,7 @@ function ValuationDetailsContent() {
     }
   }, [searchParams]);
 
-  const handleChange = (field: keyof FormData, value: unknown) => {
+  const handleChange = (field: keyof ListingFormData, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

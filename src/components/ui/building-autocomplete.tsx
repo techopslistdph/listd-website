@@ -46,7 +46,6 @@ export function BuildingAutocomplete({
         return;
       }
       try {
-        console.log('Hê', buildingSuggestions?.data);
         setSuggestions(
           (buildingSuggestions?.data as unknown as BuildingSuggestion[]) || []
         );

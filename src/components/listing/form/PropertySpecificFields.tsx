@@ -18,6 +18,19 @@ import { BuildingAutocomplete } from '@/components/ui/building-autocomplete';
 interface PropertySpecificFieldsProps {
   onChange: (field: keyof FormData | string, value: unknown) => void;
   form: UseFormReturn<ListingFormData>;
+  features: Array<{
+    id: string;
+    name: string;
+  }>;
+  amenities: Array<{
+    id: string;
+    name: string;
+  }>;
+  nearbyLocations: Array<{
+    placeId: string;
+    name: string;
+    address: string;
+  }>;
 }
 
 const FormField = ({
@@ -36,9 +49,12 @@ const FormField = ({
 export function PropertySpecificFields({
   onChange,
   form,
+  features,
+  amenities,
+  nearbyLocations,
 }: PropertySpecificFieldsProps) {
   const propertyType = form.getValues('propertyType');
-
+  console.log(nearbyLocations);
   switch (propertyType) {
     case 'Condominium':
       return (
@@ -158,6 +174,12 @@ export function PropertySpecificFields({
                     : []
               }
               onChange={value => onChange('amenities', value)}
+              defaultOptions={
+                amenities?.map(amenity => ({
+                  value: amenity.id,
+                  label: amenity.name,
+                })) || []
+              }
               placeholder='Add amenity and press Enter'
               error={
                 (propertyType as string) !== 'Vacant lot'
@@ -175,6 +197,12 @@ export function PropertySpecificFields({
               }
               onChange={value => onChange('features', value)}
               placeholder='Add feature and press Enter'
+              defaultOptions={
+                features?.map(feature => ({
+                  value: feature.id,
+                  label: feature.name,
+                })) || []
+              }
               error={
                 (propertyType as string) !== 'Vacant lot' &&
                 (propertyType as string) !== 'Warehouse'
@@ -236,11 +264,23 @@ export function PropertySpecificFields({
               onChange={value => onChange('nearbyLocations', value)}
               placeholder='Add amenities'
               error={form.formState.errors.amenities?.message || ''}
+              defaultOptions={
+                nearbyLocations?.map(location => ({
+                  value: location.placeId,
+                  label: location.name,
+                })) || []
+              }
             />
             <TagInput
               label='Security Features'
               value={form.getValues('security') || []}
               onChange={value => onChange('security', value)}
+              defaultOptions={
+                features?.map(feature => ({
+                  value: feature.id,
+                  label: feature.name,
+                })) || []
+              }
               placeholder='Add security features'
               error={form.formState.errors.security?.message || ''}
             />
@@ -348,6 +388,12 @@ export function PropertySpecificFields({
               label='Amenities'
               value={form.getValues('amenities') || []}
               onChange={value => onChange('amenities', value)}
+              defaultOptions={
+                amenities?.map(amenity => ({
+                  value: amenity.id,
+                  label: amenity.name,
+                })) || []
+              }
               placeholder='Add amenities'
               error={form.formState.errors.amenities?.message || ''}
             />
@@ -355,6 +401,12 @@ export function PropertySpecificFields({
               label='Features'
               value={form.getValues('features') || []}
               onChange={value => onChange('features', value)}
+              defaultOptions={
+                features?.map(feature => ({
+                  value: feature.id,
+                  label: feature.name,
+                })) || []
+              }
               placeholder='Add features'
               error={form.formState.errors.features?.message || ''}
             />
@@ -377,13 +429,12 @@ export function PropertySpecificFields({
               value={form.getValues('nearbyLocations') || []}
               onChange={value => onChange('nearbyLocations', value)}
               placeholder='Add nearby locations'
-              defaultOptions={[
-                { value: 'business_district', label: 'Business District' },
-                { value: 'nearby_school', label: 'Nearby School' },
-                { value: 'near_hospital', label: 'Near Hospital' },
-                { value: 'nearby_amusements', label: 'Nearby Amusements' },
-                { value: 'near_mall', label: 'Near Mall' },
-              ]}
+              defaultOptions={
+                nearbyLocations?.map(location => ({
+                  value: location.placeId,
+                  label: location.name,
+                })) || []
+              }
               error={form.formState.errors.nearbyLocations?.message || ''}
             />
           </div>

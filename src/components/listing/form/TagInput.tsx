@@ -1,13 +1,6 @@
 import { Search } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { useState, useEffect, useRef } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 interface TagInputProps {
   label: string;
@@ -78,12 +71,6 @@ export function TagInput({
     setInputValue(e.target.value);
   };
 
-  const handleSelectChange = (selectedValue: string) => {
-    if (!value.includes(selectedValue)) {
-      onChange([...value, selectedValue]);
-    }
-  };
-
   const handleSuggestionClick = (suggestion: {
     value: string;
     label: string;
@@ -98,20 +85,6 @@ export function TagInput({
   return (
     <div className='space-y-4'>
       <Label>{label}</Label>
-      {defaultOptions && (
-        <Select onValueChange={handleSelectChange}>
-          <SelectTrigger className='w-full mb-2'>
-            <SelectValue placeholder='Select from predefined options' />
-          </SelectTrigger>
-          <SelectContent>
-            {defaultOptions.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
       <div className='relative'>
         <div
           className={`flex items-center bg-gray-50 rounded-full px-4 py-2 w-full ${error ? 'border border-red-500' : ''}`}
@@ -122,7 +95,7 @@ export function TagInput({
                 key={i}
                 className='bg-primary-light text-primary-mid px-2 py-1 rounded-xl text-xs sm:text-sm flex items-center font-normal'
               >
-                {item}
+                {defaultOptions?.find(option => option.value === item)?.label}
                 <button
                   className='ml-2 text-primary-mid hover:text-primary-main focus:outline-none'
                   onClick={() => onChange(value.filter((_, idx) => idx !== i))}

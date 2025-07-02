@@ -2,11 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/queries';
 import {
   BarangayCityResponse,
+  CreateListingRequest,
+  NearbyLocationsResponse,
   NearbyPropertiesResponse,
   PropertyLikeResponse,
   PropertyListResponse,
 } from '../server/propety/type';
-import { CreateListingRequest } from '../server/listing';
 
 const property = {
   getNearbyProperties: async (location: {
@@ -97,7 +98,7 @@ const property = {
         return {
           success: false,
           data: null,
-          message: 'City not found',
+          message: `City ${cityName} not found`,
         };
       }
       const barangayResponse = await api.get<BarangayCityResponse>(
@@ -115,6 +116,13 @@ const property = {
         (barangay: { id: string; name: string; psgcCode: string }) =>
           barangay.name.toLowerCase().includes(barangayName.toLowerCase())
       );
+      if (!barangay) {
+        return {
+          success: false,
+          data: null,
+          message: `Barangay ${barangayName} not found in ${city.name}`,
+        };
+      }
       return {
         success: true,
         city: city,
@@ -168,6 +176,42 @@ const property = {
       };
     }
   },
+
+  getNearbyLocations: async (query: string) => {
+    try {
+      const response = await api.post<NearbyLocationsResponse>(
+        '/api/google-maps/nearby-properties',
+        {
+          query,
+        }
+      );
+      if ('error' in response) {
+        return {
+          success: false,
+          data: null,
+          message: response?.error?.message || 'An unexpected error occurred',
+        };
+      }
+      return {
+        success: true,
+        data: response.data,
+        message: 'Nearby locations fetched successfully',
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return {
+          success: false,
+          data: null,
+          message: error.message,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        message: 'An unexpected error occurred',
+      };
+    }
+  },
 };
 
 export const useNearbyProperties = (location: {
@@ -178,6 +222,14 @@ export const useNearbyProperties = (location: {
     queryKey: ['nearby-properties', location.lat, location.lng],
     queryFn: () => property.getNearbyProperties(location),
     enabled: location.lat !== null && location.lng !== null,
+  });
+};
+
+export const useNearbyLocations = (query: string) => {
+  return useQuery({
+    queryKey: ['nearby-locations', query],
+    queryFn: () => property.getNearbyLocations(query),
+    enabled: !!query,
   });
 };
 
@@ -221,12 +273,23 @@ export const useListMyProperty = () => {
       propertyType: string;
     }) => {
       try {
+        const isDraft = data.isDraft;
+
         const endpointMap = {
-          condominium: '/api/condominiums/complete',
-          'house-and-lot': '/api/house-and-lots/complete',
-          warehouse: '/api/warehouses/complete',
-          'vacant-lot': '/api/vacant-lots/complete',
+          condominium: isDraft
+            ? '/api/condominiums/draft'
+            : '/api/condominiums/complete',
+          'house and lot': isDraft
+            ? '/api/house-and-lots/draft'
+            : '/api/house-and-lots/complete',
+          warehouse: isDraft
+            ? '/api/warehouses/draft'
+            : '/api/warehouses/complete',
+          'vacant lot': isDraft
+            ? '/api/vacant-lots/draft'
+            : '/api/vacant-lots/complete',
         };
+
         const endpoint =
           endpointMap[propertyType.toLowerCase() as keyof typeof endpointMap];
         if (!endpoint) {
@@ -237,35 +300,54 @@ export const useListMyProperty = () => {
           };
         }
 
-        // Upload images first
-        const imageUploadPromises = data.photos.map(async (file: File) => {
-          const uploadResult = await property.uploadImage(file);
-          if (!uploadResult.success) {
-            throw new Error(`Failed to upload image: ${uploadResult.message}`);
-          }
+        let cityAndBarangay;
+        if (data.cityId && data.barangayId) {
+          // get city and baranggay id
+          cityAndBarangay = await property.getCityAndBarangay(
+            data.cityId || '',
+            data.barangayId || ''
+          );
+        }
+
+        if (!cityAndBarangay?.success) {
           return {
-            url: uploadResult.data,
-            caption: '',
-            order: 0,
+            success: false,
+            data: null,
+            message: cityAndBarangay?.message || 'An unexpected error occurred',
           };
-        });
+        }
+
+        // Upload images first
+        const imageUploadPromises = data?.photos?.map(
+          async (file: File, index: number) => {
+            const uploadResult = await property.uploadImage(file);
+            if (!uploadResult.success) {
+              throw new Error(
+                `Failed to upload image: ${uploadResult.message}`
+              );
+            }
+            return {
+              url: uploadResult.data,
+              caption: file?.name,
+              order: index + 1,
+            };
+          }
+        );
 
         const uploadedImages = await Promise.all(imageUploadPromises);
-
-        // get city and baranggay id
-        const cityAndBarangay = await property.getCityAndBarangay(
-          data.cityId,
-          data.barangayId
-        );
 
         // Create listing data with uploaded image URLs
         const listingDataWithUrls = {
           ...data,
-          cityId: cityAndBarangay.city?.id,
-          barangayId: cityAndBarangay.barangay?.id,
+          ...(cityAndBarangay?.city?.id && {
+            cityId: cityAndBarangay?.city?.id,
+          }),
+          ...(cityAndBarangay?.barangay?.id && {
+            barangayId: cityAndBarangay?.barangay?.id,
+          }),
           photos: uploadedImages,
         };
-
+        console.log('listingDataWithUrls', listingDataWithUrls);
         const response = await api.post<PropertyListResponse>(
           `${endpoint}`,
           listingDataWithUrls

@@ -11,6 +11,7 @@ import warehouse from '@/../public/images/icons/warehouse.svg';
 import { PropertySpecificFields } from './PropertySpecificFields';
 import { UseFormReturn } from 'react-hook-form';
 import { ListingFormData } from './Schema';
+import { useNearbyLocations } from '@/lib/queries/hooks/use-property';
 
 interface PropertyDetailsStepProps {
   onChange: (field: keyof ListingFormData | string, value: unknown) => void;
@@ -23,6 +24,14 @@ interface PropertyDetailsStepProps {
     disabled: boolean;
     createdAt: string;
     updatedAt: string;
+  }>;
+  features: Array<{
+    id: string;
+    name: string;
+  }>;
+  amenities: Array<{
+    id: string;
+    name: string;
   }>;
   form: UseFormReturn<ListingFormData>;
 }
@@ -41,10 +50,19 @@ export function PropertyDetailsStep({
   onDraft,
   propertyTypes,
   form,
+  features,
+  amenities,
 }: PropertyDetailsStepProps) {
   const propertyType = form.getValues('propertyType');
+  const street = form.getValues('street') as string;
+  const barangay = form.getValues('barangay') as string;
+  const city = form.getValues('city') as string;
+  const address = `${street}, ${barangay}, ${city}`;
+  const buildingName = form.getValues('buildingName') as string;
+  const query = `${buildingName} ${address}`;
   const pathname = usePathname();
-
+  const { data: nearbyLocations } = useNearbyLocations(query);
+  console.log(nearbyLocations);
   return (
     <div className='bg-white'>
       {/* Buy/Rent Button Group */}
@@ -112,7 +130,13 @@ export function PropertyDetailsStep({
           <h2 className='heading-5 mb-6'>Details about your place</h2>
         </>
       )}
-      <PropertySpecificFields form={form} onChange={onChange} />
+      <PropertySpecificFields
+        form={form}
+        onChange={onChange}
+        features={features}
+        amenities={amenities}
+        nearbyLocations={nearbyLocations?.data?.places || []}
+      />
       {!pathname.includes('/valuation') && (
         <>
           <h2 className='heading-5 mb-5'>Property Photo</h2>

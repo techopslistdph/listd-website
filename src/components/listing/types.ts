@@ -4,7 +4,11 @@ export type PropertyType =
   | 'condominium'
   | 'warehouse'
   | 'house and lot'
-  | 'land';
+  | 'land'
+  | 'Condominium'
+  | 'Warehouse'
+  | 'House and Lot'
+  | 'Land';
 
 export type FurnishingStatus =
   | 'fully_furnished'

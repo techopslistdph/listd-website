@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { ListingFormData } from '@/components/listing/form/Schema';
-import { CreateListingRequest } from '@/lib/queries/server/listing/index';
 import { useListMyProperty } from '@/lib/queries/hooks/use-property';
+import { CreateListingRequest } from '@/lib/queries/server/propety/type';
 
 export const useListingSubmission = (
   data: ListingFormData,
@@ -20,22 +20,23 @@ export const useListingSubmission = (
         toast.error('Please login to create a listing');
         return;
       }
-
       // Create base listing data
       const baseListingData = {
-        listingTypeId: data.listingTypeId,
-        propertyTypeId: data.propertyTypeId,
-        streetAddress: data.street,
-        barangayId: data.barangay,
-        cityId: data.city,
-        region: data.state,
-        photos: data.images,
-        listingTitle: data.title,
-        listingDescription: data.description,
-        listingPrice: Math.max(parseInt(data.grossAskingPrice) || 0, 1),
-        listingPriceFormatted: data.grossAskingPrice,
-        longitude: Number(data.longitude) || 0,
-        latitude: Number(data.latitude) || 0,
+        ...(data?.listingTypeId && { listingTypeId: data?.listingTypeId }),
+        ...(data?.propertyTypeId && { propertyTypeId: data?.propertyTypeId }),
+        ...(data?.street && { streetAddress: data?.street }),
+        ...(data?.barangay && { barangayId: data?.barangay }),
+        ...(data?.city && { cityId: data?.city }),
+        ...(data?.state && { region: data?.state }),
+        ...(data?.images && { photos: data?.images }),
+        ...(data?.title && { listingTitle: data?.title }),
+        ...(data?.description && { listingDescription: data?.description }),
+        ...(data?.grossAskingPrice && {
+          listingPrice: Math.max(parseInt(data?.grossAskingPrice), 1),
+          listingPriceFormatted: data?.grossAskingPrice,
+        }),
+        ...(data?.longitude && { longitude: Number(data?.longitude) }),
+        ...(data?.latitude && { latitude: Number(data?.latitude) }),
         isDraft: isDraft || false,
       };
 
@@ -43,54 +44,96 @@ export const useListingSubmission = (
       const listingData: CreateListingRequest = {
         ...baseListingData,
         ...(data.propertyType === 'Condominium' && {
-          buildingName: data.buildingName || '',
-          floorNumber: parseInt(data.floorNo || '0') || 0,
-          floorArea: parseInt(data.floorArea || '0') || 0,
-          furnishingStatus: data.fullyFurnished || 'unfurnished',
-          numberOfBedrooms: Number(data.bedrooms) || 0,
-          numberOfBathrooms: Number(data.bathrooms) || 0,
-          numberOfParkingSpaces: Number(data.parking) || 0,
-          amenityIds: data.amenities || [],
-          featureIds: data.features || [],
+          buildingName: data?.buildingName || '',
+          ...(data?.floorNo && { floorNumber: parseInt(data?.floorNo) }),
+          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.fullyFurnished && {
+            furnishingStatus: data?.fullyFurnished,
+          }),
+          ...(data?.bedrooms && { numberOfBedrooms: Number(data?.bedrooms) }),
+          ...(data?.bathrooms && {
+            numberOfBathrooms: Number(data?.bathrooms),
+          }),
+          ...(data?.parking && {
+            numberOfParkingSpaces: Number(data?.parking),
+          }),
+          amenityIds: data?.amenities || [],
+          featureIds: data?.features || [],
         }),
-        ...(data.propertyType === 'Warehouse' && {
-          buildingName: data.buildingName || '',
-          floorArea: parseInt(data.floorArea || '0') || 0,
-          ceilingHeight: parseInt(data.ceilingHeight || '0') || 0,
-          numberOfParkingSpaces: Number(data.parking) || 0,
-          amenityIds: data.amenities || [],
-          loadingDocks: Number(data.loadingDocks) || 0,
-          buildingSize: Number(data.buildingSize) || 0,
-          securityFeatures: data.security || [],
+        ...(data?.propertyType === 'Warehouse' && {
+          buildingName: data?.buildingName || '',
+          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.ceilingHeight && {
+            ceilingHeight: parseInt(data?.ceilingHeight),
+          }),
+          ...(data?.parking && {
+            numberOfParkingSpaces: Number(data?.parking),
+          }),
+          amenityIds: data?.amenities || [],
+          ...(data?.loadingDocks && {
+            loadingDocks: Number(data?.loadingDocks),
+          }),
+          ...(data?.buildingSize && {
+            buildingSize: Number(data?.buildingSize),
+          }),
+          ...(data?.security && { securityFeatures: data?.security }),
+          ...(data?.nearbyLocations && {
+            nearbyLocations: data?.nearbyLocations,
+          }),
         }),
         ...(data.propertyType === 'House and lot' && {
-          floorArea: parseInt(data.floorArea || '0') || 0,
-          lotSize: Number(data.lotSize) || 0,
-          furnishingStatus: data.fullyFurnished || 'unfurnished',
-          numberOfBedrooms: Number(data.bedrooms) || 0,
-          numberOfBathrooms: Number(data.bathrooms) || 0,
-          numberOfParkingSpaces: Number(data.parking) || 0,
-          amenityIds: data.amenities || [],
-          featureIds: data.features || [],
-          numberOfFloors: Number(data.numberOfFloors) || 1,
-          numberOfGarages: Number(data.numberOfGarages) || 0,
-          numberOfLivingRooms: Number(data.numberOfLivingRooms) || 0,
-          numberOfDiningRooms: Number(data.numberOfDiningRooms) || 0,
-          numberOfKitchens: Number(data.numberOfKitchens) || 0,
-          numberOfMaidRooms: Number(data.numberOfMaidRooms) || 0,
-          yearBuilt: Number(data.yearBuilt) || 0,
+          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
+          ...(data?.fullyFurnished && {
+            furnishingStatus: data?.fullyFurnished,
+          }),
+          ...(data?.bedrooms && { numberOfBedrooms: Number(data?.bedrooms) }),
+          ...(data?.bathrooms && {
+            numberOfBathrooms: Number(data?.bathrooms),
+          }),
+          ...(data?.parking && {
+            numberOfParkingSpaces: Number(data?.parking),
+          }),
+          amenityIds: data?.amenities || [],
+          featureIds: data?.features || [],
+          ...(data?.numberOfFloors && {
+            numberOfFloors: Number(data?.numberOfFloors),
+          }),
+          ...(data?.numberOfGarages && {
+            numberOfGarages: Number(data?.numberOfGarages),
+          }),
+          ...(data?.numberOfLivingRooms && {
+            numberOfLivingRooms: Number(data?.numberOfLivingRooms),
+          }),
+          ...(data?.numberOfDiningRooms && {
+            numberOfDiningRooms: Number(data?.numberOfDiningRooms),
+          }),
+          ...(data?.numberOfKitchens && {
+            numberOfKitchens: Number(data?.numberOfKitchens),
+          }),
+          ...(data?.numberOfMaidRooms && {
+            numberOfMaidRooms: Number(data?.numberOfMaidRooms),
+          }),
+          ...(data?.yearBuilt && { yearBuilt: Number(data?.yearBuilt) }),
         }),
         ...(data.propertyType === 'Vacant lot' && {
-          lotSize: Number(data.lotSize) || 0,
-          nearbyLocations: data.nearbyLocations || [],
+          ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
+          ...(data?.nearbyLocations && {
+            nearbyLocations: data?.nearbyLocations,
+          }),
+          ...(data?.parking && {
+            numberOfParkingSpaces: Number(data?.parking),
+          }),
         }),
-        pricePerSqm: Math.max(
-          parseInt(data.grossAskingPrice) /
-            (data.propertyType === 'Vacant lot'
-              ? Number(data.lotSize || '1')
-              : parseInt(data.floorArea || '1') || 1),
-          0
-        ),
+        ...(data?.grossAskingPrice && {
+          pricePerSqm: Math.max(
+            parseInt(data.grossAskingPrice) /
+              (data.propertyType === 'Vacant lot'
+                ? Number(data.lotSize)
+                : parseInt(data.floorArea) || 1),
+            0
+          ),
+        }),
       };
 
       // Submit the listing with image upload functionality
@@ -102,7 +145,11 @@ export const useListingSubmission = (
         {
           onSuccess: result => {
             if (result.success) {
-              toast.success('Listing created successfully');
+              toast.success(
+                isDraft
+                  ? 'Listing saved as draft'
+                  : 'Listing created successfully'
+              );
               onNext(); // This will show the ResultsStep
             } else {
               toast.error(result.message || 'Failed to create listing');

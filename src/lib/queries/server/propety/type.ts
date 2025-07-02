@@ -13,6 +13,26 @@ export interface NearbyPropertiesResponse {
   };
 }
 
+export interface NearbyLocationsResponse {
+  success: boolean;
+  data: {
+    places: {
+      placeId: string;
+      name: string;
+      address: string;
+    }[];
+  };
+  places: {
+    placeId: string;
+    name: string;
+    address: string;
+  }[];
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
 export type PropertyLikeResponse = {
   success: boolean;
   data: {
@@ -113,4 +133,72 @@ interface PaginationMeta {
   totalPages: number;
   nextPage: number | null;
   prevPage: number | null;
+}
+
+export interface AmenitiesAndFeaturesResponse {
+  success: boolean;
+  data: {
+    data: AmenitiesAndFeatures[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
+export interface AmenitiesAndFeatures {
+  id: string;
+  name: string;
+}
+
+export interface CreateListingRequest {
+  listingTypeId?: string;
+  propertyTypeId?: string;
+  streetAddress?: string;
+  barangayId?: string;
+  cityId?: string;
+  region?: string;
+  buildingName?: string;
+  floorNumber?: number;
+  floorArea?: number;
+  furnishingStatus?: 'fully_furnished' | 'semi_furnished' | 'unfurnished';
+  numberOfBedrooms?: number;
+  numberOfBathrooms?: number;
+  numberOfParkingSpaces?: number;
+  amenityIds?: string[];
+  featureIds?: string[];
+  photos: File[];
+  lotSize?: number;
+  ceilingHeight?: number;
+  lotType?: string[];
+  listingTitle?: string;
+  listingDescription?: string;
+  listingPrice?: number;
+  listingPriceFormatted?: string;
+  pricePerSqm?: number;
+  longitude?: number;
+  latitude?: number;
+  isDraft: boolean;
+
+  // House and Lot specific fields
+  numberOfFloors?: number;
+  numberOfGarages?: number;
+  numberOfLivingRooms?: number;
+  numberOfDiningRooms?: number;
+  numberOfKitchens?: number;
+  numberOfMaidRooms?: number;
+  yearBuilt?: number;
+  hasSwimmingPool?: boolean;
+  hasGarden?: boolean;
+  hasTerrace?: boolean;
+  hasBalcony?: boolean;
+  hasSecurity?: boolean;
+
+  // Warehouse specific fields
+  loadingDocks?: number;
+  buildingSize?: number;
+  securityFeatures?: string[];
+
+  // Vacant Lot specific fields
+  nearbyLocations?: string[];
 }

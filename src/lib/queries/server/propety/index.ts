@@ -1,6 +1,10 @@
 import { api, ApiError } from '@/lib/fetch-wrapper';
 import { ErrorResponse } from '../type';
-import { PropertyDetailResponse, PropertyListResponse } from './type';
+import {
+  AmenitiesAndFeaturesResponse,
+  PropertyDetailResponse,
+  PropertyListResponse,
+} from './type';
 import { API_ENDPOINTS } from '../api-endpoints';
 import { getClerkToken } from '@/lib/auth/clerk';
 
@@ -326,4 +330,96 @@ export const getPropertyById = async ({
   const fetchProperty = PROPERTY_TYPES_BY_ID_MAPPING[property];
   const response = await fetchProperty(id, sessionId);
   return response;
+};
+
+export const getFeatures = async () => {
+  try {
+    const response = await api.get<
+      AmenitiesAndFeaturesResponse | ErrorResponse
+    >(`${API_ENDPOINTS.features.list}`);
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response?.error?.message || 'An unexpected error occurred',
+      };
+    }
+
+    // Filter out 'Other' and get unique feature names
+    const uniqueFeatures = response.data.data
+      .filter((feature: { name: string }) => feature.name !== 'Other')
+      .filter(
+        (feature: { name: string }, index: number, self: { name: string }[]) =>
+          index ===
+          self.findIndex((f: { name: string }) => f.name === feature.name)
+      );
+
+    return {
+      success: true,
+      data: {
+        uniqueFeatures,
+      },
+      message: 'Features fetched successfully',
+    };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+export const getAmenities = async () => {
+  try {
+    const response = await api.get<
+      AmenitiesAndFeaturesResponse | ErrorResponse
+    >(`${API_ENDPOINTS.amenities.list}`);
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response?.error?.message || 'An unexpected error occurred',
+      };
+    }
+
+    // Filter out 'Other' and get unique feature names
+    const uniqueAmenities = response.data.data
+      .filter((amenity: { name: string }) => amenity.name !== 'Other')
+      .filter(
+        (amenity: { name: string }, index: number, self: { name: string }[]) =>
+          index ===
+          self.findIndex((f: { name: string }) => f.name === amenity.name)
+      );
+
+    return {
+      success: true,
+      data: {
+        uniqueAmenities,
+      },
+      message: 'Amenities fetched successfully',
+    };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return {
+        success: false,
+        data: null,
+        message: error.message,
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
 };

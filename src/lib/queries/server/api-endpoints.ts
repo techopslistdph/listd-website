@@ -106,18 +106,10 @@ export const API_ENDPOINTS = {
 
   amenities: {
     list: `${API_BASE_URL}/amenities`,
-    create: `${API_BASE_URL}/amenities`,
-    byId: (id: string) => `${API_BASE_URL}/amenities/${id}`,
-    update: (id: string) => `${API_BASE_URL}/amenities/${id}`,
-    delete: (id: string) => `${API_BASE_URL}/amenities/${id}`,
   },
 
   features: {
     list: `${API_BASE_URL}/features`,
-    create: `${API_BASE_URL}/features`,
-    byId: (id: string) => `${API_BASE_URL}/features/${id}`,
-    update: (id: string) => `${API_BASE_URL}/features/${id}`,
-    delete: (id: string) => `${API_BASE_URL}/features/${id}`,
   },
 
   building: {

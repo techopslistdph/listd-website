@@ -80,7 +80,10 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
   z.object({
     ...baseSchema,
     propertyType: z.literal('House and lot'),
-    numberOfFloors: z.coerce.number().min(1, 'Must be 1 or greater'),
+    numberOfFloors: z.coerce
+      .number()
+      .min(1, 'Number of floors must be 1 or greater')
+      .max(10, 'Number of floors cannot exceed 10'),
     floorArea: z.string().min(1, 'Floor area is required'),
     lotSize: z.string().min(1, 'Lot size is required'),
     bedrooms: z.coerce.number().min(0, 'Must be 0 or greater'),
@@ -103,9 +106,7 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     propertyType: z.literal('Vacant lot'),
     lotSize: z.coerce.number().min(1, 'Lot size is required'),
     nearbyLocations: z.array(z.string()),
-    images: z
-      .array(z.instanceof(File))
-      .min(3, 'At least 3 images are required'),
+    parking: z.coerce.number().min(0, 'Must be 0 or greater'),
   }),
 ]);
 

@@ -36,11 +36,21 @@ interface PostListingFormProps {
     createdAt: string;
     updatedAt: string;
   }>;
+  features: Array<{
+    id: string;
+    name: string;
+  }>;
+  amenities: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 export default function PostListingForm({
   propertyTypes,
   listingTypes,
+  features,
+  amenities,
 }: PostListingFormProps) {
   const [step, setStep] = useState<Step>(0);
   const router = useRouter();
@@ -121,6 +131,8 @@ export default function PostListingForm({
               onNext={handleNext}
               propertyTypes={propertyTypes}
               onDraft={handleDraft}
+              features={features}
+              amenities={amenities}
             />
           )}
           {step === 1 && (
