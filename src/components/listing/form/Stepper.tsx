@@ -68,6 +68,7 @@ export function Stepper({
                 }`}
                 onClick={() => {
                   onChange('listingTypeId', listingType.id);
+                  onChange('listingType', listingType.name);
                 }}
                 type='button'
               >

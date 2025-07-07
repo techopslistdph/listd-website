@@ -1,23 +1,22 @@
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
 import { handleShareProperty } from '@/lib/utils/ShareProperty';
+import pinIcon from '../../../public/images/icons/pin.svg';
 
 interface PropertyHeaderProps {
-  listingPriceFormatted: string;
+  listingPrice: number;
   title: string;
   isVerified: boolean;
   location: string;
-  pinIcon: StaticImageData;
   isLiked: boolean;
   handleLikeProperty: () => void;
 }
 
 export function PropertyHeader({
-  listingPriceFormatted,
+  listingPrice,
   title,
   isVerified,
   location,
-  pinIcon,
   isLiked = false,
   handleLikeProperty = () => {},
 }: PropertyHeaderProps) {
@@ -25,9 +24,12 @@ export function PropertyHeader({
     <div className='flex flex-col gap-2 p-5 rounded-lg mb-2 border'>
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
-          {listingPriceFormatted && (
+          {listingPrice && (
             <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
-              {listingPriceFormatted}
+              {listingPrice.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              })}
             </div>
           )}
         </div>
@@ -45,17 +47,19 @@ export function PropertyHeader({
             type='button'
             className='hover:text-primary-main cursor-pointer [&>svg]:hover:fill-primary-main'
             onClick={() =>
-              handleShareProperty(title, location, listingPriceFormatted)
+              handleShareProperty(title, location, listingPrice.toString())
             }
           >
             <Share2 className='w-5 h-5' />
           </button>
         </div>
       </div>
-      <div className='text-xl lg:text-2xl font-semibold flex items-center gap-2 mt-1'>
-        {title}{' '}
+      <div className='flex flex-wrap items-start gap-2 mt-1'>
+        <p className='flex-1 min-w-0 text-xl lg:text-2xl font-semibold break-words'>
+          {title}
+        </p>
         {isVerified && (
-          <span className='bg-primary-mid/80 text-white font-normal text-xs px-3 py-1 rounded-full'>
+          <span className='bg-primary-mid/80 text-white font-normal text-xs px-3 py-1 rounded-full flex-shrink-0'>
             Verified
           </span>
         )}

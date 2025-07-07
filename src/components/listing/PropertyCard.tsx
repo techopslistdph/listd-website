@@ -32,8 +32,9 @@ export default function PropertyCard({
       listingTitle,
       listingPrice,
       address,
+      cityName,
+      barangayName,
       scrapeContactInfo,
-      listingPriceFormatted,
     },
     id,
     numberOfBathrooms,
@@ -67,9 +68,12 @@ export default function PropertyCard({
   if (view === 'map') {
     // Horizontal card for map view
     return (
-      <div className='grid sm:grid-cols-3 bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer  p-3 gap-4'>
-        <div className=' rounded-2xl overflow-hidden w-full sm:w-[295px] md:w-full h-[200px] sm:h-[280px]'>
-          <Link href={`/property/${id}?property=${propertyType}`}>
+      <div className='relative flex flex-col sm:grid sm:grid-cols-3 bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer p-3 gap-4'>
+        <div className='rounded-2xl overflow-hidden w-full sm:w-[295px] md:w-full h-[200px] sm:h-[280px]'>
+          <Link
+            href={`/property/${id}?property=${propertyType}`}
+            className='w-full h-full'
+          >
             <img
               src={images[0]?.imageUrl}
               alt={listingTitle}
@@ -105,16 +109,26 @@ export default function PropertyCard({
 
             {/* Wrap only the title/content block in the Link */}
             <Link href={`/property/${id}?property=${propertyType}`}>
-              <div className='text-xl font-extrabold text-primary-main mb-1'>
-                {listingPriceFormatted}
-              </div>
-              <div className='text-lg font-semibold text-black mb-1 truncate'>
-                {listingTitle}
-              </div>
+              {listingPrice && (
+                <div className='text-xl font-extrabold text-primary-main mb-1'>
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(Number(listingPrice)) || 'Price not available'}
+                </div>
+              )}
+              {listingTitle && (
+                <div className='text-lg font-semibold text-black mb-'>
+                  <p className='break-words'>{listingTitle}</p>
+                </div>
+              )}
               <div className='flex items-center text-gray-400 mb-2 gap-1'>
                 <Image src={pinIcon} alt='pin' />
-                <span className='truncate'>{address}</span>
+                <span className='truncate'>
+                  {address ? `${address}` : `${barangayName}, ${cityName}`}
+                </span>
               </div>
+
               <div className='flex items-center text-gray-400  gap-2 mb-4 '>
                 {scrapeContactInfo?.agentName && (
                   <div className='flex items-center gap-1'>
@@ -151,7 +165,6 @@ export default function PropertyCard({
             </Link>
           </div>
 
-          {/* Contact buttons OUTSIDE of <Link> */}
           <div className='flex flex-col sm:flex-row gap-3 mt-2'>
             {scrapeContactInfo?.phoneNumber && (
               <a
@@ -199,7 +212,10 @@ export default function PropertyCard({
               </div>
               {listingPrice && (
                 <div className='font-extrabold text-lg text-primary-main'>
-                  {listingPriceFormatted}
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'PHP',
+                  }).format(Number(listingPrice)) || 'Price not available'}
                 </div>
               )}
             </div>

@@ -29,7 +29,7 @@ export default function ProfileInformation({
   ];
 
   return (
-    <div className='w-full'>
+    <div className='w-full lg:p-8'>
       <div className='space-y-3 lg:space-y-5'>
         {information.map(item => (
           <div

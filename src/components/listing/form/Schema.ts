@@ -19,6 +19,7 @@ const baseSchema = {
   // Common fields for all property types
   propertyType: propertyTypeEnum,
   propertyTypeId: z.string(),
+  listingType: z.string(),
   listingTypeId: z.string(),
   state: z.string().min(1, 'State is required'),
   city: z.string().min(1, 'City is required'),
@@ -69,7 +70,10 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     buildingName: z.string().min(1, 'Building name is required'),
     lotSize: z.string().min(1, 'Lot size is required'),
     floorArea: z.string().min(1, 'Floor area is required'),
-    ceilingHeight: z.string().min(1, 'Ceiling height is required'),
+    ceilingHeight: z
+      .string()
+      .min(1, 'Ceiling height is required')
+      .max(50, 'Ceiling height cannot exceed 50 meters'),
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
     nearbyLocations: z.array(z.string()),
     security: z.array(z.string()),

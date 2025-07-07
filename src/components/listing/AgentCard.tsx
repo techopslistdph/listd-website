@@ -1,6 +1,6 @@
 import Image, { StaticImageData } from 'next/image';
-import calculateMortgageIcon from '@/../public/images/icons/calculate-mortgage.svg';
-import shortMortgageCaseIcon from '@/../public/images/icons/short-mortgage.svg';
+// import calculateMortgageIcon from '@/../public/images/icons/calculate-mortgage.svg';
+// import shortMortgageCaseIcon from '@/../public/images/icons/short-mortgage.svg';
 import verified from '@/../public/images/icons/verified.png';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -57,7 +57,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           </a>
         )}
       </div>
-      <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-10 mt-5'>
+      {/* <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-10 mt-5'>
         <div className='flex items-center gap-2 py-3 cursor-pointer'>
           <Image
             src={calculateMortgageIcon}
@@ -76,7 +76,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           />
           <span className='underline'>Short Mortgage Case</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

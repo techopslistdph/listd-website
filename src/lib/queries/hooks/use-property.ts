@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, ApiError } from '@/lib/queries';
+import { api, ApiError, queryClient } from '@/lib/queries';
 import {
   BarangayCityResponse,
   CreateListingRequest,
+  LocationCoordinatesResponse,
   NearbyLocationsResponse,
   NearbyPropertiesResponse,
   PropertyLikeResponse,
@@ -212,6 +213,42 @@ const property = {
       };
     }
   },
+
+  getLocationCoordinates: async (address: string) => {
+    try {
+      const response = await api.post<LocationCoordinatesResponse>(
+        `/api/google-maps/address-autocomplete`,
+        {
+          query: address,
+        }
+      );
+      if ('error' in response) {
+        return {
+          success: false,
+          data: null,
+          message: response?.error?.message || 'An unexpected error occurred',
+        };
+      }
+      return {
+        success: true,
+        data: response.data,
+        message: 'Location coordinates fetched successfully',
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return {
+          success: false,
+          data: null,
+          message: error.message,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        message: 'An unexpected error occurred',
+      };
+    }
+  },
 };
 
 export const useNearbyProperties = (location: {
@@ -317,6 +354,24 @@ export const useListMyProperty = () => {
           };
         }
 
+        if (!data.latitude && !data.longitude) {
+          const query = `${cityAndBarangay?.city?.name}, ${cityAndBarangay?.barangay?.name}, ${data.streetAddress}, `;
+          const locationCoordinates =
+            await property.getLocationCoordinates(query);
+          if (!locationCoordinates.success) {
+            return {
+              success: false,
+              data: null,
+              message:
+                locationCoordinates.message || 'An unexpected error occurred',
+            };
+          }
+          data.latitude =
+            locationCoordinates.data?.predictions[0]?.coordinates.latitude;
+          data.longitude =
+            locationCoordinates.data?.predictions[0]?.coordinates.longitude;
+        }
+
         // Upload images first
         const imageUploadPromises = data?.photos?.map(
           async (file: File, index: number) => {
@@ -347,7 +402,6 @@ export const useListMyProperty = () => {
           }),
           photos: uploadedImages,
         };
-        console.log('listingDataWithUrls', listingDataWithUrls);
         const response = await api.post<PropertyListResponse>(
           `${endpoint}`,
           listingDataWithUrls
@@ -378,6 +432,67 @@ export const useListMyProperty = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['properties'],
+      });
+    },
+  });
+};
+
+export const useDeleteProperty = () => {
+  return useMutation({
+    mutationFn: async ({
+      propertyId,
+      propertyType,
+    }: {
+      propertyId: string;
+      propertyType: string;
+    }) => {
+      try {
+        const endpointMap = {
+          condominium: '/api/condominiums',
+          'house and lot': '/api/house-and-lots',
+          warehouse: '/api/warehouses',
+          'vacant lot': '/api/vacant-lots',
+        };
+
+        const endpoint =
+          endpointMap[propertyType.toLowerCase() as keyof typeof endpointMap];
+        if (!endpoint) {
+          return {
+            success: false,
+            data: null,
+            message: `Invalid property type: ${propertyType}`,
+          };
+        }
+        const response = await api.delete<PropertyListResponse>(
+          `${endpoint}/${propertyId}`
+        );
+        if ('error' in response) {
+          return {
+            success: false,
+            data: null,
+            message: response?.error?.message || 'An unexpected error occurred',
+          };
+        }
+        return {
+          success: true,
+          data: response.data,
+          message: 'Property deleted successfully',
+        };
+      } catch (error) {
+        return {
+          success: false,
+          data: null,
+          message:
+            error instanceof Error
+              ? error.message
+              : 'An unexpected error occurred',
+        };
+      }
+    },
+    onSuccess: () => {
+      // Invalidate user liked properties
+      queryClient.invalidateQueries({
+        queryKey: ['userListings'],
       });
     },
   });

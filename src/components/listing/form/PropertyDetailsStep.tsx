@@ -61,8 +61,8 @@ export function PropertyDetailsStep({
   const buildingName = form.getValues('buildingName') as string;
   const query = `${buildingName} ${address}`;
   const pathname = usePathname();
+
   const { data: nearbyLocations } = useNearbyLocations(query);
-  console.log(nearbyLocations);
   return (
     <div className='bg-white'>
       {/* Buy/Rent Button Group */}

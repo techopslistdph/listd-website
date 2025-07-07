@@ -11,6 +11,9 @@ export type PropertyType =
 export type FormData = ListingFormData;
 
 const baseInitialData = {
+  propertyTypeId: '',
+  listingType: '',
+  listingTypeId: '',
   state: '',
   city: '',
   barangay: '',

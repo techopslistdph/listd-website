@@ -9,10 +9,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import {
-  BuildingSuggestion,
-  useBuildingSuggestions,
-} from '@/lib/queries/hooks/use-building';
+import { useBuildingSuggestions } from '@/lib/queries/hooks/use-building';
+import { BuildingSuggestion } from '@/lib/queries/hooks/types/building';
 
 interface BuildingAutocompleteProps {
   name: string;

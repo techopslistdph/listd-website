@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Pagination } from 'swiper/modules';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import Button from '../common/Button';
 import Link from 'next/link';
@@ -100,8 +99,6 @@ export default function PropertySlider() {
             768: { slidesPerView: 2.2 },
             1024: { slidesPerView: 3.2 },
           }}
-          // pagination={{ clickable: true }}
-          modules={[Pagination]}
           className='property-swiper pb-8'
         >
           {filteredProperties?.map((card: PropertyDetails, idx: number) => (

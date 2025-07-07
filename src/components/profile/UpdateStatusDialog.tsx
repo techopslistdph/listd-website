@@ -5,16 +5,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { Listing } from '@/app/data';
 import uploadIcon from '@/../public/images/icons/upload.svg';
 import Image from 'next/image';
-import { TagInput } from '../listing/form/TagInput';
+// import { TagInput } from '../listing/form/TagInput';
 import { Button } from '../ui/button';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
 interface UpdateStatusDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  property: Listing | null;
+  property: PropertyDetail | null;
   isValuation?: boolean;
 }
 
@@ -25,7 +25,8 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
   isValuation = false,
 }) => {
   const [formData, setFormData] = useState({
-    buildingName: property?.title || '',
+    // use listing title for now
+    buildingName: property?.property.listingTitle || '',
     streetAddress: 'Manila',
     barangay: 'Manila',
     city: 'Manila',
@@ -209,7 +210,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
           Features & Amenities
         </h3>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 mb-3 lg:mb-4'>
-          <div>
+          {/* <div>
             <TagInput
               label='Amenities'
               value={formData.amenities}
@@ -228,7 +229,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
               }
               placeholder='Type and press Enter'
             />
-          </div>
+          </div> */}
         </div>
 
         {!isValuation && (

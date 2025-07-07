@@ -41,6 +41,7 @@ export const FormInput = <T extends FieldValues>({
           <FormLabel className='text-xs sm:text-sm'>
             {label}
             {required && <span className='text-red-500'>*</span>}
+            <FormMessage />
           </FormLabel>
           <FormControl>
             <Input
@@ -52,7 +53,6 @@ export const FormInput = <T extends FieldValues>({
               readOnly={readonly}
             />
           </FormControl>
-          <FormMessage />
           {description && <FormDescription>{description}</FormDescription>}
         </FormItem>
       )}

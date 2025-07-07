@@ -26,7 +26,7 @@ export default function PropertyTopBar({
   const { push } = useRouter();
   const params = useSearchParams();
   const { updateParams, getParam } = useUrlParams();
-  const typeId = params.get('type');
+  const typeId = params.get('listingTypeId');
   const searchQuery = getParam('search');
   const [view, setView] = useState<View>('list');
   const activeListingType = listingTypes?.find(type => type.id === typeId);
@@ -51,7 +51,7 @@ export default function PropertyTopBar({
 
   const handleBuyOrRentChange = (listingTypeId: ListingType['id']) => {
     const paramsString = updateParams({
-      type: listingTypeId,
+      listingTypeId: listingTypeId,
     });
     push(`/property?${paramsString}`);
   };

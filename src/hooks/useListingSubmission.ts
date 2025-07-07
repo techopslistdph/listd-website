@@ -27,6 +27,10 @@ export const useListingSubmission = (
         ...(data?.street && { streetAddress: data?.street }),
         ...(data?.barangay && { barangayId: data?.barangay }),
         ...(data?.city && { cityId: data?.city }),
+        ...(data?.city &&
+          data?.barangay && {
+            streetAddress: `${data?.city}, ${data?.barangay}`,
+          }),
         ...(data?.state && { region: data?.state }),
         ...(data?.images && { photos: data?.images }),
         ...(data?.title && { listingTitle: data?.title }),
@@ -38,6 +42,7 @@ export const useListingSubmission = (
         ...(data?.longitude && { longitude: Number(data?.longitude) }),
         ...(data?.latitude && { latitude: Number(data?.latitude) }),
         isDraft: isDraft || false,
+        isPublished: isDraft ? false : true,
       };
 
       // Add property-specific fields based on property type

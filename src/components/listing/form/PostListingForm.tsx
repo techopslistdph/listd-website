@@ -20,6 +20,7 @@ import { listingFormSchema, ListingFormData } from './Schema';
 import { useRouter } from 'next/navigation';
 import { getFieldsToValidate } from './validation';
 import { useListingSubmission } from '@/hooks/useListingSubmission';
+import { toast } from 'sonner';
 
 interface PostListingFormProps {
   propertyTypes: Array<{
@@ -87,6 +88,11 @@ export default function PostListingForm({
 
   const handleDraft = () => {
     handleSubmit(true);
+    toast.success('Listing saved as draft');
+    setTimeout(() => {
+      form.reset();
+      router.push('/');
+    }, 1000);
   };
 
   const handleHome = () => {

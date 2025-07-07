@@ -11,7 +11,6 @@ import {
 import { TagInput } from './TagInput';
 import { FormInput } from '@/components/ui/form-input';
 import { UseFormReturn } from 'react-hook-form';
-// import { BuildingAutocomplete } from '@/components/listing/form/BuildingAutocomplete';
 import { ListingFormData } from './Schema';
 import { BuildingAutocomplete } from '@/components/ui/building-autocomplete';
 
@@ -54,7 +53,6 @@ export function PropertySpecificFields({
   nearbyLocations,
 }: PropertySpecificFieldsProps) {
   const propertyType = form.getValues('propertyType');
-  console.log(nearbyLocations);
   switch (propertyType) {
     case 'Condominium':
       return (

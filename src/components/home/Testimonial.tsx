@@ -76,6 +76,7 @@ export default function Testimonial({
                 1280: { slidesPerView: 2.2 },
               }}
               modules={[Navigation]}
+              loop
               onSwiper={(swiper: SwiperType) => (swiperRef.current = swiper)}
               className='testimonial-swiper pb-8  '
             >

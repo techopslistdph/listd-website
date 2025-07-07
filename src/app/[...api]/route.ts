@@ -8,28 +8,21 @@ export async function POST(request: NextRequest) {
     const url = new URL(request.url);
     let path = url.pathname.replace('/api', '');
     const search = url?.search;
-
-    // if theres search params, add them to the url
     if (search) {
       const searchParams = new URLSearchParams(search);
       const params = searchParams.toString();
       path += `?${params}`;
     }
 
-    // Check if this is a file upload request
     const contentType = request.headers.get('content-type') || '';
     const isFileUpload = contentType.includes('multipart/form-data');
 
-    // if the user is logged in, add the token to the request
     if (!!session?.userId) {
       const { jwt: token } = await getClerkToken();
 
-      // Extract the path from the request URL
-      // Forward the request to the backend
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
 
       if (isFileUpload) {
-        // Handle file upload - forward the FormData directly
         const formData = await request.formData();
         const response = await fetch(backendUrl, {
           method: 'POST',
@@ -41,25 +34,28 @@ export async function POST(request: NextRequest) {
         const data = await response.json();
         return NextResponse.json(data?.data, { status: response.status });
       } else {
-        // Handle JSON requests
-        const body = await request.json();
+        let body = null;
+        try {
+          body = await request.json();
+        } catch {
+          // No body provided, continue without body
+        }
+
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          ...(!!body && { body: JSON.stringify(body) }),
+          ...(body && { body: JSON.stringify(body) }),
         });
         const data = await response.json();
         return NextResponse.json(data, { status: response.status });
       }
     } else {
-      // if the user is not logged in, add the token to the request
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
 
       if (isFileUpload) {
-        // Handle file upload without auth
         const formData = await request.formData();
         const response = await fetch(backendUrl, {
           method: 'POST',
@@ -68,12 +64,19 @@ export async function POST(request: NextRequest) {
         const data = await response.json();
         return NextResponse.json(data, { status: response.status });
       } else {
-        // Handle JSON requests without auth
+        let body = null;
+        try {
+          body = await request.json();
+        } catch {
+          // No body provided, continue without body
+        }
+
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          ...(body && { body: JSON.stringify(body) }),
         });
         const data = await response.json();
         return NextResponse.json(data, { status: response.status });
@@ -81,6 +84,18 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error fetching data:', error);
+
+    // Handle timeout errors specifically
+    if (error instanceof Error && error.name === 'AbortError') {
+      return NextResponse.json(
+        {
+          error: 'Request timeout',
+          message: 'The request took too long to complete. Please try again.',
+        },
+        { status: 408 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to fetch data' },
       { status: 500 }
@@ -96,19 +111,15 @@ export async function GET(request: NextRequest) {
     let path = url.pathname.replace('/api', '');
     const search = url?.search;
 
-    // if theres search params, add them to the url
     if (search) {
       const searchParams = new URLSearchParams(search);
       const params = searchParams.toString();
       path += `?${params}`;
     }
 
-    // if the user is logged in, add the token to the request
     if (!!session?.userId) {
       const { jwt: token } = await getClerkToken();
 
-      // Extract the path from the request URL
-      // Forward the request to the backend
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
       const response = await fetch(backendUrl, {
         headers: {
@@ -119,7 +130,6 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       return NextResponse.json(data, { status: response.status });
     } else {
-      // if the user is not logged in, add the token to the request
       const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
       const response = await fetch(backendUrl, {
         headers: {
@@ -175,6 +185,45 @@ export async function PUT(request: NextRequest) {
     console.error('Error updating data:', error);
     return NextResponse.json(
       { error: 'Failed to update data' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.userId) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const { jwt: token } = await getClerkToken();
+    const url = new URL(request.url);
+    let path = url.pathname.replace('/api', '');
+    const search = url?.search;
+    if (search) {
+      const searchParams = new URLSearchParams(search);
+      const params = searchParams.toString();
+      path += `?${params}`;
+    }
+
+    const backendUrl = `${process.env.BACKEND_API_HOST}/api${path}`;
+    const response = await fetch(backendUrl, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
+  } catch (error) {
+    console.error('Error deleting data:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete data' },
       { status: 500 }
     );
   }

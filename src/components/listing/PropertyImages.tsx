@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import {
   ChevronLeft,
@@ -9,11 +9,20 @@ import {
   Grid2X2,
   ArrowLeft,
   Heart,
+  ArrowRight,
 } from 'lucide-react';
 // import { Button } from '@/components/ui/button'; // Uncomment if you have a Button component
 import { cn } from '@/lib/utils';
 import gridIcon from '@/../public/images/photos.svg';
 import { PropertyImage } from '@/lib/queries/server/propety/type';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface PropertyImagesProps {
   isLiked?: boolean;
@@ -33,6 +42,7 @@ export function PropertyImages({
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const mainImage = images[0];
   const gridImages = images.slice(1, 5);
@@ -229,10 +239,60 @@ export function PropertyImages({
     );
   }
 
+  const handleSliderPrev = () => {
+    if (swiperRef.current) swiperRef.current.slidePrev();
+  };
+  const handleSliderNext = () => {
+    if (swiperRef.current) swiperRef.current.slideNext();
+  };
   return (
-    <div className='relative container mx-auto'>
-      {/* Image Grid with Hover Effects */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-5 aspect-[16/9] md:aspect-[2/1]'>
+    <div className='relative container mx-auto max-w-[1300px]'>
+      {/* Mobile Swiper */}
+      <div className='md:hidden relative'>
+        <Swiper
+          onSwiper={(swiper: SwiperType) => (swiperRef.current = swiper)}
+          modules={[Pagination]}
+          pagination={{
+            clickable: true,
+            dynamicBullets: true,
+          }}
+          loop={images.length > 1}
+          className='relative aspect-[4/3] rounded-3xl overflow-hidden'
+        >
+          {images.map((image, index) => (
+            <SwiperSlide key={index}>
+              <div className='relative w-full h-full cursor-pointer'>
+                <img
+                  src={image.imageUrl}
+                  alt={title}
+                  className='object-cover w-full h-full'
+                  sizes='100vw'
+                />
+                <div className='absolute inset-0 bg-black/0 hover:bg-black/20 transition duration-300'></div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex w-full justify-between items-center gap-2 z-50 px-4'>
+          <button
+            aria-label='Previous testimonial'
+            onClick={handleSliderPrev}
+            className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full text-primary-main text-2xl md:text-3xl transition hover:bg-primary-main hover:text-white focus:outline-none cursor-pointer bg-white'
+          >
+            <ArrowLeft />
+          </button>
+          <button
+            aria-label='Next testimonial'
+            onClick={handleSliderNext}
+            className='w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full text-primary-main text-2xl md:text-3xl transition  hover:bg-primary-main hover:text-white cursor-pointer bg-white'
+          >
+            <ArrowRight />
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Grid Layout */}
+      <div className='hidden md:grid grid-cols-4 gap-5 aspect-[2/1]'>
         {/* Main Large Image */}
         <div
           className='relative col-span-2 row-span-2 cursor-pointer overflow-hidden group rounded-tl-3xl rounded-bl-3xl'
@@ -242,7 +302,7 @@ export function PropertyImages({
             src={mainImage.imageUrl}
             alt={title}
             className='object-cover transition duration-300 group-hover:scale-105 h-full w-full'
-            sizes='(max-width: 768px) 100vw, 50vw'
+            sizes='50vw'
           />
           <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition duration-300'></div>
         </div>
@@ -252,7 +312,7 @@ export function PropertyImages({
           <div
             key={index}
             className={cn(
-              'relative hidden md:block cursor-pointer overflow-hidden group',
+              'relative cursor-pointer overflow-hidden group',
               index === 1 && 'rounded-tr-3xl',
               index === gridImages.length - 1 && 'rounded-br-3xl'
             )}
@@ -262,7 +322,7 @@ export function PropertyImages({
               src={image.imageUrl}
               alt={title}
               className={cn(
-                'object-cover transition duration-300 group-hover:scale-105 h-full w-full'
+                'object-cover transition duration-300 group-hover:scale-105 h-full w-full aspect-square'
               )}
               sizes='25vw'
             />
@@ -270,7 +330,7 @@ export function PropertyImages({
           </div>
         ))}
 
-        {/* Show All Photos Button with improved styling */}
+        {/* Show All Photos Button for Desktop */}
         <button
           className='absolute bottom-4 right-4 flex items-center gap-2 bg-secondary-main cursor-pointer font-semibold text-white px-4 py-2 text-sm rounded-full'
           onClick={() => openGallery(0)}
@@ -279,22 +339,6 @@ export function PropertyImages({
           See all photos
         </button>
       </div>
-
-      {/* Mobile Navigation with improved styling */}
-      {/* <div className='md:hidden absolute bottom-4 left-4 right-4 flex justify-between'>
-        <button
-          className='rounded-none bg-secondary text-secondary-foreground shadow-md p-2'
-          onClick={handlePrevious}
-        >
-          <ChevronLeft className='h-5 w-5' />
-        </button>
-        <button
-          className='rounded-none bg-secondary text-secondary-foreground shadow-md p-2'
-          onClick={handleNext}
-        >
-          <ChevronRight className='h-5 w-5' />
-        </button>
-      </div> */}
     </div>
   );
 }

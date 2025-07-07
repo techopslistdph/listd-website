@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -12,11 +13,12 @@ import { useGetUserLikedProperties } from '@/lib/queries/hooks/use-user-profile'
 import { filterProperties } from '@/lib/utils/filterProperty';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
-import FavoritesSkeleton from './FavoritesSkeleton';
+import PropertySkeleton from './PropertySkeleton';
 import ConfirmationDialog from './ConfirmationDialog';
+import Link from 'next/link';
 
 // Helper function to extract property features from the backend response
-const getPropertyFeatures = (property: PropertyDetail) => {
+export const getPropertyFeatures = (property: PropertyDetail) => {
   return {
     numberOfBedrooms: property.numberOfBedrooms,
     numberOfBathrooms: property.numberOfBathrooms,
@@ -49,40 +51,21 @@ export default function MyFavorites() {
     setPropertyToRemove(null);
   };
 
-  if (isLoading) {
-    return <FavoritesSkeleton />;
-  }
-
-  if (!userLikedProperties?.success) {
-    return (
-      <div>
-        <h1 className='text-xl lg:text-2xl font-semibold mb-1'>
-          Manage your Favorites
-        </h1>
-        <p className='text-sm lg:text-base text-gray-400 mb-6'>
-          Organize and update your property listings
-        </p>
-        <div className='text-red-500 text-center mt-12 text-lg'>
-          Error: {userLikedProperties?.message}
-        </div>
-      </div>
-    );
-  }
-
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(userLikedProperties?.data);
-
+  console.log(filteredProperties);
   return (
     <div className='lg:p-8'>
       {/* Title and subtitle */}
       <h1 className='text-xl lg:text-2xl font-semibold mb-1'>
-        Manage your Listing
+        Manage your Favories
       </h1>
       <p className='text-sm lg:text-base text-gray-400 mb-6'>
-        Organize and update your property listings
+        Organize and update your property favorites
       </p>
       {/* Property List */}
       <div className='flex flex-col gap-4 lg:gap-8'>
+        {isLoading && <PropertySkeleton />}
         {filteredProperties?.length === 0 ? (
           <div className='flex flex-col items-center justify-center mt-12 lg:mt-24'>
             <Image
@@ -101,32 +84,38 @@ export default function MyFavorites() {
             </div>
           </div>
         ) : (
-          // use any for now
           filteredProperties?.map((property: PropertyDetail) => {
             const features = getPropertyFeatures(property);
             return (
-              <div
+              <Link
+                href={`/property/${property.id}?property=${property.property.propertyTypeName.replaceAll(' ', '-').toLowerCase()}`}
                 key={property.id}
-                className='flex flex-col lg:flex-row bg-white rounded-2xl lg:rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 w-full lg:items-stretch relative min-h-[260px]'
+                className='grid grid-cols-1 lg:grid-cols-4 bg-white rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 cursor-pointer transition w-full relative'
               >
                 {/* Image */}
-                <div className='flex-shrink-0 flex items-center mb-4 lg:mb-0'>
-                  <Image
+                <div className='flex-shrink-0 flex items-center mb-4 lg:mb-0 col-span-1'>
+                  <img
                     src={property?.property?.images[0].imageUrl}
                     alt={property?.property?.listingTitle}
                     width={240}
                     height={200}
-                    className='w-full lg:w-60 h-48 lg:h-56 object-cover rounded-xl mb-auto lg:rounded-2xl'
+                    className='w-full lg:w-full h-72 lg:h-56 object-cover mb-auto rounded-2xl'
                   />
                 </div>
                 {/* Details */}
-                <div className='flex flex-col justify-between lg:ml-8 flex-1'>
+                <div className='flex flex-col justify-between lg:ml-8 flex-1 col-span-3'>
                   <div>
                     <div className='text-[#4B23A0] font-bold text-xl lg:text-2xl mb-1'>
-                      {property?.property?.listingPriceFormatted}
+                      {property?.property?.listingPrice.toLocaleString(
+                        'en-US',
+                        {
+                          style: 'currency',
+                          currency: 'PHP',
+                        }
+                      ) || 'Price not available'}
                     </div>
-                    <div className='text-lg lg:text-xl font-semibold mb-1'>
-                      {property?.property?.listingTitle}
+                    <div className='text-lg lg:text-xl font-semibold mb-1 break-words'>
+                      {property.property.listingTitle || 'Title not available'}
                     </div>
                     {property?.property?.address && (
                       <div className='flex items-center text-gray-400 text-sm lg:text-base mb-1'>
@@ -226,7 +215,7 @@ export default function MyFavorites() {
                 </div>
                 {/* Heart Icon */}
                 <div
-                  className='absolute top-4 right-4 lg:top-6 lg:right-6 cursor-pointer'
+                  className='absolute top-10 right-10 lg:top-6 lg:right-6 cursor-pointer bg-white p-3 rounded-full'
                   onClick={() => handleHeartClick(property.property.id)}
                 >
                   <svg
@@ -238,7 +227,7 @@ export default function MyFavorites() {
                     <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
                   </svg>
                 </div>
-              </div>
+              </Link>
             );
           })
         )}
@@ -248,6 +237,8 @@ export default function MyFavorites() {
         setShowModal={setShowModal}
         handleCancel={handleCancel}
         handleRemove={handleRemove}
+        title='Remove from favorites'
+        description='Are you sure you want to remove this from your favorite list?'
       />
     </div>
   );

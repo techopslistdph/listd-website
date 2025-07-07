@@ -36,7 +36,7 @@ export default function Hero({
     const paramsString = createParamsString({
       search: location.trim(),
       property,
-      type: propertyAction,
+      listingTypeId: propertyAction,
     });
 
     const url = paramsString ? `/property?${paramsString}` : '/property';

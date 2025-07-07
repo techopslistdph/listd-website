@@ -70,7 +70,7 @@ export default function EditProfile({
   // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   return (
-    <div>
+    <div className='lg:p-8'>
       <div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

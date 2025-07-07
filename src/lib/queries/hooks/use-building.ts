@@ -1,36 +1,6 @@
 import { api } from '@/lib/fetch-wrapper';
 import { useQuery } from '@tanstack/react-query';
-
-export interface BuildingSuggestion {
-  placeId: string;
-  address: string;
-  formattedAddress: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-  addressComponents: {
-    country: string;
-    region: string;
-    city: string;
-    barangay: string;
-    route: string;
-    postalCode: string;
-  };
-  buildingName: string;
-  types: string[];
-}
-
-interface BuildingSuggestionsResponse {
-  success: boolean;
-  data: {
-    predictions: BuildingSuggestion[];
-  } | null;
-  message?: string;
-  error?: {
-    message: string;
-  };
-}
+import { BuildingSuggestionsResponse } from './types/building';
 
 const building = {
   getBuildingSuggestions: async (query: string) => {

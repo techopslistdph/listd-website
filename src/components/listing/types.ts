@@ -19,6 +19,7 @@ export type FormData = {
   // Step 1
   propertyType: PropertyType;
   propertyTypeId: string;
+  listingType: string;
   listingTypeId: string;
   buildingName: string;
   state: string;
@@ -35,6 +36,8 @@ export type FormData = {
   bathrooms: number;
   parking: number;
   fullyFurnished: FurnishingStatus;
+  isDraft: boolean;
+  isPublished: boolean;
   facingWest: boolean;
   amenities: string[];
   features: string[];
@@ -60,11 +63,14 @@ export const initialFormData: FormData = {
   propertyType: 'condominium',
   propertyTypeId: '',
   listingTypeId: '',
+  listingType: '',
   buildingName: '',
   state: '',
   city: '',
   barangay: '',
   street: '',
+  isDraft: false,
+  isPublished: false,
   zipCode: '',
   floorNo: '',
   longitude: 0,

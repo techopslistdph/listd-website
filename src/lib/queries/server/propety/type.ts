@@ -33,6 +33,25 @@ export interface NearbyLocationsResponse {
   };
 }
 
+export interface LocationCoordinatesResponse {
+  success: boolean;
+  data: {
+    predictions: {
+      address: string;
+      placeId: string;
+      formattedAddress: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+      };
+    }[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
 export type PropertyLikeResponse = {
   success: boolean;
   data: {
@@ -102,6 +121,8 @@ export interface PropertyDetails {
   listingPriceFormatted: string;
   address: string;
   cityName: string;
+  isDraft: boolean;
+  isPublished: boolean;
   barangayName: string;
   longitude: number;
   latitude: number;
@@ -111,6 +132,8 @@ export interface PropertyDetails {
   images: PropertyImage[];
   listingDescription: string;
   listingDescriptionMarkdown: string;
+  features: { id: string; name: string }[];
+  amenities: { id: string; name: string }[];
 }
 
 interface ScrapeContactInfo {
