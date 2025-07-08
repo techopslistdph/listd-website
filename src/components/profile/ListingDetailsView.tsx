@@ -1,13 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
-// import { StaticImageData } from 'next/image';
 import 'swiper/css';
-// import areaIcon from '../../../public/images/icons/squaremeter.svg';
-// import bedIcon from '../../../public/images/icons/bedroom.svg';
-// import bathIcon from '../../../public/images/icons/bath.svg';
-// import fullyFurnishedIcon from '../../../public/images/icons/fully-furnished.svg';
-// import parkingIcon from '../../../public/images/icons/car.svg';
-// import facingWestIcon from '../../../public/images/icons/facing-west.svg';
+
 import { Button } from '../ui/button';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ArrowLeft } from 'lucide-react';
@@ -20,19 +14,6 @@ interface ListingDetailsViewProps {
   setUpdateDialogOpen: (open: boolean) => void;
   setShowDetails: (show: boolean) => void;
 }
-
-// const iconMap: Record<string, StaticImageData> = {
-//   area: areaIcon,
-//   bedrooms: bedIcon,
-//   baths: bathIcon,
-//   parking: parkingIcon,
-//   'facing west': facingWestIcon,
-//   'fully furnished': fullyFurnishedIcon,
-// };
-
-// function getIconForKey(key: string): StaticImageData | undefined {
-//   return iconMap[key];
-// }
 
 export default function ListingDetailsView({
   listing,
