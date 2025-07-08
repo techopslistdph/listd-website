@@ -53,7 +53,6 @@ export default function MyFavorites() {
 
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(userLikedProperties?.data);
-  console.log(filteredProperties);
   return (
     <div className='lg:p-8'>
       {/* Title and subtitle */}

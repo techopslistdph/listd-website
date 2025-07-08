@@ -59,8 +59,10 @@ export interface AiGeneratePrompt {
   context?: {
     // Common fields
     floorArea?: number;
+    location?: string;
     lotSize?: number;
     transactionType?: string;
+    propertyType?: string;
     bedrooms?: number;
     bathrooms?: number;
     parking?: number;
@@ -95,4 +97,29 @@ export interface AiGeneratePrompt {
     numberOfMaidRooms?: number;
     yearBuilt?: number;
   };
+}
+
+export interface AiValuation {
+  id: string;
+  aiResult: {
+    estimated: number;
+    valuationDate: string;
+    confidence: 'low' | 'medium' | 'high';
+    currency: string;
+  };
+  inputPayload: AiGeneratePrompt['context'];
+  manualValuationResult: {
+    marketConditions: string;
+    locationFactors: string[];
+    propertyFeatures: string[];
+    comparableProperties: Array<{
+      type: string;
+      location: string;
+      price: number;
+      size: number;
+      source: string;
+    }>;
+    marketTrends: string;
+  };
+  status: 'pending' | 'completed' | 'failed';
 }

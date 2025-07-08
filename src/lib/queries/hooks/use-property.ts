@@ -89,12 +89,10 @@ const property = {
             cityResponse?.error?.message || 'An unexpected error occurred',
         };
       }
-      console.log('cityResponse', cityResponse.data);
       const city = cityResponse.data.data.find(
         (city: { id: string; name: string; psgcCode: string }) =>
           city.name.toLowerCase().includes(cityName.toLowerCase())
       );
-      console.log('city', city);
       if (!city) {
         return {
           success: false,

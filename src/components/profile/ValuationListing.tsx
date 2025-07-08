@@ -9,7 +9,12 @@ import staticImageSample from '../../../public/images/condo5.png';
 import Image from 'next/image';
 
 export default function ValuationListing() {
-  const { data: userValuations, isLoading } = useGetUserValuation();
+  const { data: userValuations, isLoading, refetch } = useGetUserValuation();
+
+  // Refetch data when component mounts
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <div className='lg:p-8'>
@@ -22,6 +27,23 @@ export default function ValuationListing() {
       {isLoading && <PropertySkeleton />}
 
       <div className='flex flex-col gap-4 lg:gap-8'>
+        {userValuations?.data?.length === 0 && (
+          <div className='flex flex-col items-center justify-center mt-12 lg:mt-24'>
+            <Image
+              src={'/images/icons/empty.svg'}
+              alt='No listings'
+              width={150}
+              height={50}
+              className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+            />
+            <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+              {'No valuations to show.'}
+            </div>
+            <div className='text-sm lg:text-base text-gray-400 text-center'>
+              {"You don't have any valuations yet."}
+            </div>
+          </div>
+        )}
         {userValuations?.data?.map((item: any) => (
           <div
             key={item?.id}
@@ -46,12 +68,18 @@ export default function ValuationListing() {
                     .replace(/\b\w/g, (l: string) => l.toUpperCase())}
                 </span>
                 <div className='text-lg lg:text-xl font-bold mb-1'>
-                  {item?.inputPayload.buildingName || 'Untitled Valuation'}
+                  {item?.inputPayload.buildingName ||
+                    `${item.inputPayload.propertyType
+                      .replace('-', ' ')
+                      .replace(/\b\w/g, (l: string) =>
+                        l.toUpperCase()
+                      )} ${item.inputPayload.transactionType.replace(
+                      '-',
+                      ' '
+                    )} in ${item?.inputPayload?.location}` ||
+                    'Untitled Valuation'}
                 </div>
-                {(item?.inputPayload?.location ||
-                  item?.inputPayload?.location?.address ||
-                  item?.inputPayload?.location?.city ||
-                  item?.inputPayload?.location?.barangay) && (
+                {item?.inputPayload?.location && (
                   <div className='flex items-center text-gray-400 text-sm lg:text-base mb-1'>
                     <svg
                       className='w-4 h-4 lg:w-5 lg:h-5 mr-1'

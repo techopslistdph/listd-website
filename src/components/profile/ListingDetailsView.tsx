@@ -41,7 +41,6 @@ export default function ListingDetailsView({
   setShowDetails,
 }: ListingDetailsViewProps) {
   const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}&q=${listing.property.latitude},${listing.property.longitude}&zoom=15`;
-  console.log(listing);
   return (
     <div className='bg-white p-4 lg:p-8'>
       {/* back button */}

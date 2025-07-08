@@ -58,7 +58,6 @@ export default function MyListing() {
   }
 
   const handleDelete = (id: string, propertyType: string) => {
-    console.log(id, propertyType);
     setPropertyToDelete({ id, propertyType });
     setDeleteDialogOpen(true);
   };
@@ -70,7 +69,6 @@ export default function MyListing() {
 
   const handleRemove = () => {
     if (propertyToDelete) {
-      console.log(propertyToDelete);
       deleteProperty(
         {
           propertyId: propertyToDelete.id,

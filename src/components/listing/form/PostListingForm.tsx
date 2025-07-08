@@ -26,6 +26,7 @@ import {
   validateRequiredFields,
 } from '@/lib/utils/propertyPrompBuilder';
 import { useAiValuate } from '@/lib/queries/hooks/use-ai-generate';
+import { AiValuation } from '@/lib/queries/hooks/types/ai-generate';
 
 interface PostListingFormProps {
   propertyTypes: Array<{
@@ -62,8 +63,7 @@ export default function PostListingForm({
   const router = useRouter();
   const pathname = usePathname();
   const isValuation = pathname.includes('valuation');
-  const [valuationResponse, setValuationResponse] =
-    useState<[estimate: string, location: string, propertyType: string]>();
+  const [valuationResponse, setValuationResponse] = useState<AiValuation>();
 
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingFormSchema),
@@ -134,7 +134,6 @@ export default function PostListingForm({
   const generateAiContent = () => {
     const formData = form.getValues();
 
-    console.log('formData', formData);
     const validation = validateRequiredFields(formData);
     if (!validation.isValid) {
       return toast.error(validation.message);
@@ -148,17 +147,7 @@ export default function PostListingForm({
         onSuccess: data => {
           if (data.success) {
             if (data.data) {
-              console.log(data.data);
-              const estimated = (
-                data.data?.submittedValuation?.inputPayload as any
-              )?.transactionType?.includes('rent')
-                ? data?.data?.aiValuation?.valuation?.rentalPrice?.estimated?.toString()
-                : data?.data?.aiValuation?.valuation?.salePrice?.estimated?.toString();
-              setValuationResponse([
-                estimated || '0',
-                prompt.location || '',
-                prompt.propertyType,
-              ]);
+              setValuationResponse(data.data as unknown as AiValuation);
               setStep((step + 1) as Step);
             }
           } else {

@@ -50,7 +50,6 @@ const ai = {
         };
       }
 
-      // Build the valuation payload
       const valuationPayload = {
         inputPayload: {
           ...prompt.context,
@@ -58,15 +57,17 @@ const ai = {
           propertyType: prompt.propertyType,
         },
         aiResult: {
-          ...aiResponse.data.valuation?.salePrice,
-          ...aiResponse.data.valuation?.rentalPrice,
+          ...(prompt.context?.transactionType?.toLowerCase().includes('rent')
+            ? aiResponse.data?.valuation?.rentalPrice ||
+              aiResponse.data?.valuation?.salePrice
+            : aiResponse.data?.valuation?.salePrice ||
+              aiResponse.data?.valuation?.rentalPrice),
           valuationDate: new Date().toISOString(),
         },
         manualValuationResult: aiResponse.data.valuation?.analysis,
         status: 'completed',
       };
 
-      // Post to valuations API
       const valuationResponse = await api.post<ValuationResponse>(
         '/api/valuations',
         valuationPayload
@@ -84,8 +85,7 @@ const ai = {
       return {
         success: true,
         data: {
-          aiValuation: aiResponse.data,
-          submittedValuation: valuationResponse.data,
+          ...valuationResponse.data,
         },
         message: 'Valuation completed and submitted successfully',
       };

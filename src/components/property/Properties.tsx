@@ -27,7 +27,6 @@ export function Properties({
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user } = useUser();
 
-  console.log('properties', properties);
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(properties.data);
 
