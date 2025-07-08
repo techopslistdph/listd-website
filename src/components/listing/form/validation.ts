@@ -28,13 +28,11 @@ export const stepFields: {
     ],
     Warehouse: [
       'propertyType',
-      'buildingName',
       'lotSize',
       'floorArea',
       'ceilingHeight',
       'parking',
       'amenities',
-      'security',
       'state',
       'city',
       'barangay',

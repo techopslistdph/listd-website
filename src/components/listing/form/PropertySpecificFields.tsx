@@ -166,9 +166,15 @@ export function PropertySpecificFields({
               value={
                 (form.getValues('propertyType') as string) === 'Condominium' ||
                 (form.getValues('propertyType') as string) === 'House and Lot'
-                  ? (form.getValues('amenities') as string[])
+                  ? (form.getValues('amenities') as Array<{
+                      value: string;
+                      label: string;
+                    }>) || []
                   : (form.getValues('propertyType') as string) === 'Warehouse'
-                    ? (form.getValues('amenities') as string[])
+                    ? (form.getValues('amenities') as Array<{
+                        value: string;
+                        label: string;
+                      }>) || []
                     : []
               }
               onChange={value => onChange('amenities', value)}
@@ -190,7 +196,10 @@ export function PropertySpecificFields({
               value={
                 (form.getValues('propertyType') as string) === 'Condominium' ||
                 (form.getValues('propertyType') as string) === 'House and Lot'
-                  ? (form.getValues('features') as string[])
+                  ? (form.getValues('features') as Array<{
+                      value: string;
+                      label: string;
+                    }>) || []
                   : []
               }
               onChange={value => onChange('features', value)}
@@ -216,11 +225,6 @@ export function PropertySpecificFields({
       return (
         <>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
-            <FormInput
-              name='buildingName'
-              label='Building Name'
-              placeholder='Enter building name'
-            />
             <FormInput
               name='lotSize'
               label='Lot Size (sqm)'
@@ -258,8 +262,24 @@ export function PropertySpecificFields({
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
             <TagInput
               label='Nearby Locations'
-              value={form.getValues('nearbyLocations') || []}
-              onChange={value => onChange('nearbyLocations', value)}
+              value={(
+                (form.getValues('nearbyLocations') as Array<{
+                  value: string;
+                  label: string;
+                }>) || []
+              ).map(id => ({
+                value: id.value,
+                label: id.label,
+              }))}
+              onChange={value =>
+                onChange(
+                  'nearbyLocations',
+                  value.map(item => ({
+                    value: item.value,
+                    label: item.label,
+                  }))
+                )
+              }
               placeholder='Add amenities'
               error={form.formState.errors.amenities?.message || ''}
               defaultOptions={
@@ -268,19 +288,6 @@ export function PropertySpecificFields({
                   label: location.name,
                 })) || []
               }
-            />
-            <TagInput
-              label='Security Features'
-              value={form.getValues('security') || []}
-              onChange={value => onChange('security', value)}
-              defaultOptions={
-                features?.map(feature => ({
-                  value: feature.id,
-                  label: feature.name,
-                })) || []
-              }
-              placeholder='Add security features'
-              error={form.formState.errors.security?.message || ''}
             />
           </div>
         </>
@@ -384,7 +391,15 @@ export function PropertySpecificFields({
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
             <TagInput
               label='Amenities'
-              value={form.getValues('amenities') || []}
+              value={(
+                (form.getValues('amenities') as Array<{
+                  value: string;
+                  label: string;
+                }>) || []
+              ).map(id => ({
+                value: id.value,
+                label: id.label,
+              }))}
               onChange={value => onChange('amenities', value)}
               defaultOptions={
                 amenities?.map(amenity => ({
@@ -397,7 +412,15 @@ export function PropertySpecificFields({
             />
             <TagInput
               label='Features'
-              value={form.getValues('features') || []}
+              value={(
+                (form.getValues('features') as Array<{
+                  value: string;
+                  label: string;
+                }>) || []
+              ).map(id => ({
+                value: id.value,
+                label: id.label,
+              }))}
               onChange={value => onChange('features', value)}
               defaultOptions={
                 features?.map(feature => ({
@@ -424,8 +447,24 @@ export function PropertySpecificFields({
             />
             <TagInput
               label='Nearby Locations'
-              value={form.getValues('nearbyLocations') || []}
-              onChange={value => onChange('nearbyLocations', value)}
+              value={(
+                (form.getValues('nearbyLocations') as Array<{
+                  value: string;
+                  label: string;
+                }>) || []
+              ).map(id => ({
+                value: id.value,
+                label: id.label,
+              }))}
+              onChange={value =>
+                onChange(
+                  'nearbyLocations',
+                  value.map(item => ({
+                    value: item.value,
+                    label: item.label,
+                  }))
+                )
+              }
               placeholder='Add nearby locations'
               defaultOptions={
                 nearbyLocations?.map(location => ({

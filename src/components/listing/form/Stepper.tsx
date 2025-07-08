@@ -36,9 +36,9 @@ export function Stepper({
   listingTypes,
 }: StepperProps) {
   const pathname = usePathname();
-  const steps = pathname.includes('/valuation') ? valuationSteps : defaultSteps;
+  const steps = pathname.includes('valuation') ? valuationSteps : defaultSteps;
   const currentListingTypeId = form.watch('listingTypeId');
-
+  console.log(listingTypes);
   return (
     <div>
       <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0'>

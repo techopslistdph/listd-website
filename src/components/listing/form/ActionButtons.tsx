@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { usePathname } from 'next/navigation';
 
 interface ActionButtonsProps {
   onDraft: () => void;
@@ -13,6 +14,9 @@ export function ActionButtons({
   onBack,
   isLoading,
 }: ActionButtonsProps) {
+  const pathname = usePathname();
+
+  const isValuation = pathname.includes('valuation');
   return (
     <div className='flex flex-col md:flex-row items-center justify-end gap-4 mt-8'>
       {onBack && (
@@ -25,15 +29,19 @@ export function ActionButtons({
           Back
         </Button>
       )}
-      <Button
-        variant='outline'
-        className='rounded-full py-5 px-8 w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
-        type='button'
-        onClick={onDraft}
-        disabled={isLoading}
-      >
-        Save as draft
-      </Button>
+
+      {!isValuation && (
+        <Button
+          variant='outline'
+          className='rounded-full py-5 px-8 w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
+          type='button'
+          onClick={onDraft}
+          disabled={isLoading}
+        >
+          Save as draft
+        </Button>
+      )}
+
       <Button
         type='button'
         className='rounded-full py-5 px-8 w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'

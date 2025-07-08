@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api, ApiError } from '@/lib/fetch-wrapper';
-import { UserProfileResponse } from '../server/user/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserSchemaType } from '@/components/profile/EditProfile';
 import { ListingResponse } from './types/property';
+import { UserProfileResponse, userValuationResponse } from './types/user';
 
 const userProfile = {
   getProfile: async () => {
@@ -140,6 +140,39 @@ const userProfile = {
       };
     }
   },
+
+  getUserValuations: async () => {
+    try {
+      const response = await api.get<userValuationResponse>(`/api/valuations`);
+
+      if ('error' in response) {
+        return {
+          success: false,
+          data: [],
+          message: response?.error?.message || 'An unexpected error occurred',
+        };
+      }
+
+      return {
+        success: true,
+        data: response.data,
+        message: 'User listings fetched successfully',
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return {
+          success: false,
+          data: [],
+          message: error.message,
+        };
+      }
+      return {
+        success: false,
+        data: [],
+        message: 'An unexpected error occurred',
+      };
+    }
+  },
 };
 
 export const useGetProfile = () => {
@@ -174,5 +207,12 @@ export const useGetUserListings = (params: {
     queryKey: ['userListings', params.status],
     queryFn: () => userProfile.getUserListings(params),
     enabled: !!params.status,
+  });
+};
+
+export const useGetUserValuation = () => {
+  return useQuery({
+    queryKey: ['userValuation'],
+    queryFn: () => userProfile.getUserValuations(),
   });
 };

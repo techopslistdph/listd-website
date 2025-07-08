@@ -14,7 +14,6 @@ import { Input } from '../ui/input';
 // import upload from '@/../public/images/icons/upload.svg';
 // import Image from 'next/image';
 // import sampleQr from '@/../public/images/sample-qr.png';
-import { UserProfile } from '@/lib/queries/server/user/types';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +21,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form';
 import { useUpdateProfile } from '@/lib/queries/hooks/use-user-profile';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
+import { UserProfile } from '@/lib/queries/hooks/types/user';
 
 const userSchema = z.object({
   firstName: z.string().min(1),

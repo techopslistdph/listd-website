@@ -60,7 +60,6 @@ function getPropertySpecificFields(
     case 'Warehouse':
       if (formData.propertyType === 'Warehouse') {
         return {
-          buildingName: formData.buildingName,
           lotSize: formData.lotSize,
           floorArea: formData.floorArea,
           ceilingHeight: formData.ceilingHeight,
@@ -132,12 +131,14 @@ export function validateRequiredFields(formData: ListingFormData) {
  */
 export function buildPropertyPrompt(
   formData: ListingFormData,
-  request: string,
-  type: 'title' | 'description'
+  type: 'title' | 'description' | 'valuate',
+  request?: string
 ): AiGeneratePrompt {
   const fields = extractFormFields(formData);
   const listingType = fields.listingType;
-  const transactionType = listingType === 'sale' ? 'for-sale' : 'for-rent';
+  const transactionType = listingType.toLowerCase().includes('buy')
+    ? 'for-sale'
+    : 'for-rent';
 
   // Build location string
   const locationParts = [
@@ -172,33 +173,33 @@ export function buildPropertyPrompt(
     ...(fields.commissionPHP && { commissionPHP: fields.commissionPHP }),
     ...(fields.nearbyLocations &&
       fields.nearbyLocations.length > 0 && {
-        nearbyLocations: fields.nearbyLocations,
+        nearbyLocations: fields.nearbyLocations.map(item => item.label),
       }),
     ...(fields.amenities &&
       fields.amenities.length > 0 && {
-        amenities: fields.amenities,
+        amenities: fields.amenities.map(item => item.label),
       }),
     ...(fields.features &&
       fields.features.length > 0 && {
-        features: fields.features,
+        features: fields.features.map(item => item.label),
       }),
     ...(fields.security &&
       fields.security.length > 0 && {
-        security: fields.security,
+        security: fields.security.map(item => item.label),
       }),
     ...(transactionType && { transactionType }),
   };
 
   // Add property type specific fields
   const propertyType = formData.propertyType;
-  if (propertyType === 'Condominium') {
+  if (propertyType === 'Condominium' && context) {
     context.fullyFurnished = fields.fullyFurnished;
     context.facingWest = fields.facingWest;
-  } else if (propertyType === 'Warehouse') {
+  } else if (propertyType === 'Warehouse' && context) {
     context.ceilingHeight = fields.ceilingHeight;
     context.loadingDocks = fields.loadingDocks;
     context.buildingSize = fields.buildingSize;
-  } else if (propertyType === 'House and lot') {
+  } else if (propertyType === 'House and lot' && context) {
     context.numberOfFloors = fields.numberOfFloors;
     context.numberOfGarages = fields.numberOfGarages;
     context.numberOfLivingRooms = fields.numberOfLivingRooms;
@@ -211,10 +212,14 @@ export function buildPropertyPrompt(
   }
 
   const requestTitle =
-    request === ''
+    !request || request === ''
       ? type === 'title'
         ? 'Generate a title for the property based on the context provided'
-        : 'Generate a description for the property based on the context provided'
+        : type === 'description'
+          ? 'Generate a description for the property based on the context provided'
+          : type === 'valuate'
+            ? `Generate a valuation ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} property based on the context provided`
+            : 'Generate content for the property based on the context provided'
       : request;
   return {
     request: requestTitle,

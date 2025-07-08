@@ -9,6 +9,42 @@ export interface AiGenerateResponse {
       location: string;
     };
     needsMoreInfo?: boolean;
+    valuation?: {
+      id: string;
+      salePrice: {
+        estimated: number;
+        range: {
+          low: number;
+          high: number;
+        };
+        confidence: 'low' | 'medium' | 'high';
+        currency: string;
+      };
+      rentalPrice: {
+        estimated: number;
+        range: {
+          low: number;
+          high: number;
+        };
+        confidence: 'low' | 'medium' | 'high';
+        currency: string;
+        period: string;
+      };
+      analysis: {
+        marketConditions: string;
+        locationFactors: string[];
+        propertyFeatures: string[];
+        comparableProperties: Array<{
+          type: string;
+          location: string;
+          price: number;
+          size: number;
+          source: string;
+        }>;
+        marketTrends: string;
+      };
+      disclaimer: string;
+    };
   };
   message?: string;
   error?: {
@@ -35,10 +71,10 @@ export interface AiGeneratePrompt {
     downPaymentPHP?: string;
     commissionPercent?: string;
     commissionPHP?: string;
-    nearbyLocations?: string[];
-    amenities?: string[];
-    features?: string[];
-    security?: string[];
+    nearbyLocations?: [value: string, label: string][] | string[];
+    amenities?: [value: string, label: string][] | string[];
+    features?: [value: string, label: string][] | string[];
+    security?: [value: string, label: string][] | string[];
 
     // Property type specific fields
     // Condominium

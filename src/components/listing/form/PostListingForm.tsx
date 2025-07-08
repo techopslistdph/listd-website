@@ -17,10 +17,15 @@ import { backgroundImage } from '@/lib/getBackgroundImage';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { listingFormSchema, ListingFormData } from './Schema';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { getFieldsToValidate } from './validation';
 import { useListingSubmission } from '@/hooks/useListingSubmission';
 import { toast } from 'sonner';
+import {
+  buildPropertyPrompt,
+  validateRequiredFields,
+} from '@/lib/utils/propertyPrompBuilder';
+import { useAiValuate } from '@/lib/queries/hooks/use-ai-generate';
 
 interface PostListingFormProps {
   propertyTypes: Array<{
@@ -55,6 +60,10 @@ export default function PostListingForm({
 }: PostListingFormProps) {
   const [step, setStep] = useState<Step>(0);
   const router = useRouter();
+  const pathname = usePathname();
+  const isValuation = pathname.includes('valuation');
+  const [valuationResponse, setValuationResponse] =
+    useState<[estimate: string, location: string, propertyType: string]>();
 
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingFormSchema),
@@ -62,14 +71,23 @@ export default function PostListingForm({
       ...initialFormData,
       propertyType: 'Condominium',
       listingTypeId: listingTypes[0].id,
-    },
+      listingType: listingTypes[0].name,
+      features: [],
+      amenities: [],
+      nearbyLocations: [],
+      security: [],
+    } as ListingFormData,
     mode: 'onTouched',
     reValidateMode: 'onChange',
   });
 
   const handleNext = async () => {
     const propertyType = form.getValues('propertyType');
-    const fieldsToValidate = getFieldsToValidate(step, propertyType);
+    const fieldsToValidate = getFieldsToValidate(
+      step,
+      propertyType,
+      isValuation
+    );
     const isValid = await form.trigger(fieldsToValidate as any);
 
     if (!isValid) {
@@ -111,6 +129,50 @@ export default function PostListingForm({
       });
     }
   };
+  const { mutate: valuate, isPending } = useAiValuate();
+
+  const generateAiContent = () => {
+    const formData = form.getValues();
+
+    console.log('formData', formData);
+    const validation = validateRequiredFields(formData);
+    if (!validation.isValid) {
+      return toast.error(validation.message);
+    }
+
+    const prompt = buildPropertyPrompt(formData, 'valuate');
+
+    valuate(
+      { ...prompt },
+      {
+        onSuccess: data => {
+          if (data.success) {
+            if (data.data) {
+              console.log(data.data);
+              const estimated = (
+                data.data?.submittedValuation?.inputPayload as any
+              )?.transactionType?.includes('rent')
+                ? data?.data?.aiValuation?.valuation?.rentalPrice?.estimated?.toString()
+                : data?.data?.aiValuation?.valuation?.salePrice?.estimated?.toString();
+              setValuationResponse([
+                estimated || '0',
+                prompt.location || '',
+                prompt.propertyType,
+              ]);
+              setStep((step + 1) as Step);
+            }
+          } else {
+            toast.error(data.message || 'Failed to generate title');
+          }
+        },
+        onError: error => {
+          toast.error(
+            error.message || 'Failed to generate content. Please try again.'
+          );
+        },
+      }
+    );
+  };
 
   return (
     <FormProvider {...form}>
@@ -132,16 +194,18 @@ export default function PostListingForm({
           />
           {step === 0 && (
             <PropertyDetailsStep
+              listingTypes={listingTypes}
               form={form}
               onChange={handleChange}
-              onNext={handleNext}
+              onNext={isValuation ? generateAiContent : handleNext}
               propertyTypes={propertyTypes}
               onDraft={handleDraft}
               features={features}
               amenities={amenities}
+              isLoading={isValuation ? isPending : false}
             />
           )}
-          {step === 1 && (
+          {step === 1 && !isValuation && (
             <TitleDescriptionStep
               form={form}
               onChange={handleChange}
@@ -150,7 +214,7 @@ export default function PostListingForm({
               isSubmitting={isSubmitting}
             />
           )}
-          {step === 2 && (
+          {step === 2 && !isValuation && (
             <PaymentStep
               form={form}
               onChange={handleChange}
@@ -161,12 +225,14 @@ export default function PostListingForm({
               isSubmitting={isSubmitting}
             />
           )}
-          {step === 3 && (
-            <ResultsStep
-              onHome={handleHome}
-              propertyType={form.getValues('propertyType') as PropertyType}
-            />
-          )}
+          {(step === 3 && !isValuation) ||
+            (step === 1 && isValuation && (
+              <ResultsStep
+                onHome={handleHome}
+                valuationResult={valuationResponse}
+                propertyType={form.getValues('propertyType') as PropertyType}
+              />
+            ))}
         </div>
       </div>
     </FormProvider>

@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 
 interface TagInputProps {
   label: string;
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: Array<{ value: string; label: string }>;
+  onChange: (value: Array<{ value: string; label: string }>) => void;
   placeholder: string;
   defaultOptions?: Array<{ value: string; label: string }>;
   error: string;
@@ -59,9 +59,27 @@ export function TagInput({
     if (e.key === 'Enter' && inputValue.trim()) {
       e.preventDefault();
       const newValue = inputValue.trim();
-      if (!value.includes(newValue)) {
-        onChange([...value, newValue]);
+
+      // Check if the input matches any default option
+      const matchingOption = defaultOptions?.find(
+        option =>
+          option.label.toLowerCase() === newValue.toLowerCase() ||
+          option.value.toLowerCase() === newValue.toLowerCase()
+      );
+
+      if (
+        matchingOption &&
+        !value.some(item => item.value === matchingOption.value)
+      ) {
+        onChange([...value, matchingOption]);
+      } else if (
+        !matchingOption &&
+        !value.some(item => item.value === newValue)
+      ) {
+        // If no match found, add the raw input as a fallback
+        onChange([...value, { value: newValue, label: newValue }]);
       }
+
       setInputValue('');
       setShowSuggestions(false);
     }
@@ -75,8 +93,8 @@ export function TagInput({
     value: string;
     label: string;
   }) => {
-    if (!value.includes(suggestion.value)) {
-      onChange([...value, suggestion.value]);
+    if (!value.some(item => item.value === suggestion.value)) {
+      onChange([...value, suggestion]);
     }
     setInputValue('');
     setShowSuggestions(false);
@@ -95,7 +113,7 @@ export function TagInput({
                 key={i}
                 className='bg-primary-light text-primary-mid px-2 py-1 rounded-xl text-xs sm:text-sm flex items-center font-normal'
               >
-                {defaultOptions?.find(option => option.value === item)?.label}
+                {item.label}
                 <button
                   className='ml-2 text-primary-mid hover:text-primary-main focus:outline-none'
                   onClick={() => onChange(value.filter((_, idx) => idx !== i))}

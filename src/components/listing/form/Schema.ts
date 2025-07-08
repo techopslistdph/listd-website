@@ -39,10 +39,38 @@ const baseSchema = {
   commissionPercent: z.string().optional(),
   commissionPHP: z.string().optional(),
   // Common optional fields
-  nearbyLocations: z.array(z.string()).optional(),
-  amenities: z.array(z.string()).optional(),
-  features: z.array(z.string()).optional(),
-  security: z.array(z.string()).optional(),
+  nearbyLocations: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .optional(),
+  amenities: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .optional(),
+  features: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .optional(),
+  security: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    )
+    .optional(),
   longitude: z.coerce.number().optional(),
   latitude: z.coerce.number().optional(),
 };
@@ -60,14 +88,23 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
     fullyFurnished: furnishingStatusEnum,
     facingWest: z.boolean(),
-    amenities: z.array(z.string()),
-    features: z.array(z.string()),
+    amenities: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
+    features: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
   }),
   // Warehouse specific schema
   z.object({
     ...baseSchema,
     propertyType: z.literal('Warehouse'),
-    buildingName: z.string().min(1, 'Building name is required'),
     lotSize: z.string().min(1, 'Lot size is required'),
     floorArea: z.string().min(1, 'Floor area is required'),
     ceilingHeight: z
@@ -75,8 +112,12 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
       .min(1, 'Ceiling height is required')
       .max(50, 'Ceiling height cannot exceed 50 meters'),
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
-    nearbyLocations: z.array(z.string()),
-    security: z.array(z.string()),
+    nearbyLocations: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
     loadingDocks: z.coerce.number().min(0, 'Must be 0 or greater'),
     buildingSize: z.coerce.number().min(0, 'Must be 0 or greater'),
   }),
@@ -95,8 +136,18 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
     fullyFurnished: furnishingStatusEnum,
     facingWest: z.boolean(),
-    amenities: z.array(z.string()),
-    features: z.array(z.string()),
+    amenities: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
+    features: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
     numberOfGarages: z.coerce.number().min(0, 'Must be 0 or greater'),
     numberOfLivingRooms: z.coerce.number().min(0, 'Must be 0 or greater'),
     numberOfDiningRooms: z.coerce.number().min(0, 'Must be 0 or greater'),
@@ -109,7 +160,12 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     ...baseSchema,
     propertyType: z.literal('Vacant lot'),
     lotSize: z.coerce.number().min(1, 'Lot size is required'),
-    nearbyLocations: z.array(z.string()),
+    nearbyLocations: z.array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+      })
+    ),
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
   }),
 ]);

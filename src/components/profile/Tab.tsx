@@ -9,9 +9,9 @@ import MyListing from './MyListing';
 import ValuationListing from './ValuationListing';
 import LoginSecurity from './LoginSecurity';
 import MyFavorites from './MyFavorites';
-import { UserProfile } from '@/lib/queries/server/user/types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
+import { UserProfile } from '@/lib/queries/hooks/types/user';
 
 export default function Tab({ userProfile }: { userProfile: UserProfile }) {
   return (

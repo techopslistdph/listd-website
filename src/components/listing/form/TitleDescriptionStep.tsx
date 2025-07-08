@@ -44,7 +44,7 @@ export function TitleDescriptionStep({
     }
 
     const request = type === 'title' ? formData.title : formData.description;
-    const prompt = buildPropertyPrompt(formData, request, type);
+    const prompt = buildPropertyPrompt(formData, type, request);
 
     // Set loading state
     if (type === 'title') {

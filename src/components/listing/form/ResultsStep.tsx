@@ -11,16 +11,21 @@ import WaitAlertModal from './WaitAlertModal';
 interface ResultsStepProps {
   onHome: () => void;
   propertyType: PropertyType;
+  valuationResult?: [estimate: string, location: string, propertyType: string];
 }
 
-export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
+export function ResultsStep({
+  onHome,
+  propertyType,
+  valuationResult,
+}: ResultsStepProps) {
   const pathname = usePathname();
   const [showWaitModal, setShowWaitModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
 
-  const handlePost = () => {
-    setShowWaitModal(true);
-  };
+  // const handlePost = () => {
+  //   setShowWaitModal(true);
+  // };
 
   if (pathname.includes('/valuation')) {
     return (
@@ -31,7 +36,12 @@ export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
             <div className='text-sm text-neutral-mid mb-1'>
               Estimated Property Value
             </div>
-            <div className='heading-4 text-primary-main'>₱2,622,715.20</div>
+            <div className='heading-4 text-primary-main'>
+              {Number(valuationResult?.[0]).toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              })}
+            </div>
           </div>
           <div className='mb-6 shadow-sm rounded-lg p-4'>
             <div className='text-sm text-muted-foreground mb-1'>Country</div>
@@ -39,11 +49,13 @@ export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
           </div>
           <div className='mb-6 shadow-sm rounded-lg p-4'>
             <div className='text-sm text-muted-foreground mb-1'>Address</div>
-            <div className='text-lg '>1234 Elm street, Springfield, USA</div>
+            <div className='text-lg '>{valuationResult?.[1]}</div>
           </div>
           <div className='mb-6 shadow-sm rounded-lg p-4'>
             <div className='text-sm text-muted-foreground mb-1'>Property</div>
-            <div className='text-lg  capitalize'>{propertyType}</div>
+            <div className='text-lg  capitalize'>
+              {valuationResult?.[2].replaceAll('-', ' ')}
+            </div>
           </div>
           <div className='flex flex-col md:flex-row justify-end items-center gap-5 mt-10'>
             <div className='flex cursor-pointer items-center gap-2'>
@@ -56,20 +68,20 @@ export function ResultsStep({ onHome, propertyType }: ResultsStepProps) {
             >
               Back to Home
             </Button>
-            <Button
+            {/* <Button
               className='rounded-full py-5 px-8 w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
               onClick={handlePost}
             >
               Post
-            </Button>
+            </Button> */}
           </div>
         </div>
-        <WaitAlertModal
+        {/* <WaitAlertModal
           open={showWaitModal}
           setOpen={setShowWaitModal}
           onUploadNow={() => setShowPhotoModal(true)}
-        />
-        <ImageUploadModal open={showPhotoModal} setOpen={setShowPhotoModal} />
+        /> */}
+        {/* <ImageUploadModal open={showPhotoModal} setOpen={setShowPhotoModal} /> */}
       </>
     );
   }

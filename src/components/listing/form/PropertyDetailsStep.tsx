@@ -33,7 +33,15 @@ interface PropertyDetailsStepProps {
     id: string;
     name: string;
   }>;
+  listingTypes: Array<{
+    id: string;
+    name: string;
+    disabled: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }>;
   form: UseFormReturn<ListingFormData>;
+  isLoading?: boolean;
 }
 
 // Map property types to their icons
@@ -52,6 +60,8 @@ export function PropertyDetailsStep({
   form,
   features,
   amenities,
+  isLoading = false,
+  listingTypes,
 }: PropertyDetailsStepProps) {
   const propertyType = form.getValues('propertyType');
   const street = form.getValues('street') as string;
@@ -63,65 +73,61 @@ export function PropertyDetailsStep({
   const pathname = usePathname();
 
   const { data: nearbyLocations } = useNearbyLocations(query);
+  // when property type changes, also update the url params
+  const currentListingTypeId = form.watch('listingTypeId');
+
   return (
     <div className='bg-white'>
       {/* Buy/Rent Button Group */}
-      {!pathname.includes('/valuation') && (
-        <>
-          <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-6'>
+      {pathname.includes('valuation') && (
+        <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
+          {listingTypes.map(listingType => (
             <button
-              className={`px-10 py-4 rounded-lg text-lg font-bold w-full cursor-pointer ${
-                form.getValues('forSale')
+              key={listingType.id}
+              className={`w-full py-5 rounded-lg font-semibold cursor-pointer ${
+                currentListingTypeId === listingType.id
                   ? 'bg-primary-main text-white'
                   : 'text-gray-700'
               }`}
-              onClick={() => onChange('forSale', true)}
+              onClick={() => {
+                onChange('listingTypeId', listingType.id);
+                onChange('listingType', listingType.name);
+              }}
               type='button'
             >
-              Buy
+              {listingType.name}
             </button>
-            <button
-              className={`px-10 py-4 rounded-lg text-lg font-bold w-full cursor-pointer ${
-                !form.getValues('forSale')
-                  ? 'bg-primary-main text-white'
-                  : 'text-gray-700'
-              }`}
-              onClick={() => onChange('forSale', false)}
-              type='button'
-            >
-              Rent
-            </button>
-          </div>
-          {/* Property Type Selection UI */}
-          <div className='mb-8'>
-            <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
-              {propertyTypes.map(type => (
-                <button
-                  key={type.id}
-                  type='button'
-                  onClick={() => {
-                    onChange('propertyType', type.name);
-                    onChange('propertyTypeId', type.id);
-                  }}
-                  className={`flex flex-col items-center justify-between border-2 rounded-2xl shadow-2xl shadow-[#F7EFFD] cursor-pointer p-6 h-40 transition-all duration-200 ${
-                    form.getValues('propertyType').toLowerCase() ===
-                    type.name.toLowerCase()
-                      ? 'border-primary-main shadow-lg'
-                      : 'border-transparent'
-                  } `}
-                >
-                  <Image
-                    src={propertyTypeIcons[type.name] || condominium}
-                    alt={type.name}
-                    className='h-20'
-                  />
-                  <span className='font-bold text-lg'>{type.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
+          ))}
+        </div>
       )}
+      {/* Property Type Selection UI */}
+      <div className='mb-8'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+          {propertyTypes.map(type => (
+            <button
+              key={type.id}
+              type='button'
+              onClick={() => {
+                onChange('propertyType', type.name);
+                onChange('propertyTypeId', type.id);
+              }}
+              className={`flex flex-col items-center justify-between border-2 rounded-2xl shadow-2xl shadow-[#F7EFFD] cursor-pointer p-6 h-40 transition-all duration-200 ${
+                form.getValues('propertyType').toLowerCase() ===
+                type.name.toLowerCase()
+                  ? 'border-primary-main shadow-lg'
+                  : 'border-transparent'
+              } `}
+            >
+              <Image
+                src={propertyTypeIcons[type.name] || condominium}
+                alt={type.name}
+                className='h-20'
+              />
+              <span className='font-bold text-lg'>{type.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {!propertyType.includes('Condominium') && (
         <>
@@ -147,7 +153,7 @@ export function PropertyDetailsStep({
           />
         </>
       )}
-      <ActionButtons onDraft={onDraft} onNext={onNext} />
+      <ActionButtons onDraft={onDraft} onNext={onNext} isLoading={isLoading} />
     </div>
   );
 }

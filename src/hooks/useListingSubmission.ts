@@ -62,11 +62,10 @@ export const useListingSubmission = (
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),
           }),
-          amenityIds: data?.amenities || [],
-          featureIds: data?.features || [],
+          amenityIds: data?.amenities.map(item => item.value) || [],
+          featureIds: data?.features.map(item => item.value) || [],
         }),
         ...(data?.propertyType === 'Warehouse' && {
-          buildingName: data?.buildingName || '',
           ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
           ...(data?.ceilingHeight && {
             ceilingHeight: parseInt(data?.ceilingHeight),
@@ -74,16 +73,15 @@ export const useListingSubmission = (
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),
           }),
-          amenityIds: data?.amenities || [],
           ...(data?.loadingDocks && {
             loadingDocks: Number(data?.loadingDocks),
           }),
           ...(data?.buildingSize && {
             buildingSize: Number(data?.buildingSize),
           }),
-          ...(data?.security && { securityFeatures: data?.security }),
+
           ...(data?.nearbyLocations && {
-            nearbyLocations: data?.nearbyLocations,
+            nearbyLocations: data?.nearbyLocations.map(item => item.label),
           }),
         }),
         ...(data.propertyType === 'House and lot' && {
@@ -99,8 +97,8 @@ export const useListingSubmission = (
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),
           }),
-          amenityIds: data?.amenities || [],
-          featureIds: data?.features || [],
+          amenityIds: data?.amenities.map(item => item.value) || [],
+          featureIds: data?.features.map(item => item.value) || [],
           ...(data?.numberOfFloors && {
             numberOfFloors: Number(data?.numberOfFloors),
           }),
@@ -124,7 +122,7 @@ export const useListingSubmission = (
         ...(data.propertyType === 'Vacant lot' && {
           ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.nearbyLocations && {
-            nearbyLocations: data?.nearbyLocations,
+            nearbyLocations: data?.nearbyLocations.map(item => item.label),
           }),
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),

@@ -1,4 +1,4 @@
-import { UserProfile } from '@/lib/queries/server/user/types';
+import { UserProfile } from '@/lib/queries/hooks/types/user';
 
 export default function ProfileInformation({
   userProfile,

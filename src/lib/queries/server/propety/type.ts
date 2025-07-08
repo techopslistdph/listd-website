@@ -220,8 +220,12 @@ export interface CreateListingRequest {
   // Warehouse specific fields
   loadingDocks?: number;
   buildingSize?: number;
-  securityFeatures?: string[];
 
   // Vacant Lot specific fields
-  nearbyLocations?: string[];
+  nearbyLocations?:
+    | {
+        value: string;
+        label: string;
+      }[]
+    | string[];
 }
