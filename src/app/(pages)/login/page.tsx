@@ -15,6 +15,7 @@ import { FormInput } from '@/components/ui/form-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
+import { Eye, EyeIcon, EyeOff } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -27,6 +28,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const { signIn, isLoaded, setActive } = useSignIn();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -73,7 +75,9 @@ export default function LoginPage() {
       redirectUrlComplete: '/',
     });
   };
-
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <AuthLayout
       title='Login'
@@ -88,13 +92,26 @@ export default function LoginPage() {
             placeholder='Enter your email'
             disabled={isSubmitting}
           />
-          <FormInput
-            name='password'
-            label='Password'
-            type='password'
-            placeholder='Enter your password'
-            disabled={isSubmitting}
-          />
+          <div className='relative'>
+            <FormInput
+              name='password'
+              label='Password'
+              type={showPassword ? 'text' : 'password'}
+              placeholder='Enter your password'
+              disabled={isSubmitting}
+            />
+            <button
+              type='button'
+              onClick={() => togglePasswordVisibility()}
+              className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
+            >
+              {showPassword ? (
+                <EyeOff className='h-4 w-4' />
+              ) : (
+                <Eye className='h-4 w-4' />
+              )}
+            </button>
+          </div>
           <div className='flex items-center justify-between mb-2'>
             <Link
               href='/forgot-password'
