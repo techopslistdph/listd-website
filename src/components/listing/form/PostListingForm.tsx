@@ -69,7 +69,8 @@ export default function PostListingForm({
     resolver: zodResolver(listingFormSchema),
     defaultValues: {
       ...initialFormData,
-      propertyType: 'Condominium',
+      propertyType: propertyTypes[0].name,
+      propertyTypeId: propertyTypes[0].id,
       listingTypeId: listingTypes[0].id,
       listingType: listingTypes[0].name,
       features: [],
@@ -214,14 +215,13 @@ export default function PostListingForm({
               isSubmitting={isSubmitting}
             />
           )}
-          {(step === 3 && !isValuation) ||
-            (step === 1 && isValuation && (
-              <ResultsStep
-                onHome={handleHome}
-                valuationResult={valuationResponse}
-                propertyType={form.getValues('propertyType') as PropertyType}
-              />
-            ))}
+          {(isValuation ? step === 1 : step === 3) && (
+            <ResultsStep
+              onHome={handleHome}
+              valuationResult={valuationResponse}
+              propertyType={form.getValues('propertyType') as PropertyType}
+            />
+          )}
         </div>
       </div>
     </FormProvider>

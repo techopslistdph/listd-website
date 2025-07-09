@@ -41,21 +41,21 @@ export function Stepper({
   return (
     <div>
       <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0'>
-        {step !== 0 &&
-          (pathname.includes('valuation') ? step !== 1 : step !== 3) && (
-            <div
-              className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
-              onClick={onBack}
-            >
-              <ArrowLeft
-                className='w-4 h-4 sm:w-5 sm:h-5 text-primary-main'
-                strokeWidth={3}
-              />
-              <span className='font-semibold text-base sm:text-lg text-primary-main'>
-                Back
-              </span>
-            </div>
-          )}
+        {/* {step !== 0 &&
+          (pathname.includes('valuation') ? step !== 1 : step !== 3) && ( */}
+        <div
+          className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
+          onClick={onBack}
+        >
+          <ArrowLeft
+            className='w-4 h-4 sm:w-5 sm:h-5 text-primary-main'
+            strokeWidth={3}
+          />
+          <span className='font-semibold text-base sm:text-lg text-primary-main'>
+            Back
+          </span>
+        </div>
+        {/* )} */}
         {steps.length === 4 && step === 1 && listingTypes.length > 0 && (
           <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
             {listingTypes.map(listingType => (
