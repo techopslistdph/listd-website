@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outlined';
+  variant?: 'primary' | 'secondary' | 'outlined' | 'destructive';
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -13,8 +13,9 @@ const variantClasses = {
   secondary:
     'bg-secondary-main text-white border-transparent hover:bg-secondary-mid',
   outlined:
-    'bg-white text-primary-main border-2 border-primary-main hover:bg-primary-light',
+    'bg-white text-primary-main border-2 border-primary-main hover:bg-primary-main/10',
   disabled: 'bg-gray-100 text-gray-400 border-transparent cursor-not-allowed',
+  destructive: 'bg-red-500 text-white border-transparent hover:bg-red-600',
 };
 
 export const Button: React.FC<ButtonProps> = ({

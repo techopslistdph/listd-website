@@ -13,6 +13,7 @@ import { FormInput } from '@/components/ui/form-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 const signUpSchema = z
   .object({
@@ -35,7 +36,10 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpPage() {
   const { signUp, isLoaded, setActive } = useSignUp();
-  const { signIn } = useSignIn();
+  const [showPasswords, setShowPasswords] = useState({
+    password: false,
+    confirm: false,
+  });
   const [showVerification, setShowVerification] = useState(false);
   const [emailForVerification, setEmailForVerification] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,6 +132,13 @@ export default function SignUpPage() {
     });
   };
 
+  const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
   return (
     <AuthLayout
       title={showVerification ? 'Verify your email' : 'Register to get Started'}
@@ -200,20 +211,47 @@ export default function SignUpPage() {
                   />
                 </div>
               </div>
-              <FormInput
-                name='password'
-                label='Password'
-                type='password'
-                placeholder='Enter your password'
-                disabled={isSubmitting}
-              />
-              <FormInput
-                name='confirmPassword'
-                label='Confirm your password'
-                type='password'
-                placeholder='Confirm password'
-                disabled={isSubmitting}
-              />
+              <div className='relative'>
+                <FormInput
+                  name='password'
+                  label='Password'
+                  type={showPasswords.password ? 'text' : 'password'}
+                  placeholder='Enter your password'
+                  disabled={isSubmitting}
+                />
+                <button
+                  type='button'
+                  onClick={() => togglePasswordVisibility('password')}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
+                >
+                  {showPasswords.password ? (
+                    <EyeOff className='h-4 w-4' />
+                  ) : (
+                    <Eye className='h-4 w-4' />
+                  )}
+                </button>
+              </div>
+              <div className='relative'>
+                <FormInput
+                  name='confirmPassword'
+                  label='Confirm your password'
+                  type={showPasswords.confirm ? 'text' : 'password'}
+                  placeholder='Confirm password'
+                  disabled={isSubmitting}
+                />
+                <button
+                  type='button'
+                  onClick={() => togglePasswordVisibility('confirm')}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
+                >
+                  {showPasswords.confirm ? (
+                    <EyeOff className='h-4 w-4' />
+                  ) : (
+                    <Eye className='h-4 w-4' />
+                  )}
+                </button>
+              </div>
+
               <button
                 type='submit'
                 disabled={isSubmitting}
