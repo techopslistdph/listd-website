@@ -103,8 +103,7 @@ export default function LoginPage() {
             <button
               type='button'
               onClick={() => togglePasswordVisibility()}
-              className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-              style={{ top: '60%' }}
+              className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
             >
               {showPassword ? (
                 <EyeOff className='h-4 w-4' />

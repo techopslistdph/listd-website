@@ -222,8 +222,7 @@ export default function SignUpPage() {
                 <button
                   type='button'
                   onClick={() => togglePasswordVisibility('password')}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-                  style={{ top: '60%' }}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
                 >
                   {showPasswords.password ? (
                     <EyeOff className='h-4 w-4' />
@@ -243,8 +242,7 @@ export default function SignUpPage() {
                 <button
                   type='button'
                   onClick={() => togglePasswordVisibility('confirm')}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-                  style={{ top: '60%' }}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
                 >
                   {showPasswords.confirm ? (
                     <EyeOff className='h-4 w-4' />

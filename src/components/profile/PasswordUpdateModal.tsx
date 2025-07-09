@@ -8,7 +8,7 @@ import * as z from 'zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { FormInput } from '../ui/form-input';
 import Button from '../common/Button';
-import { useUpdatePassword } from '@/lib/queries/hooks/use-password';
+import { useUpdatePassword } from '@/lib/queries/hooks/use-account';
 import { Eye, EyeOff } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -120,8 +120,7 @@ export default function PasswordUpdateModal({
                 <button
                   type='button'
                   onClick={() => togglePasswordVisibility('current')}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-                  style={{ top: '60%' }}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
                 >
                   {showPasswords.current ? (
                     <EyeOff className='h-4 w-4' />
@@ -143,8 +142,7 @@ export default function PasswordUpdateModal({
                 <button
                   type='button'
                   onClick={() => togglePasswordVisibility('new')}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-                  style={{ top: '60%' }}
+                  className='absolute right-3 top-12  -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
                 >
                   {showPasswords.new ? (
                     <EyeOff className='h-4 w-4' />
@@ -166,8 +164,7 @@ export default function PasswordUpdateModal({
                 <button
                   type='button'
                   onClick={() => togglePasswordVisibility('confirm')}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
-                  style={{ top: '60%' }}
+                  className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
                 >
                   {showPasswords.confirm ? (
                     <EyeOff className='h-4 w-4' />
