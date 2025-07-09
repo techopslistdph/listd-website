@@ -1,44 +1,43 @@
 import { useDebounce } from '@/hooks/useDebounce';
-import { useUrlParams } from '@/hooks/useUrlParams';
-import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useState } from 'react';
 
-export const InputFilter = () => {
-  const {push} = useRouter();
-  const { getParam, updateParams } = useUrlParams();
+interface InputFilterProps {
+  minFloorArea: string;
+  maxFloorArea: string;
+  onFloorAreaChange: (min: string, max: string) => void;
+}
 
-  const minFloorArea = getParam('minFloorArea');
-  const maxFloorArea = getParam('maxFloorArea');
-
-  const [floorAreaMin, setFloorAreaMin] = useState(minFloorArea || '');
-  const [floorAreaMax, setFloorAreaMax] = useState(maxFloorArea || '');
+export const InputFilter = ({ minFloorArea, maxFloorArea, onFloorAreaChange }: InputFilterProps) => {
+  const [floorAreaMin, setFloorAreaMin] = useState(minFloorArea);
+  const [floorAreaMax, setFloorAreaMax] = useState(maxFloorArea);
 
   const debouncedFloorAreaMin = useDebounce(floorAreaMin, 300);
   const debouncedFloorAreaMax = useDebounce(floorAreaMax, 300);
 
+  /**
+   * Update local state when props change
+   */
   useEffect(() => {
-    setFloorAreaMin(minFloorArea || '');
-    setFloorAreaMax(maxFloorArea || '');
+    setFloorAreaMin(minFloorArea);
+    setFloorAreaMax(maxFloorArea);
   }, [minFloorArea, maxFloorArea]);
 
+  /**
+   * Call parent callback when debounced values change
+   */
   useEffect(() => {
     if (
       debouncedFloorAreaMin !== minFloorArea ||
       debouncedFloorAreaMax !== maxFloorArea
     ) {
-      const params = updateParams({
-        minFloorArea: debouncedFloorAreaMin || null,
-        maxFloorArea: debouncedFloorAreaMax || null,
-      });
-      push(`/property?${params}`);
+      onFloorAreaChange(debouncedFloorAreaMin, debouncedFloorAreaMax);
     }
   }, [
     debouncedFloorAreaMin,
     debouncedFloorAreaMax,
     minFloorArea,
     maxFloorArea,
-    updateParams,
-    push,
+    onFloorAreaChange,
   ]);
 
   const handleSquareFeetChange = (type: 'min' | 'max', value: string) => {

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useRouter } from 'nextjs-toploader/app';
@@ -15,86 +15,135 @@ import { InputFilter } from './InputFilter';
 import { SelectFilter } from './SelectFilter';
 import { NumberFilter } from './NumberFilter';
 import Button from '@/components/common/Button';
+import { usePropertyFilters } from '@/hooks/usePropertyFilters';
 
 const PropertySidebar = () => {
   const router = useRouter();
   const { getParam, updateParams, deleteParams } = useUrlParams();
+  const { 
+    filters, 
+    hasChanges, 
+    updateFilter, 
+    updateMultipleFilters, 
+    resetFilters, 
+    getApplicableFilters 
+  } = usePropertyFilters();
+  
+  const [isApplying, setIsApplying] = useState(false);
+  
   const propertyType = getParam('property');
-  const activeBedrooms = getParam('minBedrooms') || getParam('maxBedrooms');
-  const activeBathrooms = getParam('minBathrooms') || getParam('maxBathrooms');
 
   const showBedroomBathroomFilters =
     PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
+    
   const showParkingFilters = PROPERTY_TYPES_WITH_PARKING_FILTER.includes(
     propertyType || ''
   );
 
   const handleBedroomChange = (bedrooms: string) => {
     if (bedrooms === BEDROOM_OPTIONS[BEDROOM_OPTIONS.length - 1].value) {
-      const params = updateParams({
-        maxBedrooms: null,
+      updateMultipleFilters({
+        maxBedrooms: undefined,
         minBedrooms: bedrooms,
       });
-      router.push(`/property?${params}`);
       return;
     }
 
-    const params = updateParams({
+    updateMultipleFilters({
       minBedrooms: bedrooms,
       maxBedrooms: bedrooms,
     });
-    router.push(`/property?${params}`);
   };
 
   const handleBathroomChange = (bathroom: string) => {
     if (bathroom === BATHROOM_OPTIONS[BATHROOM_OPTIONS.length - 1].value) {
-      const params = updateParams({
-        maxBathrooms: null,
+      updateMultipleFilters({
+        maxBathrooms: undefined,
         minBathrooms: bathroom,
       });
-      router.push(`/property?${params}`);
       return;
     }
 
-    const params = updateParams({
+    updateMultipleFilters({
       minBathrooms: bathroom,
       maxBathrooms: bathroom,
     });
-    router.push(`/property?${params}`);
   };
 
   const handleParkingChange = (parking: string) => {
-    console.log({ parking });
-    /**
-     * Todo: Implement parking filter
-     */
+    if (parking === PARKING_OPTIONS[PARKING_OPTIONS.length - 1].value) {
+      updateMultipleFilters({
+        maxParking: undefined,
+        minParking: parking,
+      });
+      return;
+    }
+
+    updateMultipleFilters({
+      minParking: parking,
+      maxParking: parking,
+    });
   };
 
-  const handleApplyFilters = () => {
-    /**
-     * Todo: Implement apply filters
-     */
+  const handleApplyFilters = async () => {
+    setIsApplying(true);
+    try {
+      const applicableFilters = getApplicableFilters();
+      const params = updateParams(applicableFilters);
+      router.push(`/property?${params}`);
+    } finally {
+      setIsApplying(false);
+    }
   };
 
-  const handleResetFilters = () => {
-    const params = deleteParams([
-      'minBedrooms',
-      'maxBedrooms',
-      'minBathrooms',
-      'maxBathrooms',
-      'minPrice',
-      'maxPrice',
-      'minFloorArea',
-      'maxFloorArea',
-      'latitude',
-      'longitude',
-      'radius',
-      'minLatitude',
-      'maxLatitude',
-      'minLongitude',
-      'maxLongitude',
-    ]);
-    router.push(`/property?${params}`);
+  const handleResetFilters = async () => {
+    setIsApplying(true);
+    try {
+      resetFilters();
+      const params = deleteParams([
+        'minBedrooms',
+        'maxBedrooms',
+        'minBathrooms',
+        'maxBathrooms',
+        'minParking',
+        'maxParking',
+        'minPrice',
+        'maxPrice',
+        'minFloorArea',
+        'maxFloorArea',
+        'latitude',
+        'longitude',
+        'radius',
+        'minLatitude',
+        'maxLatitude',
+        'minLongitude',
+        'maxLongitude',
+      ]);
+      router.push(`/property?${params}`);
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  const getActiveBedroomValue = () => {
+    if (filters.minBedrooms && filters.maxBedrooms) {
+      return filters.minBedrooms === filters.maxBedrooms ? filters.minBedrooms : filters.minBedrooms;
+    }
+    return filters.minBedrooms || filters.maxBedrooms || '';
+  };
+
+  const getActiveBathroomValue = () => {
+    if (filters.minBathrooms && filters.maxBathrooms) {
+      return filters.minBathrooms === filters.maxBathrooms ? filters.minBathrooms : filters.minBathrooms;
+    }
+    return filters.minBathrooms || filters.maxBathrooms || '';
+  };
+
+  const getActiveParkingValue = () => {
+    if (filters.minParking && filters.maxParking) {
+      return filters.minParking === filters.maxParking ? filters.minParking : filters.minParking;
+    }
+    return filters.minParking || filters.maxParking || '';
   };
 
   return (
@@ -104,14 +153,14 @@ const PropertySidebar = () => {
           <NumberFilter
             label='Bedrooms'
             options={BEDROOM_OPTIONS}
-            activeValue={activeBedrooms || ''}
+            activeValue={getActiveBedroomValue()}
             onChange={handleBedroomChange}
           />
 
           <NumberFilter
             label='Bathrooms'
             options={BATHROOM_OPTIONS}
-            activeValue={activeBathrooms || ''}
+            activeValue={getActiveBathroomValue()}
             onChange={handleBathroomChange}
           />
         </>
@@ -121,25 +170,58 @@ const PropertySidebar = () => {
         <NumberFilter
           label='Parking'
           options={PARKING_OPTIONS}
-          activeValue={''}
+          activeValue={getActiveParkingValue()}
           onChange={handleParkingChange}
         />
       )}
 
-      <RangeSlider />
-      <InputFilter />
-      <SelectFilter />
+      <RangeSlider 
+        minPrice={Number(filters.minPrice) || 0}
+        maxPrice={Number(filters.maxPrice) || 10000000}
+        onPriceRangeChange={(min, max) => {
+          updateMultipleFilters({
+            minPrice: min.toString(),
+            maxPrice: max.toString(),
+          });
+        }}
+      />
+      
+      <InputFilter 
+        minFloorArea={filters.minFloorArea || ''}
+        maxFloorArea={filters.maxFloorArea || ''}
+        onFloorAreaChange={(min, max) => {
+          updateMultipleFilters({
+            minFloorArea: min || undefined,
+            maxFloorArea: max || undefined,
+          });
+        }}
+      />
+      
+      <SelectFilter 
+        selectedFeatures={filters.features || []}
+        onFeaturesChange={(features) => {
+          updateFilter('features', features);
+        }}
+      />
 
       <div className='flex flex-col xl:flex-row gap-2'>
-        <Button className='flex px-4 justify-center' onClick={handleApplyFilters}>
-          Apply Filters
+        <Button 
+          className={`flex px-4 justify-center relative ${hasChanges ? 'bg-primary-main' : ''}`}
+          onClick={handleApplyFilters}
+          disabled={isApplying}
+        >
+          {isApplying ? 'Applying...' : 'Apply Filters'}
+          {hasChanges && (
+            <span className='absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full'></span>
+          )}
         </Button>
         <Button
           variant='outlined'
           className='flex px-4 justify-center'
           onClick={handleResetFilters}
+          disabled={isApplying}
         >
-          Reset Filters
+          {isApplying ? 'Resetting...' : 'Reset Filters'}
         </Button>
       </div>
     </aside>
