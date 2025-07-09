@@ -48,11 +48,11 @@ export default function MyListing() {
           setUpdateDialogProperty={setUpdateDialogProperty}
           setUpdateDialogOpen={setUpdateDialogOpen}
         />
-        <UpdateStatusDialog
+        {/* <UpdateStatusDialog
           open={updateDialogOpen}
           onOpenChange={setUpdateDialogOpen}
           property={updateDialogProperty}
-        />
+        /> */}
       </div>
     );
   }
@@ -312,11 +312,11 @@ export default function MyListing() {
           })
         )}
       </div>
-      <UpdateStatusDialog
+      {/* <UpdateStatusDialog
         open={updateDialogOpen}
         onOpenChange={setUpdateDialogOpen}
         property={updateDialogProperty}
-      />
+      /> */}
       <ConfirmationDialog
         showModal={deleteDialogOpen}
         setShowModal={setDeleteDialogOpen}
