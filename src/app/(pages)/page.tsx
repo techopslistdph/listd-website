@@ -10,6 +10,8 @@ import DownloadSection from '@/components/home/DownloadSection';
 import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
+export const dynamic = 'force-dynamic';
+
 export default async function page() {
   const [listingTypes, propertyTypes] = await Promise.all([
     getListingTypes(),

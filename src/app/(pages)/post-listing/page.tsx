@@ -4,6 +4,8 @@ import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
 import { getAmenities, getFeatures } from '@/lib/queries/server/propety';
 import { getUserListings } from '@/lib/queries/server/listing';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PostListingPage() {
   const [propertyTypes, listingTypes, features, amenities, userListings] =
     await Promise.all([
