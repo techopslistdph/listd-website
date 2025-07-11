@@ -34,6 +34,7 @@ export default function PropertyCard({
       address,
       scrapeContactInfo,
       listingPriceFormatted,
+      propertyOwnerId,
     },
     id,
     numberOfBathrooms,
@@ -163,13 +164,13 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {scrapeContactInfo?.email && (
-              <a
-                href={`mailto:${scrapeContactInfo?.email}`}
+            {propertyOwnerId && (
+              <Link
+                href='/message'
                 className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
               >
                 Direct Message
-              </a>
+              </Link>
             )}
           </div>
         </div>
@@ -252,13 +253,13 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {scrapeContactInfo?.email && (
-              <a
-                href={`mailto:${scrapeContactInfo?.email}`}
-                className='flex-1 flex items-center justify-center rounded-full bg-primary-main text-white text-sm font-semibold'
+            {propertyOwnerId && (
+              <Link
+                href='/message'
+                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
               >
                 Direct Message
-              </a>
+              </Link>
             )}
           </div>
         </div>

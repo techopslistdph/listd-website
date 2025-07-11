@@ -23,7 +23,7 @@ interface ApiConfig {
   defaultHeaders?: Record<string, string>;
 }
 
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 60000;
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 };

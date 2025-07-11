@@ -3,6 +3,7 @@ import calculateMortgageIcon from '@/../public/images/icons/calculate-mortgage.s
 import shortMortgageCaseIcon from '@/../public/images/icons/short-mortgage.svg';
 import verified from '@/../public/images/icons/verified.png';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 interface Agent {
   name: string;
@@ -15,9 +16,10 @@ interface Agent {
 
 interface AgentCardProps {
   agent: Agent;
+  propertyOwnerId: string;
 }
 
-export function AgentCard({ agent }: AgentCardProps) {
+export function AgentCard({ agent, propertyOwnerId }: AgentCardProps) {
   return (
     <div className='sticky top-5'>
       <div className='rounded-lg border p-4 flex flex-col  gap-2'>
@@ -48,13 +50,13 @@ export function AgentCard({ agent }: AgentCardProps) {
             Whatsapp
           </a>
         )}
-        {agent?.email && (
-          <a
-            href={`mailto:${agent?.email}`}
+        {propertyOwnerId && (
+          <Link
+            href='/message'
             className='w-full py-3 rounded-full border border-primary-main text-primary-main text-center font-semibold'
           >
             Direct Message
-          </a>
+          </Link>
         )}
       </div>
       <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-10 mt-5'>

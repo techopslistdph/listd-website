@@ -73,6 +73,7 @@ export interface PropertyDetails {
   images: PropertyImage[];
   listingDescription: string;
   listingDescriptionMarkdown: string;
+  propertyOwnerId: string;
 }
 
 interface ScrapeContactInfo {

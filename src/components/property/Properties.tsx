@@ -29,7 +29,7 @@ export function Properties({
 
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(properties.data);
-
+  console.log(filteredProperties);
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>
