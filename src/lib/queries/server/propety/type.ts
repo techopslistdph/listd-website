@@ -134,6 +134,7 @@ export interface PropertyDetails {
   listingDescriptionMarkdown: string;
   features: { id: string; name: string }[];
   amenities: { id: string; name: string }[];
+  propertyOwnerId: string;
 }
 
 interface ScrapeContactInfo {

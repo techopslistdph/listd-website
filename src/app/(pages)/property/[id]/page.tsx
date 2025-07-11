@@ -51,6 +51,7 @@ export default async function PropertyPage({
       id: propertyId,
       cityName,
       barangayName,
+      propertyOwnerId,
     },
     isLiked: initialIsLiked,
   } = propertyDetail.data;
@@ -77,6 +78,7 @@ export default async function PropertyPage({
         longitude={longitude}
         images={images}
         propertyDetail={propertyDetail.data}
+        propertyOwnerId={propertyOwnerId}
       />
     </div>
   );

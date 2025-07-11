@@ -2,7 +2,7 @@
 import PropertyCard from '@/components/listing/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
-import Image from 'next/image'
+import Image from 'next/image';
 
 import { PropertyListResponse } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
@@ -64,7 +64,9 @@ export function Properties({
               {properties?.message || 'Unable to load properties.'}
             </div>
             <div className='text-sm lg:text-base text-gray-400 text-center'>
-              {'There was a problem fetching properties. Please try again later or contact support if the issue persists.'}
+              {
+                'There was a problem fetching properties. Please try again later or contact support if the issue persists.'
+              }
             </div>
           </div>
         )}

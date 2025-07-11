@@ -9,6 +9,7 @@ import Button from '../common/Button';
 import Link from 'next/link';
 import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
+import PropertySliderSkeleton from './PropertySliderSkeleton';
 
 export interface PropertySliderCard {
   image: string;
@@ -23,6 +24,7 @@ export default function PropertySlider() {
     lng: number | null;
   }>({ lat: null, lng: null });
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by your browser.');
@@ -44,11 +46,12 @@ export default function PropertySlider() {
     );
   }, []);
 
-  const { data: nearbyProperties } = useNearbyProperties(location);
+  const { data: nearbyProperties, isPending } = useNearbyProperties(location);
 
   if (location === null) {
     return null;
   }
+
   const nearbyPropertiesData =
     nearbyProperties?.data as unknown as PropertyDetails[];
   const filteredProperties = nearbyPropertiesData?.filter(
@@ -90,7 +93,12 @@ export default function PropertySlider() {
         </Link>
       </div>
       {error && <p className='text-red-500'>{error}</p>}
-      {location && filteredProperties && (
+
+      {/* Show skeleton when loading */}
+      {isPending && !error && <PropertySliderSkeleton />}
+
+      {/* Show actual content when data is loaded */}
+      {!isPending && location && filteredProperties && (
         <Swiper
           spaceBetween={32}
           slidesPerView={1.2}
