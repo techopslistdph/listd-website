@@ -50,6 +50,7 @@ export default async function PropertyPage({
       latitude,
       longitude,
       id: propertyId,
+      propertyOwnerId,
     },
     isLiked: initialIsLiked,
   } = propertyDetail.data;
@@ -78,6 +79,7 @@ export default async function PropertyPage({
         latitude={latitude}
         longitude={longitude}
         images={images}
+        propertyOwnerId={propertyOwnerId}
       />
     </div>
   );

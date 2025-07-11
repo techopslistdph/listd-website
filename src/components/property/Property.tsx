@@ -25,6 +25,7 @@ export default function Property({
   isPropertyLiked,
   propertyId,
   userId,
+  propertyOwnerId,
 }: {
   isPropertyLiked: boolean;
   propertyId: string;
@@ -45,6 +46,7 @@ export default function Property({
   details: Record<string, string | number | boolean | undefined>[];
   listingDescription: string;
   userId: string;
+  propertyOwnerId: string;
 }) {
   const [isLiked, setIsLiked] = useState(isPropertyLiked);
   const { mutate: likeProperty } = useLikeProperty();
@@ -103,7 +105,7 @@ export default function Property({
           {/* Right Column - Agent Card */}
           {agent?.name && (
             <div className='lg:col-span-1'>
-              <AgentCard agent={agent} />
+              <AgentCard agent={agent} propertyOwnerId={propertyOwnerId} />
             </div>
           )}
         </div>
