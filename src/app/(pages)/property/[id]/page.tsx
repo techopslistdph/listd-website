@@ -1,6 +1,5 @@
 import Property from '@/components/property/Property';
 import { getPropertyById, SearchParams } from '@/lib/queries/server/propety';
-import { processPropertyDetails } from '@/utils/property';
 import { auth } from '@clerk/nextjs/server';
 
 import Link from 'next/link';
@@ -44,17 +43,18 @@ export default async function PropertyPage({
       images,
       listingDescription,
       listingTitle,
-      listingPriceFormatted,
+      listingPrice,
       address,
       scrapeContactInfo,
       latitude,
       longitude,
       id: propertyId,
+      cityName,
+      barangayName,
       propertyOwnerId,
     },
     isLiked: initialIsLiked,
   } = propertyDetail.data;
-  const { features, details } = processPropertyDetails(propertyDetail.data);
   const agent = {
     name: scrapeContactInfo?.agentName,
     whatsapp: scrapeContactInfo?.phoneNumber?.replace(/\D/g, '') || '',
@@ -69,16 +69,15 @@ export default async function PropertyPage({
         propertyId={propertyId}
         userId={userId || ''}
         agent={agent}
-        features={features}
-        details={details}
+        listingPrice={listingPrice}
         listingDescription={listingDescription}
         isPropertyLiked={initialIsLiked}
-        listingPriceFormatted={listingPriceFormatted}
         listingTitle={listingTitle}
-        address={address}
+        address={address ? address : `${cityName}, ${barangayName}`}
         latitude={latitude}
         longitude={longitude}
         images={images}
+        propertyDetail={propertyDetail.data}
         propertyOwnerId={propertyOwnerId}
       />
     </div>

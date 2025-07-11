@@ -1,7 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
 import { Check } from 'lucide-react';
-import { Step, FormData } from '../types';
+import { Step } from '../types';
 import { usePathname } from 'next/navigation';
+import { UseFormReturn } from 'react-hook-form';
+import { ListingFormData } from './Schema';
 
 const defaultSteps = [
   'Property Details',
@@ -13,19 +15,34 @@ const defaultSteps = [
 const valuationSteps = ['Property Details', 'Result'];
 
 interface StepperProps {
+  form: UseFormReturn<ListingFormData>;
   step: Step;
   onBack: () => void;
-  data: FormData;
-  onChange: (field: keyof FormData, value: unknown) => void;
+  onChange: (field: keyof ListingFormData, value: unknown) => void;
+  listingTypes: Array<{
+    id: string;
+    name: string;
+    disabled: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }>;
 }
 
-export function Stepper({ step, onBack, data, onChange }: StepperProps) {
+export function Stepper({
+  form,
+  step,
+  onBack,
+  onChange,
+  listingTypes,
+}: StepperProps) {
   const pathname = usePathname();
-  const steps = pathname.includes('/valuation') ? valuationSteps : defaultSteps;
-
+  const steps = pathname.includes('valuation') ? valuationSteps : defaultSteps;
+  const currentListingTypeId = form.watch('listingTypeId');
   return (
     <div>
       <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0'>
+        {/* {step !== 0 &&
+          (pathname.includes('valuation') ? step !== 1 : step !== 3) && ( */}
         <div
           className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
           onClick={onBack}
@@ -38,26 +55,26 @@ export function Stepper({ step, onBack, data, onChange }: StepperProps) {
             Back
           </span>
         </div>
-        {steps.length === 4 && step === 1 && (
+        {/* )} */}
+        {steps.length === 4 && step === 1 && listingTypes.length > 0 && (
           <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
-            <button
-              className={`px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
-                data.forSale ? 'bg-primary-main text-white' : 'text-gray-700'
-              }`}
-              onClick={() => onChange('forSale', true)}
-              type='button'
-            >
-              For sale
-            </button>
-            <button
-              className={`px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
-                !data.forSale ? 'bg-primary-main text-white' : 'text-gray-700'
-              }`}
-              onClick={() => onChange('forSale', false)}
-              type='button'
-            >
-              For rent
-            </button>
+            {listingTypes.map(listingType => (
+              <button
+                key={listingType.id}
+                className={`px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
+                  currentListingTypeId === listingType.id
+                    ? 'bg-primary-main text-white'
+                    : 'text-gray-700'
+                }`}
+                onClick={() => {
+                  onChange('listingTypeId', listingType.id);
+                  onChange('listingType', listingType.name);
+                }}
+                type='button'
+              >
+                {listingType.name}
+              </button>
+            ))}
           </div>
         )}
       </div>

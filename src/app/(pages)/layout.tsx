@@ -27,12 +27,16 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang='en'>
         <body className={`${poppins.variable} antialiased`}>
-        <NextTopLoader   easing='ease' color='#33239f' height={2} showSpinner={true} />
+          <NextTopLoader
+            easing='ease'
+            color='#33239f'
+            height={2}
+            showSpinner={true}
+          />
           <QueryProvider>
             <Toaster position='top-right' />
-              <Main>{children}</Main>
-            </QueryProvider>
-          
+            <Main>{children}</Main>
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -1,136 +1,166 @@
-import React from 'react';
-import { Eye, Search, Heart, MessageCircle, Download } from 'lucide-react';
-import { Listing } from '@/app/data';
-import Image, { StaticImageData } from 'next/image';
-import areaIcon from '../../../public/images/icons/squaremeter.svg';
-import bedIcon from '../../../public/images/icons/bedroom.svg';
-import bathIcon from '../../../public/images/icons/bath.svg';
-import fullyFurnishedIcon from '../../../public/images/icons/fully-furnished.svg';
-import parkingIcon from '../../../public/images/icons/car.svg';
-import facingWestIcon from '../../../public/images/icons/facing-west.svg';
+import React, { useState } from 'react';
+import { Eye, ArrowLeft } from 'lucide-react';
 import ListingDetailsView from './ListingDetailsView';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
+import ConfirmationDialog from './ConfirmationDialog';
+import { Button } from '../ui/button';
+import { useDeleteProperty } from '@/lib/queries/hooks/use-property';
+import { toast } from 'sonner';
 
 interface ListingAnalyticsViewProps {
-  listing: Listing;
-  setUpdateDialogProperty: (listing: Listing) => void;
+  listing: PropertyDetail;
+  setUpdateDialogProperty: (listing: PropertyDetail) => void;
   setUpdateDialogOpen: (open: boolean) => void;
+  setSelectedListing: (listing: PropertyDetail | null) => void;
 }
 
-const analytics = [
-  {
-    icon: <Eye className='text-green-400 w-6 h-6' />,
-    color: 'bg-success-light',
-    label: 'Views',
-    value: 125,
-  },
-  {
-    icon: <Search className='text-purple-400 w-6 h-6' />,
-    color: 'bg-secondary-light',
-    label: 'Clicks',
-    value: 125,
-  },
-  {
-    icon: <Heart className='text-red-400 w-6 h-6' />,
-    color: 'bg-error-light',
-    label: 'Saves',
-    value: 125,
-  },
-  {
-    icon: <MessageCircle className='text-purple-400 w-6 h-6' />,
-    color: 'bg-primary-light',
-    label: 'Inquiries',
-    value: 125,
-  },
-];
-
-const iconMap: Record<string, StaticImageData> = {
-  area: areaIcon,
-  bedrooms: bedIcon,
-  baths: bathIcon,
-  parking: parkingIcon,
-  'facing west': facingWestIcon,
-  'fully furnished': fullyFurnishedIcon,
-  // Add more mappings as needed
-};
-
-function getIconForKey(key: string): StaticImageData | undefined {
-  return iconMap[key];
-}
+// const analytics = [
+//   {
+//     icon: <Eye className='text-green-400 w-6 h-6' />,
+//     color: 'bg-success-light',
+//     label: 'Views',
+//     value: 125,
+//   },
+//   {
+//     icon: <Search className='text-purple-400 w-6 h-6' />,
+//     color: 'bg-secondary-light',
+//     label: 'Clicks',
+//     value: 125,
+//   },
+//   {
+//     icon: <Heart className='text-red-400 w-6 h-6' />,
+//     color: 'bg-error-light',
+//     label: 'Saves',
+//     value: 125,
+//   },
+//   {
+//     icon: <MessageCircle className='text-purple-400 w-6 h-6' />,
+//     color: 'bg-primary-light',
+//     label: 'Inquiries',
+//     value: 125,
+//   },
+// ];
 
 export default function ListingAnalyticsView({
   listing,
   setUpdateDialogProperty,
   setUpdateDialogOpen,
+  setSelectedListing,
 }: ListingAnalyticsViewProps) {
   const [showDetails, setShowDetails] = React.useState(false);
-
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState<{
+    id: string;
+    propertyType: string;
+  } | null>(null);
+  const { mutate: deleteProperty, isPending } = useDeleteProperty();
   if (showDetails) {
     return (
       <ListingDetailsView
         listing={listing}
+        setShowDetails={setShowDetails}
         setUpdateDialogProperty={setUpdateDialogProperty}
         setUpdateDialogOpen={setUpdateDialogOpen}
       />
     );
   }
 
+  const handleDelete = (id: string, propertyType: string) => {
+    setPropertyToDelete({ id, propertyType });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCancel = () => {
+    setDeleteDialogOpen(false);
+    setPropertyToDelete(null);
+  };
+
+  const handleRemove = () => {
+    if (propertyToDelete) {
+      deleteProperty(
+        {
+          propertyId: propertyToDelete.id,
+          propertyType: propertyToDelete.propertyType,
+        },
+        {
+          onSuccess: () => {
+            toast.success('Property deleted successfully');
+            setSelectedListing(null);
+          },
+          onError: () => {
+            toast.error('Failed to delete property');
+          },
+        }
+      );
+      setPropertyToDelete(null);
+      setDeleteDialogOpen(false);
+    }
+  };
   return (
     <div className='p-4 lg:p-8'>
+      {/* back button */}
+      <button
+        className='flex items-center gap-2 text-primary-mid font-bold cursor-pointer text-sm lg:text-base mb-5'
+        onClick={() => setSelectedListing(null)}
+      >
+        <ArrowLeft className='w-4 h-4 lg:w-5 lg:h-5' />
+        Back
+      </button>
       {/* Title & Address */}
-      <div className='mb-2 text-lg lg:text-xl font-bold'>{listing.title}</div>
-      <div className='text-sm lg:text-base text-gray-400 mb-2'>
-        {listing.location}
+      <div className='mb-2 text-lg lg:text-2xl font-bold break-words'>
+        {listing.property.listingTitle}
       </div>
-      <div className='text-xl lg:text-2xl font-bold mb-4'>{listing.price}</div>
+      {listing.property.address ||
+        (listing.property.barangayName && (
+          <div className='flex items-center text-gray-400 text-sm lg:text-base mb-1 break-words'>
+            <svg
+              className='w-4 h-4 lg:w-5 lg:h-5 mr-1'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z'
+              />
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'
+              />
+            </svg>
+            <p>
+              {listing.property.address ||
+                `${listing.property.cityName}, ${listing.property.barangayName}` ||
+                'Address not available'}
+            </p>
+          </div>
+        ))}
+
+      {listing.property.listingPrice && (
+        <div className='text-xl lg:text-2xl font-bold mb-4'>
+          {listing.property.listingPrice.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'PHP',
+          })}
+        </div>
+      )}
       <hr className='mb-4 lg:mb-6' />
 
       {/* Property Details */}
       <div className='flex flex-wrap justify-between text-center gap-4 lg:gap-0 my-4 lg:my-8'>
-        {listing.description.map((item, idx) => {
-          const key = Object.keys(item)[0] as keyof typeof item;
-          const value = item[key];
-          if (value === undefined || value === false) return null;
-          const icon = getIconForKey(key);
-          const isBoolean = typeof value === 'boolean';
-          return (
-            <div
-              key={idx}
-              className='flex flex-col items-center justify-center gap-1 text-neutral-mid text-xs lg:text-sm w-1/3 lg:w-auto'
-            >
-              {icon && (
-                <Image
-                  src={icon}
-                  alt={key}
-                  width={16}
-                  height={16}
-                  className='lg:w-5 lg:h-5'
-                />
-              )}
-              {isBoolean ? (
-                (key as string)
-                  .replace(/_/g, ' ')
-                  .replace(/\b\w/g, (l: string) => l.toUpperCase())
-              ) : (
-                <>
-                  {String(value)}{' '}
-                  {key === 'parking'
-                    ? 'Parking'
-                    : key === 'baths'
-                      ? 'Bath'
-                      : key === 'bedrooms'
-                        ? 'Bedroom'
-                        : key === 'area'
-                          ? ''
-                          : ''}
-                </>
-              )}
-            </div>
-          );
-        })}
+        <PropertyDetailsDisplay
+          propertyDetail={listing}
+          className='grid grid-cols-2 lg:grid-cols-5 gap-4  w-full'
+          itemClassName='flex flex-col items-center justify-center gap-1 text-neutral-mid text-xs lg:text-sm w-1/3 lg:w-auto'
+        />
       </div>
 
       {/* Listing Analytics */}
-      <div className='mb-6 lg:mb-8'>
+      {/* <div className='mb-6 lg:mb-8'>
         <div className='flex flex-col lg:flex-row lg:justify-between lg:items-center mb-4'>
           <div className='mb-4 lg:mb-0'>
             <div className='font-bold text-base lg:text-lg'>
@@ -169,7 +199,7 @@ export default function ListingAnalyticsView({
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Listing Actions */}
       <div>
@@ -179,16 +209,37 @@ export default function ListingAnalyticsView({
         <div className='text-gray-400 text-xs lg:text-sm mb-3 lg:mb-4'>
           Manage your property listing settings
         </div>
-        <button
-          className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-lg lg:rounded-xl p-3 lg:p-4 w-full'
-          onClick={() => setShowDetails(true)}
-        >
-          <Eye className='text-[#7B6CD9] w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3' />
-          <span className='font-semibold text-sm lg:text-base'>
-            View Listing Details
-          </span>
-        </button>
+        <div className='flex flex-col gap-5'>
+          <button
+            className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-lg lg:rounded-xl p-3 lg:p-4 w-full'
+            onClick={() => setShowDetails(true)}
+          >
+            <Eye className='text-[#7B6CD9] w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3' />
+            <span className='font-semibold text-sm lg:text-base'>
+              View Listing Details
+            </span>
+          </button>
+          <Button
+            variant='default'
+            className='ml-auto rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
+            type='button'
+            onClick={e => {
+              e.stopPropagation();
+              handleDelete(listing.id, listing.property.propertyTypeName);
+            }}
+          >
+            {isPending ? 'Deleting...' : 'Delete Listing'}
+          </Button>
+        </div>
       </div>
+      <ConfirmationDialog
+        showModal={deleteDialogOpen}
+        setShowModal={setDeleteDialogOpen}
+        handleCancel={() => handleCancel()}
+        handleRemove={() => handleRemove()}
+        title='Delete Listing'
+        description='Are you sure you want to delete this listing? This action cannot be undone.'
+      />
     </div>
   );
 }

@@ -16,7 +16,6 @@ export async function PATCH(request: NextRequest) {
     const url = new URL(request.url);
     const ban = url.searchParams.get('ban') ?? 'true';
 
-    console.log('Attempting to lock user:', userId, 'lock value:', ban);
     // Call Clerk API to lock user account
     const response = await fetch(
       `https://api.clerk.com/v1/users/${userId}/${ban ? 'ban' : 'unban'}`,
@@ -28,8 +27,6 @@ export async function PATCH(request: NextRequest) {
         },
       }
     );
-
-    console.log('Clerk API response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -44,8 +41,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const responseData = await response.json();
-    console.log('Clerk API success response:', responseData);
+    // const responseData = await response.json();
 
     const action = ban === 'true' ? 'banned' : 'unbanned';
     return NextResponse.json(

@@ -61,14 +61,16 @@ export const valuationCards = [
     title: "Find out your home's value, instantly",
     description:
       'The simple, free, no-obligation way to request an accurate valuation of your home from estate and letting agents who are experts in your local area.',
-    button: 'Start Valuation',
+    button: 'Value Your Property For Free!',
+    link: '/valuation',
   },
   {
     image: valuation2,
     title: "Find out your home's value, instantly",
     description:
       'The simple, free, no-obligation way to request an accurate valuation of your home from estate and letting agents who are experts in your local area.',
-    button: 'Start Valuation',
+    button: 'Post Your Two Free Listing',
+    link: '/post-listing',
   },
 ];
 

@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
-import { useUrlParams } from '@/hooks/useUrlParams';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useRouter } from 'nextjs-toploader/app';
+
+interface RangeSliderProps {
+  minPrice: number;
+  maxPrice: number;
+  onPriceRangeChange: (min: number, max: number) => void;
+}
 
 function formatPrice(value: string) {
   const num = Number(value);
@@ -13,30 +17,26 @@ function formatPrice(value: string) {
   return num;
 }
 
-export const RangeSlider = () => {
-  const { push } = useRouter();
-  const { getParam, updateParams } = useUrlParams();
-
-  const minPrice = Number(getParam('minPrice')) || 0;
-  const maxPrice = Number(getParam('maxPrice')) || 10000000;
+export const RangeSlider = ({ minPrice, maxPrice, onPriceRangeChange }: RangeSliderProps) => {
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
-
   const debouncedPriceRange = useDebounce(priceRange, 300);
 
+  /**
+   * Update local state when props change
+   */
   useEffect(() => {
     setPriceRange([minPrice, maxPrice]);
   }, [minPrice, maxPrice]);
 
+  /**
+   * Call parent callback when debounced values change
+   */
   useEffect(() => {
     const [min, max] = debouncedPriceRange;
     if (min !== minPrice || max !== maxPrice) {
-      const params = updateParams({
-        minPrice: min.toString(),
-        maxPrice: max.toString(),
-      });
-      push(`/property?${params}`);
+      onPriceRangeChange(min, max);
     }
-  }, [debouncedPriceRange, minPrice, maxPrice, updateParams, push]);
+  }, [debouncedPriceRange, minPrice, maxPrice, onPriceRangeChange]);
 
   const handlePriceRangeSliderChange = (values: number[]) => {
     setPriceRange(values);

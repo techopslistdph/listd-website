@@ -1,3 +1,5 @@
+import { AiGenerateResponse } from './ai-generate';
+
 export interface UserProfileResponse {
   success: boolean;
   data: UserProfile;
@@ -31,4 +33,13 @@ export interface UserProfileDetails {
   latitude: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface userValuationResponse {
+  success: boolean;
+  data: AiGenerateResponse['data']['valuation'][];
+  message: string;
+  error?: {
+    message: string;
+  };
 }

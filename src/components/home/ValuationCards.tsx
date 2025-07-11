@@ -1,13 +1,14 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import Button from '../common/Button';
 import { Container } from '../common/Container';
+import Link from 'next/link';
 
 export interface ValuationCardData {
   image: StaticImageData;
   title: string;
   description: string;
   button: string;
+  link: string;
 }
 
 export default function ValuationCards({
@@ -37,12 +38,12 @@ export default function ValuationCards({
               <p className=' text-sm text-neutral-mid mb-4'>
                 {card.description}
               </p>
-              <Button
-                variant='primary'
-                className='rounded-full px-6 py-2 font-bold w-fit'
+              <Link
+                href={card.link}
+                className='rounded-full px-6 py-2 font-semibold w-fit bg-primary-main text-white text-sm '
               >
                 {card.button}
-              </Button>
+              </Link>
             </div>
           </div>
         ))}

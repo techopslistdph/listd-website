@@ -5,18 +5,18 @@ import { PropertyImages } from '../listing/PropertyImages';
 import { PropertyHeader } from '../listing/PropertyHeader';
 import { PropertyMap } from '../listing/PropertyMap';
 import { AgentCard } from '../listing/AgentCard';
-import { PropertyImage } from '@/lib/queries/server/propety/type';
+import {
+  PropertyDetail,
+  PropertyImage,
+} from '@/lib/queries/server/propety/type';
 import PropertyDescription from '../listing/PropertyDescription';
 import PropertyFeatures from '../listing/PropertyFeatures';
-import pinIcon from '../../../public/images/icons/pin.svg';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 
 export default function Property({
   agent,
-  features,
-  details,
   listingDescription,
-  listingPriceFormatted,
+  listingPrice,
   listingTitle,
   address,
   latitude,
@@ -25,11 +25,12 @@ export default function Property({
   isPropertyLiked,
   propertyId,
   userId,
+  propertyDetail,
   propertyOwnerId,
 }: {
   isPropertyLiked: boolean;
   propertyId: string;
-  listingPriceFormatted: string;
+  listingPrice: number;
   listingTitle: string;
   address: string;
   latitude: number;
@@ -42,10 +43,9 @@ export default function Property({
     isVerified: boolean;
     position: string;
   };
-  features: string[];
-  details: Record<string, string | number | boolean | undefined>[];
   listingDescription: string;
   userId: string;
+  propertyDetail: PropertyDetail;
   propertyOwnerId: string;
 }) {
   const [isLiked, setIsLiked] = useState(isPropertyLiked);
@@ -69,28 +69,33 @@ export default function Property({
     });
   };
   return (
-    <div className='container mx-auto px-5 lg:px-0 max-w-[1300px]'>
+    <div className='container mx-auto px-5 xl:px-0 max-w-[1300px]'>
       <div>
         <PropertyImages images={images} title={listingTitle} />
         <div className='grid grid-cols-1 lg:grid-cols-3 md:gap-6 mt-10'>
-          <div className='col-span-2'>
+          <div className={`${agent?.name ? 'col-span-2' : 'col-span-3'}`}>
             {/* Property Header */}
             <PropertyHeader
               isLiked={isLiked}
               handleLikeProperty={handleLikeProperty}
-              listingPriceFormatted={listingPriceFormatted}
+              listingPrice={listingPrice}
               title={listingTitle}
               isVerified={!!agent?.name}
               location={address}
-              pinIcon={pinIcon}
             />
             {/* Features */}
-            {features.length > 0 && <PropertyFeatures features={features} />}
+            {propertyDetail.property.features &&
+              propertyDetail.property.features.length > 0 && (
+                <PropertyFeatures
+                  features={propertyDetail.property.features}
+                  amenities={propertyDetail.property.amenities}
+                />
+              )}
             {/* Description */}
-            {listingDescription && details && (
+            {listingDescription && propertyDetail && (
               <PropertyDescription
                 description={listingDescription}
-                details={details}
+                propertyDetail={propertyDetail}
               />
             )}
             {/* Map */}

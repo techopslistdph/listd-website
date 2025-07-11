@@ -1,94 +1,44 @@
-'use client';
+import { Suspense } from 'react';
+import PostListingForm from '@/components/listing/form/PostListingForm';
+import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
+import { getAmenities, getFeatures } from '@/lib/queries/server/propety';
+import { getUserListings } from '@/lib/queries/server/listing';
 
-import { useState, Suspense } from 'react';
-import { Stepper } from '@/components/listing/form/Stepper';
-import { PropertyDetailsStep } from '@/components/listing/form/PropertyDetailsStep';
-import { TitleDescriptionStep } from '@/components/listing/form/TitleDescriptionStep';
-import { PaymentStep } from '@/components/listing/form/PaymentStep';
-import { ResultsStep } from '@/components/listing/form/ResultsStep';
-import { Step, FormData, initialFormData } from '@/components/listing/types';
+export default async function PostListingPage() {
+  const [propertyTypes, listingTypes, features, amenities, userListings] =
+    await Promise.all([
+      getPropertyTypes(),
+      getListingTypes(),
+      getFeatures(),
+      getAmenities(),
+      getUserListings('all'),
+    ]);
 
-import Image from 'next/image';
-import { backgroundImage } from '@/lib/getBackgroundImage';
+  if (userListings.data?.length && userListings.data?.length >= 2) {
+    return (
+      <div className='flex flex-col items-center justify-center h-[50vh] md:h-[80vh]'>
+        <p className='text-4xl md:text-5xl lg:text-6xl font-bold text-primary-main'>
+          Listd
+        </p>
+        <h2 className='text-base lg:text-xl font-medium text-center my-2'>
+          You have reached the maximum number of listings.
+        </h2>
+        <p className='text-sm md:text-base lg:text-lg font-medium text-center text-primary-main'>
+          Please contact us at{' '}
+          <a href='mailto:support@listd.com'>support@listd.com</a>
+        </p>
+      </div>
+    );
+  }
 
-export default function PostListingMultiStep() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <PostListingContent />
-    </Suspense>
-  );
-}
-
-function PostListingContent() {
-  const [step, setStep] = useState<Step>(0);
-  const [formData, setFormData] = useState<FormData>({
-    ...initialFormData,
-    propertyType: 'condominium',
-  });
-
-  const handleChange = (field: keyof FormData, value: unknown) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleNext = () => setStep(s => (s < 3 ? ((s + 1) as Step) : s));
-  const handleBack = () => setStep(s => (s > 0 ? ((s - 1) as Step) : s));
-  const handleDraft = () => {
-    // TODO: Save as draft logic
-    alert('Draft saved!');
-  };
-  const handleHome = () => {
-    // TODO: Redirect to home
-    setStep(0);
-  };
-
-  return (
-    <div className='container mx-auto relative mb-10 px-5 lg:px-0 max-w-[1300px]'>
-      <Image
-        src={backgroundImage(formData.propertyType)}
-        alt='Background'
-        width={1300}
-        height={700}
-        className='w-full h-[700px] rounded-3xl object-cover z-10'
+      <PostListingForm
+        features={features?.data?.uniqueFeatures || []}
+        propertyTypes={propertyTypes}
+        listingTypes={listingTypes}
+        amenities={amenities?.data?.uniqueAmenities || []}
       />
-      <div className='max-w-[1000px] shadow-lg rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white  relative z-20'>
-        <Stepper
-          step={step}
-          onBack={handleBack}
-          data={formData}
-          onChange={handleChange}
-        />
-        {step === 0 && (
-          <PropertyDetailsStep
-            data={formData}
-            onChange={handleChange}
-            onNext={handleNext}
-            onDraft={handleDraft}
-          />
-        )}
-        {step === 1 && (
-          <TitleDescriptionStep
-            data={formData}
-            onChange={handleChange}
-            onNext={handleNext}
-            onDraft={handleDraft}
-          />
-        )}
-        {step === 2 && (
-          <PaymentStep
-            data={formData}
-            onChange={handleChange}
-            onNext={handleNext}
-            onBack={handleBack}
-            onDraft={handleDraft}
-          />
-        )}
-        {step === 3 && (
-          <ResultsStep
-            onHome={handleHome}
-            propertyType={formData.propertyType}
-          />
-        )}
-      </div>
-    </div>
+    </Suspense>
   );
 }

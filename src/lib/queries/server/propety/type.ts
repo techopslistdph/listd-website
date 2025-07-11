@@ -13,6 +13,45 @@ export interface NearbyPropertiesResponse {
   };
 }
 
+export interface NearbyLocationsResponse {
+  success: boolean;
+  data: {
+    places: {
+      placeId: string;
+      name: string;
+      address: string;
+    }[];
+  };
+  places: {
+    placeId: string;
+    name: string;
+    address: string;
+  }[];
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
+export interface LocationCoordinatesResponse {
+  success: boolean;
+  data: {
+    predictions: {
+      address: string;
+      placeId: string;
+      formattedAddress: string;
+      coordinates: {
+        latitude: number;
+        longitude: number;
+      };
+    }[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
 export type PropertyLikeResponse = {
   success: boolean;
   data: {
@@ -28,6 +67,24 @@ export interface PropertyListResponse {
   data: PropertyDetail[];
   message?: string;
   meta: PaginationMeta;
+  error?: {
+    message: string;
+  };
+}
+
+export interface BarangayCityResponse {
+  success: boolean;
+  data: {
+    data: {
+      id: string;
+      name: string;
+      psgcCode: string;
+    }[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
 }
 
 export interface PropertyDetail {
@@ -64,6 +121,8 @@ export interface PropertyDetails {
   listingPriceFormatted: string;
   address: string;
   cityName: string;
+  isDraft: boolean;
+  isPublished: boolean;
   barangayName: string;
   longitude: number;
   latitude: number;
@@ -73,6 +132,8 @@ export interface PropertyDetails {
   images: PropertyImage[];
   listingDescription: string;
   listingDescriptionMarkdown: string;
+  features: { id: string; name: string }[];
+  amenities: { id: string; name: string }[];
   propertyOwnerId: string;
 }
 
@@ -96,4 +157,76 @@ interface PaginationMeta {
   totalPages: number;
   nextPage: number | null;
   prevPage: number | null;
+}
+
+export interface AmenitiesAndFeaturesResponse {
+  success: boolean;
+  data: {
+    data: AmenitiesAndFeatures[];
+  };
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
+
+export interface AmenitiesAndFeatures {
+  id: string;
+  name: string;
+}
+
+export interface CreateListingRequest {
+  listingTypeId?: string;
+  propertyTypeId?: string;
+  streetAddress?: string;
+  barangayId?: string;
+  cityId?: string;
+  region?: string;
+  buildingName?: string;
+  floorNumber?: number;
+  floorArea?: number;
+  furnishingStatus?: 'fully_furnished' | 'semi_furnished' | 'unfurnished';
+  numberOfBedrooms?: number;
+  numberOfBathrooms?: number;
+  numberOfParkingSpaces?: number;
+  amenityIds?: string[];
+  featureIds?: string[];
+  photos: File[];
+  lotSize?: number;
+  ceilingHeight?: number;
+  lotType?: string[];
+  listingTitle?: string;
+  listingDescription?: string;
+  listingPrice?: number;
+  listingPriceFormatted?: string;
+  pricePerSqm?: number;
+  longitude?: number;
+  latitude?: number;
+  isDraft: boolean;
+
+  // House and Lot specific fields
+  numberOfFloors?: number;
+  numberOfGarages?: number;
+  numberOfLivingRooms?: number;
+  numberOfDiningRooms?: number;
+  numberOfKitchens?: number;
+  numberOfMaidRooms?: number;
+  yearBuilt?: number;
+  hasSwimmingPool?: boolean;
+  hasGarden?: boolean;
+  hasTerrace?: boolean;
+  hasBalcony?: boolean;
+  hasSecurity?: boolean;
+
+  // Warehouse specific fields
+  loadingDocks?: number;
+  buildingSize?: number;
+
+  // Vacant Lot specific fields
+  nearbyLocations?:
+    | {
+        value: string;
+        label: string;
+      }[]
+    | string[];
 }

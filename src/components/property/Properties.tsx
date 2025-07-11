@@ -2,6 +2,7 @@
 import PropertyCard from '@/components/listing/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
+import Image from 'next/image';
 
 import { PropertyListResponse } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
@@ -29,7 +30,6 @@ export function Properties({
 
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(properties.data);
-  console.log(filteredProperties);
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>
@@ -52,8 +52,22 @@ export function Properties({
           />
         </div>
         {!properties.success && (
-          <div className='flex justify-center items-center py-10 text-error-main'>
-            <p className='text-lg'>Error: {properties?.message}</p>
+          <div className='flex flex-col items-center justify-center mt-12 lg:mt-24'>
+            <Image
+              src={'/images/icons/empty.svg'}
+              alt='Error loading properties'
+              width={150}
+              height={50}
+              className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+            />
+            <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+              {properties?.message || 'Unable to load properties.'}
+            </div>
+            <div className='text-sm lg:text-base text-gray-400 text-center'>
+              {
+                'There was a problem fetching properties. Please try again later or contact support if the issue persists.'
+              }
+            </div>
           </div>
         )}
         {/* Property Cards Grid */}

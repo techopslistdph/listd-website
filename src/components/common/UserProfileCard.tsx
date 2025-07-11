@@ -52,9 +52,9 @@ export default function UserProfileCard() {
           <LogOut className='h-4 w-4 text-primary-main' />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='w-56'>
+      <DropdownMenuContent align='end' >
         <DropdownMenuItem>
-          <Link href='/profile' className='flex items-center gap-2'>
+          <Link href='/profile' className='flex items-center gap-2 w-full'>
             <User className='mr-2 h-4 w-4' />
             <span>Profile</span>
           </Link>

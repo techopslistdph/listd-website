@@ -1,170 +1,162 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
-import { Listing } from '@/app/data';
-import Image, { StaticImageData } from 'next/image';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import areaIcon from '../../../public/images/icons/squaremeter.svg';
-import bedIcon from '../../../public/images/icons/bedroom.svg';
-import bathIcon from '../../../public/images/icons/bath.svg';
-import fullyFurnishedIcon from '../../../public/images/icons/fully-furnished.svg';
-import parkingIcon from '../../../public/images/icons/car.svg';
-import facingWestIcon from '../../../public/images/icons/facing-west.svg';
-import { Button } from '../ui/button';
+
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import { ArrowLeft } from 'lucide-react';
+import { PropertyImages } from '../listing/PropertyImages';
+import PropertyDetailsDisplay from '../listing/PropertyDetailsDisplay';
 
 interface ListingDetailsViewProps {
-  listing: Listing;
-  setUpdateDialogProperty: (listing: Listing) => void;
+  listing: PropertyDetail;
+  setUpdateDialogProperty: (listing: PropertyDetail) => void;
   setUpdateDialogOpen: (open: boolean) => void;
-}
-
-const iconMap: Record<string, StaticImageData> = {
-  area: areaIcon,
-  bedrooms: bedIcon,
-  baths: bathIcon,
-  parking: parkingIcon,
-  'facing west': facingWestIcon,
-  'fully furnished': fullyFurnishedIcon,
-};
-
-function getIconForKey(key: string): StaticImageData | undefined {
-  return iconMap[key];
+  setShowDetails: (show: boolean) => void;
 }
 
 export default function ListingDetailsView({
   listing,
   setUpdateDialogProperty,
   setUpdateDialogOpen,
+  setShowDetails,
 }: ListingDetailsViewProps) {
+  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}&q=${listing.property.latitude},${listing.property.longitude}&zoom=15`;
   return (
-    <div className='bg-white rounded-2xl lg:rounded-3xl shadow-md p-4 lg:p-8'>
-      {/* Main Image Slider */}
-      <div className='w-full h-48 lg:h-64 rounded-xl lg:rounded-2xl overflow-hidden mb-4 lg:mb-6 flex items-center justify-center bg-gray-100'>
-        <Swiper
-          spaceBetween={10}
-          slidesPerView={1}
-          className='w-full h-full'
-          style={{ borderRadius: '1rem' }}
-        >
-          {listing.images.map((img: StaticImageData, idx: number) => (
-            <SwiperSlide key={idx}>
-              <Image
-                src={img}
-                alt={`${listing.title} image ${idx + 1}`}
-                className='object-cover w-full h-full'
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+    <div className='bg-white p-4 lg:p-8'>
+      {/* back button */}
+      <button
+        className='flex items-center gap-2 text-primary-mid font-bold cursor-pointer text-sm lg:text-base mb-5'
+        onClick={() => setShowDetails(false)}
+      >
+        <ArrowLeft className='w-4 h-4 lg:w-5 lg:h-5' />
+        Back
+      </button>
+      {/* Images */}
+      {listing.property.images.length > 0 && (
+        <div className='mb-4 lg:mb-6'>
+          <PropertyImages
+            images={listing.property.images}
+            title={listing.property.listingTitle}
+          />
+        </div>
+      )}
+
       {/* Title, Address, Price, Status, Verified */}
-      <div className='flex flex-col lg:flex-row lg:items-center justify-between mb-2'>
-        <div>
-          <div className='text-xl lg:text-2xl font-bold mb-1'>
-            {listing.title}
+      <div className='flex flex-col lg:flex-row lg:items-start justify-between mb-2'>
+        <div className='flex flex-col gap-1 flex-1 min-w-0'>
+          <div className='text-xl lg:text-2xl font-bold mb-1 break-words overflow-hidden'>
+            {listing.property.listingTitle}
           </div>
-          <div className='text-sm lg:text-base text-neutral-mid mb-1'>
-            {listing.location}
-          </div>
+          {listing.property.address ||
+            (listing.property.barangayName && (
+              <div className='flex items-center text-neutral-mid text-sm lg:text-base mb-1'>
+                <svg
+                  className='w-4 h-4 lg:w-5 lg:h-5 mr-1'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z'
+                  />
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'
+                  />
+                </svg>
+                {listing.property.address ||
+                  `${listing.property.cityName}, ${listing.property.barangayName}`}
+              </div>
+            ))}
           <div className='text-lg lg:text-xl font-bold mb-1'>
-            {listing.price}
+            {listing.property.listingPrice &&
+              listing.property.listingPrice.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'PHP',
+              })}
           </div>
-          <div className='text-xs lg:text-sm text-primary-mid font-semibold mb-1'>
-            {listing.status}
+          <div className='text-sm lg:text-base text-primary-mid font-semibold mb-1'>
+            {listing.property.listingTypeName.toLowerCase().includes('buy')
+              ? 'For Sale'
+              : listing.property.listingTypeName.toLowerCase().includes('rent')
+                ? 'For Rent'
+                : ''}
           </div>
         </div>
-        {listing.isVerified && (
+        {listing.property.isPublished && (
           <div className='flex items-center gap-1 bg-primary-mid text-white px-2 w-24 justify-center lg:px-3 py-1 rounded-full text-xs font-medium mt-2 lg:mt-0'>
             <span className='text-xs text-white font-bold'>Verified</span>
           </div>
         )}
       </div>
       <hr className='my-3 lg:my-4' />
-      {/* Description */}
-      <div className='mb-3 lg:mb-4'>
-        <div className='font-bold text-sm lg:text-base mb-1'>Description</div>
-        <div className='text-neutral-main text-xs lg:text-sm'>
-          {listing.descriptionText}
+      <div className='space-y-5 lg:space-y-6'>
+        {/* Description */}
+        <div className=''>
+          <div className='font-bold text-base lg:text-lg mb-1'>Description</div>
+          <div className='text-neutral-main text-sm lg:text-base'>
+            {listing.property.listingDescription}
+          </div>
+          <div className='font-bold text-base lg:text-lg mt-5'>Details</div>
+          <PropertyDetailsDisplay
+            propertyDetail={listing}
+            className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full mt-3'
+          />
         </div>
-      </div>
-      {/* Property Details */}
-      <div className='flex flex-wrap justify-between text-center gap-4 lg:gap-0 my-4 lg:my-8'>
-        {listing.description.map(
-          (
-            item: Record<string, string | number | boolean | undefined>,
-            idx: number
-          ) => {
-            const key = Object.keys(item)[0];
-            const value = item[key];
-            if (value === undefined || value === false) return null;
-            const icon = getIconForKey(key);
-            const isBoolean = typeof value === 'boolean';
-            return (
-              <div
-                key={idx}
-                className='flex flex-col items-center justify-center gap-1 text-neutral-main text-xs lg:text-sm w-1/3 lg:w-auto'
-              >
-                {icon && (
-                  <Image
-                    src={icon}
-                    alt={key}
-                    width={16}
-                    height={16}
-                    className='lg:w-5 lg:h-5'
-                  />
-                )}
-                {isBoolean ? (
-                  key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-                ) : (
-                  <>
-                    {String(value)}{' '}
-                    {key === 'parking'
-                      ? 'Parking'
-                      : key === 'baths'
-                        ? 'Bath'
-                        : key === 'bedrooms'
-                          ? 'Bedroom'
-                          : key === 'area'
-                            ? ''
-                            : ''}
-                  </>
-                )}
-              </div>
-            );
-          }
-        )}
-      </div>
-      {/* Features */}
-      {listing.features && listing.features.length > 0 && (
-        <div className='mb-4 lg:mb-6'>
-          <div className='font-bold text-sm lg:text-base mb-1'>Features</div>
+
+        {/* Property Features & Amenities */}
+        <div className=''>
+          <div className='font-bold text-base lg:text-lg mb-2'>
+            Property Features & Amenities
+          </div>
           <div className='flex flex-wrap gap-2'>
-            {listing.features.map((feature, idx) => (
+            {listing.property.features.map((f, i) => (
               <span
-                key={idx}
-                className='bg-primary-mid text-white px-2 lg:px-3 py-1 rounded-full text-xs font-medium'
+                key={i}
+                className='bg-primary-mid text-white px-3 py-1 rounded-full text-sm'
               >
-                {feature}
+                {f.name}
+              </span>
+            ))}
+            {listing.property.amenities.map((a, i) => (
+              <span
+                key={i}
+                className='bg-primary-mid text-white px-3 py-1 rounded-full text-sm'
+              >
+                {a.name}
               </span>
             ))}
           </div>
         </div>
-      )}
-      {/* Property Location (Map) */}
-      <div className='mb-4 lg:mb-6'>
-        <div className='font-bold text-sm lg:text-base mb-1'>
-          Property location
-        </div>
-        <div className='w-full'>
-          <div
-            className='w-full h-[200px] lg:h-[400px] overflow-hidden iframe-div rounded-xl lg:rounded-2xl flex justify-center items-center'
-            dangerouslySetInnerHTML={{ __html: listing.googleMap }}
-          />
+        {/* Property Location (Map) */}
+        <div className=''>
+          <div className='font-bold text-base lg:text-lg mb-2'>
+            Property location
+          </div>
+          <div className='w-full'>
+            <div className='w-full h-[400px] overflow-hidden'>
+              <iframe
+                src={mapUrl}
+                width='100%'
+                height='100%'
+                style={{ border: 0 }}
+                allowFullScreen
+                loading='lazy'
+                referrerPolicy='no-referrer-when-downgrade'
+                title={`Map location for ${listing.property.listingTitle}`}
+              />
+            </div>
+          </div>
         </div>
       </div>
+
       {/* Update Status Button */}
-      <div className='flex justify-end'>
+      {/* <div className='flex justify-end mt-5'>
         <Button
           variant='default'
           className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
@@ -177,7 +169,8 @@ export default function ListingDetailsView({
         >
           Update Status
         </Button>
-      </div>
+     
+      </div> */}
     </div>
   );
 }

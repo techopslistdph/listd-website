@@ -3,8 +3,6 @@ export { QueryProvider } from './query-provider';
 
 export { queryKeys } from './query-keys';
 
-export * from './hooks/use-listing-type';
-
 export { api, ApiError } from '@/lib/fetch-wrapper';
 
 export {
