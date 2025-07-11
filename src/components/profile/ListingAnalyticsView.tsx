@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Eye, ArrowLeft } from 'lucide-react';
 import ListingDetailsView from './ListingDetailsView';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
+import ConfirmationDialog from './ConfirmationDialog';
+import { Button } from '../ui/button';
+import { useDeleteProperty } from '@/lib/queries/hooks/use-property';
+import { toast } from 'sonner';
 
 interface ListingAnalyticsViewProps {
   listing: PropertyDetail;
@@ -45,7 +49,12 @@ export default function ListingAnalyticsView({
   setSelectedListing,
 }: ListingAnalyticsViewProps) {
   const [showDetails, setShowDetails] = React.useState(false);
-
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState<{
+    id: string;
+    propertyType: string;
+  } | null>(null);
+  const { mutate: deleteProperty, isPending } = useDeleteProperty();
   if (showDetails) {
     return (
       <ListingDetailsView
@@ -57,6 +66,37 @@ export default function ListingAnalyticsView({
     );
   }
 
+  const handleDelete = (id: string, propertyType: string) => {
+    setPropertyToDelete({ id, propertyType });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCancel = () => {
+    setDeleteDialogOpen(false);
+    setPropertyToDelete(null);
+  };
+
+  const handleRemove = () => {
+    if (propertyToDelete) {
+      deleteProperty(
+        {
+          propertyId: propertyToDelete.id,
+          propertyType: propertyToDelete.propertyType,
+        },
+        {
+          onSuccess: () => {
+            toast.success('Property deleted successfully');
+            setSelectedListing(null);
+          },
+          onError: () => {
+            toast.error('Failed to delete property');
+          },
+        }
+      );
+      setPropertyToDelete(null);
+      setDeleteDialogOpen(false);
+    }
+  };
   return (
     <div className='p-4 lg:p-8'>
       {/* back button */}
@@ -169,16 +209,37 @@ export default function ListingAnalyticsView({
         <div className='text-gray-400 text-xs lg:text-sm mb-3 lg:mb-4'>
           Manage your property listing settings
         </div>
-        <button
-          className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-lg lg:rounded-xl p-3 lg:p-4 w-full'
-          onClick={() => setShowDetails(true)}
-        >
-          <Eye className='text-[#7B6CD9] w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3' />
-          <span className='font-semibold text-sm lg:text-base'>
-            View Listing Details
-          </span>
-        </button>
+        <div className='flex flex-col gap-5'>
+          <button
+            className='flex items-center bg-white border border-gray-200 cursor-pointer rounded-lg lg:rounded-xl p-3 lg:p-4 w-full'
+            onClick={() => setShowDetails(true)}
+          >
+            <Eye className='text-[#7B6CD9] w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3' />
+            <span className='font-semibold text-sm lg:text-base'>
+              View Listing Details
+            </span>
+          </button>
+          <Button
+            variant='default'
+            className='ml-auto rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
+            type='button'
+            onClick={e => {
+              e.stopPropagation();
+              handleDelete(listing.id, listing.property.propertyTypeName);
+            }}
+          >
+            {isPending ? 'Deleting...' : 'Delete Listing'}
+          </Button>
+        </div>
       </div>
+      <ConfirmationDialog
+        showModal={deleteDialogOpen}
+        setShowModal={setDeleteDialogOpen}
+        handleCancel={() => handleCancel()}
+        handleRemove={() => handleRemove()}
+        title='Delete Listing'
+        description='Are you sure you want to delete this listing? This action cannot be undone.'
+      />
     </div>
   );
 }

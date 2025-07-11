@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import 'swiper/css';
 
-import { Button } from '../ui/button';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ArrowLeft } from 'lucide-react';
 import { PropertyImages } from '../listing/PropertyImages';
@@ -169,6 +169,7 @@ export default function ListingDetailsView({
         >
           Update Status
         </Button>
+     
       </div> */}
     </div>
   );

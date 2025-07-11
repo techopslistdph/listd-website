@@ -3,6 +3,8 @@ export const API_ENDPOINTS = {
   users: {
     me: `${API_BASE_URL}/users/profile`,
     update: `${API_BASE_URL}/users/profile`,
+    listing: (status: string) =>
+      `${API_BASE_URL}/users/listings?status=${status}`,
   },
 
   listingTypes: {
@@ -24,8 +26,6 @@ export const API_ENDPOINTS = {
   locations: {
     regions: `${API_BASE_URL}/locations/regions`,
     cities: `${API_BASE_URL}/geographic-codes/city`,
-    // cities: (regionId: string) =>
-    //   `${API_BASE_URL}/locations/regions/${regionId}/cities`,
     barangays: `${API_BASE_URL}/geographic-codes/barangay`,
   },
 
@@ -51,8 +51,6 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
     delete: (id: string) => `${API_BASE_URL}/house-and-lots/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/house-and-lots/user/${userId}`,
-    drafts: (userId: string) =>
-      `${API_BASE_URL}/house-and-lots/user/${userId}/drafts`,
   },
 
   warehouse: {
@@ -64,8 +62,6 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/warehouses/${id}`,
     delete: (id: string) => `${API_BASE_URL}/warehouses/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/warehouses/user/${userId}`,
-    drafts: (userId: string) =>
-      `${API_BASE_URL}/warehouses/user/${userId}/drafts`,
   },
 
   vacantLot: {
@@ -77,26 +73,12 @@ export const API_ENDPOINTS = {
     update: (id: string) => `${API_BASE_URL}/vacant-lots/${id}`,
     delete: (id: string) => `${API_BASE_URL}/vacant-lots/${id}`,
     byUser: (userId: string) => `${API_BASE_URL}/vacant-lots/user/${userId}`,
-    drafts: (userId: string) =>
-      `${API_BASE_URL}/vacant-lots/user/${userId}/drafts`,
   },
 
   media: {
     upload: `${API_BASE_URL}/uploads`,
     uploadImage: `${API_BASE_URL}/media/upload-image`,
     uploadDocument: `${API_BASE_URL}/media/upload-document`,
-  },
-
-  apiKeys: {
-    list: `${API_BASE_URL}/api-keys`,
-    create: `${API_BASE_URL}/api-keys`,
-    byId: (id: string) => `${API_BASE_URL}/api-keys/${id}`,
-    update: (id: string) => `${API_BASE_URL}/api-keys/${id}`,
-    delete: (id: string) => `${API_BASE_URL}/api-keys/${id}`,
-  },
-
-  jobs: {
-    status: (jobId: string) => `${API_BASE_URL}/jobs/${jobId}/status`,
   },
 
   nearby: {

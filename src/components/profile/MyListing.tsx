@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useState } from 'react';
@@ -8,7 +9,7 @@ import areaIcon from '../../../public/images/icons/squaremeter.svg';
 import bedIcon from '../../../public/images/icons/bedroom.svg';
 import bathIcon from '../../../public/images/icons/bath.svg';
 import { PhoneIcon } from 'lucide-react';
-import UpdateStatusDialog from './UpdateStatusDialog';
+// import UpdateStatusDialog from './UpdateStatusDialog';
 import { useGetUserListings } from '@/lib/queries/hooks/use-user-profile';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { getPropertyFeatures } from './MyFavorites';

@@ -51,15 +51,17 @@ export function PaymentStep({
             </div>
           </div>
         </div>
+
+        {/* disable this because there's no payment integration yet */}
         <div
-          className={`border rounded-lg p-4 flex items-center gap-4 cursor-pointer ${
+          className={`border rounded-lg p-4 flex items-center gap-4 cursor-not-allowed ${
             form.getValues('package') === 'paid'
               ? 'border-primary-mid'
               : 'border-gray-200'
           }`}
-          onClick={() => {
-            onChange('package', 'paid');
-          }}
+          // onClick={() => {
+          //   onChange('package', 'paid');
+          // }}
         >
           <Image src={packagenameIcon} alt='package name icon' />
           <div>
