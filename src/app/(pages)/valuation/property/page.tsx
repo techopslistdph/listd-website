@@ -4,6 +4,8 @@ import { getAmenities, getFeatures } from '@/lib/queries/server/propety';
 import PostListingForm from '@/components/listing/form/PostListingForm';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ValuationDetailsPage() {
   const [propertyTypes, listingTypes, features, amenities] = await Promise.all([
     getPropertyTypes(),
