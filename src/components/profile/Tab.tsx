@@ -40,7 +40,7 @@ export default function Tab({ userProfile }: { userProfile: UserProfile }) {
         </Link>
       </div>
 
-      <Tabs defaultValue='profile-information' className='w-full  '>
+      <Tabs defaultValue='profile-information' className='w-full overflow-hidden  '>
         <TabsList>
           <TabsTrigger value='profile-information'>
             Profile Information

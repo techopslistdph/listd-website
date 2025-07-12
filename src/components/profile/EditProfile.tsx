@@ -1,19 +1,6 @@
 'use client';
 import React from 'react';
 import { Input } from '../ui/input';
-// import { Label } from '../ui/label';
-// import { Button } from '../ui/button';
-// import {
-//   Select,
-//   SelectTrigger,
-//   SelectContent,
-//   SelectItem,
-//   SelectValue,
-// } from '../ui/select';
-// import { CheckIcon } from 'lucide-react';
-// import upload from '@/../public/images/icons/upload.svg';
-// import Image from 'next/image';
-// import sampleQr from '@/../public/images/sample-qr.png';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +9,7 @@ import { useUpdateProfile } from '@/lib/queries/hooks/use-user-profile';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import { UserProfile } from '@/lib/queries/hooks/types/user';
+import { formatPhoneNumber } from '@/utils/phoneUtils';
 
 const userSchema = z.object({
   firstName: z.string().min(1),
@@ -106,7 +94,15 @@ export default function EditProfile({
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
-                      <Input {...field} className='text-sm lg:text-base' />
+                      <Input
+                        placeholder='(+1) 234 567 8900'
+                        {...field}
+                        onChange={(e) => {
+                          const formatted = formatPhoneNumber(e.target.value);
+                          field.onChange(formatted);
+                        }}
+                        className='text-sm lg:text-base'
+                      />
                     </FormControl>
                   </FormItem>
                 )}
