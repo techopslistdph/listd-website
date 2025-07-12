@@ -1,7 +1,7 @@
 'use client';
 import PropertyCard from '@/components/listing/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 
 import { PropertyListResponse } from '@/lib/queries/server/propety/type';
@@ -12,8 +12,11 @@ import PropertyMap from '../map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { filterProperties } from '@/lib/utils/filterProperty';
+import { PropertyPagination } from './PropertyPagination';
 
 export type View = 'list' | 'map';
+
+const PROPERTIES_PER_PAGE = 12;
 
 export function Properties({
   properties,
@@ -26,10 +29,31 @@ export function Properties({
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useUser();
 
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(properties.data);
+
+  // Pagination logic
+  const { paginatedProperties, totalPages } = useMemo(() => {
+    const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
+    const endIndex = startIndex + PROPERTIES_PER_PAGE;
+    const paginatedData = filteredProperties.slice(startIndex, endIndex);
+    const totalPagesCount = Math.ceil(filteredProperties.length / PROPERTIES_PER_PAGE);
+
+    return {
+      paginatedProperties: paginatedData,
+      totalPages: totalPagesCount
+    };
+  }, [filteredProperties, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>
@@ -71,7 +95,7 @@ export function Properties({
           </div>
         )}
         {/* Property Cards Grid */}
-        {filterProperties?.length === 0 ? (
+        {filteredProperties?.length === 0 ? (
           <>
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
               <PropertyMap properties={filteredProperties} minHeight='480px' />
@@ -81,25 +105,34 @@ export function Properties({
             </div>
           </>
         ) : view === 'list' ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-            {filteredProperties?.map((property, idx) => (
-              <PropertyCard
-                user={user as unknown as User}
-                key={idx}
-                propertyDetail={property}
-                view='list'
-                propertyType={propertyType}
-              />
-            ))}
+          <div className='flex flex-col gap-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
+              {paginatedProperties?.map((property, idx) => (
+                <PropertyCard
+                  user={user as unknown as User}
+                  key={idx}
+                  propertyDetail={property}
+                  view='list'
+                  propertyType={propertyType}
+                />
+              ))}
+            </div>
+            {/* Pagination */}
+            <PropertyPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className='mt-8'
+            />
           </div>
         ) : (
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filteredProperties} minHeight='480px' />
+              <PropertyMap properties={paginatedProperties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
-              {filteredProperties?.map((property, idx) => (
+              {paginatedProperties?.map((property, idx) => (
                 <PropertyCard
                   user={user as unknown as User}
                   key={idx}
@@ -109,6 +142,13 @@ export function Properties({
                 />
               ))}
             </div>
+            {/* Pagination for map view */}
+            <PropertyPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className='mt-8'
+            />
           </div>
         )}
       </main>
