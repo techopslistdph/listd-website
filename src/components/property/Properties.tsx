@@ -33,10 +33,8 @@ export function Properties({
   const { user } = useUser();
 
 
-  // filter properties that have images and has valid image url
-  const filteredProperties = filterProperties(properties.data);
+  const filteredProperties = filterProperties(properties?.data?.data || []);
 
-  // Pagination logic
   const { paginatedProperties, totalPages } = useMemo(() => {
     const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
     const endIndex = startIndex + PROPERTIES_PER_PAGE;
@@ -98,7 +96,7 @@ export function Properties({
           </div>
         )}
         {/* Property Cards Grid */}
-        {filteredProperties?.length === 0 ? (
+        {filteredProperties?.length === 0 && (
           <>
           <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
             <Image
@@ -118,7 +116,8 @@ export function Properties({
             </div>
           </div>
           </>
-        ) : view === 'list' ? (
+        )}
+        {view === 'list' ? (
           <div className='flex flex-col gap-8'>
             <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
               {paginatedProperties?.map((property, idx) => (

@@ -64,9 +64,11 @@ export type PropertyLikeResponse = {
 
 export interface PropertyListResponse {
   success: boolean;
-  data: PropertyDetail[];
+  data: {
+    data: PropertyDetail[];
+    meta: PaginationMeta;
+  };
   message?: string;
-  meta: PaginationMeta;
   error?: {
     message: string;
   };
