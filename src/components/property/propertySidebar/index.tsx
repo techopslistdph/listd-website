@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { useRouter } from 'nextjs-toploader/app';
@@ -16,6 +16,8 @@ import { SelectFilter } from './SelectFilter';
 import { NumberFilter } from './NumberFilter';
 import Button from '@/components/common/Button';
 import { usePropertyFilters } from '@/hooks/usePropertyFilters';
+import { MultiSelectOption } from '@/components/ui/multi-select';
+import { useAmenitiesAndFeatures } from '@/lib/queries/hooks/use-amenities';
 
 const PropertySidebar = () => {
   const router = useRouter();
@@ -28,6 +30,27 @@ const PropertySidebar = () => {
     resetFilters, 
     getApplicableFilters 
   } = usePropertyFilters();
+
+  const { data, isLoading } = useAmenitiesAndFeatures()
+  const [amenities, features] = data || []
+  
+
+  const amenitiesOptions: MultiSelectOption[] = useMemo(() => {
+    if (!amenities?.data?.data.length) return []
+    return amenities.data.data.map(amenity => ({
+      label: amenity.name,
+      value: amenity.id,
+    }))
+  }, [amenities])
+
+  const featuresOptions: MultiSelectOption[] = useMemo(() => {
+    if (!features?.data?.data.length) return []
+    return features.data.data.map(feature => ({
+      label: feature.name,
+      value: feature.id,
+    }))
+  }, [features])
+
   
   const [isApplying, setIsApplying] = useState(false);
   
@@ -118,6 +141,8 @@ const PropertySidebar = () => {
         'maxLatitude',
         'minLongitude',
         'maxLongitude',
+        'amenityIds',
+        'featureIds',
       ]);
       router.push(`/property?${params}`);
     } finally {
@@ -198,11 +223,25 @@ const PropertySidebar = () => {
       />
       
       <SelectFilter 
-        selectedFeatures={filters.features || []}
-        onFeaturesChange={(features) => {
-          updateFilter('features', features);
+        placeholder='Amenities'
+        options={amenitiesOptions}
+        isLoading={isLoading}
+        selectedFeatures={filters.amenityIds || []}
+        onFeaturesChange={(amenities) => {
+          updateFilter('amenityIds', amenities);
         }}
       />
+
+      <SelectFilter 
+        placeholder='Features'
+        options={featuresOptions}
+        isLoading={isLoading}
+        selectedFeatures={filters.featureIds || []}
+        onFeaturesChange={(features) => {
+          updateFilter('featureIds', features);
+        }}
+      />
+      
 
       <div className='flex flex-col xl:flex-row gap-2'>
         <Button 

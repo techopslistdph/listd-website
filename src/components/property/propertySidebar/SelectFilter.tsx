@@ -1,27 +1,20 @@
-import { useAmeneties } from '@/lib/queries/hooks/use-ameneties'
-import { useMemo } from 'react'
+
 import { MultiSelect, MultiSelectOption } from '@/components/ui/multi-select'
 
 interface SelectFilterProps {
   selectedFeatures: string[]
   onFeaturesChange: (features: string[]) => void
+  options: MultiSelectOption[]
+  isLoading: boolean
+  placeholder: string
 }
 
-export const SelectFilter = ({ selectedFeatures, onFeaturesChange }: SelectFilterProps) => {
-  const { data: amenities, isLoading } = useAmeneties()
-
-  const amenitiesOptions: MultiSelectOption[] = useMemo(() => {
-    if (!amenities?.data?.data.length) return []
-    return amenities.data.data.map(amenity => ({
-      label: amenity.name,
-      value: amenity.name,
-    }))
-  }, [amenities])
+export const SelectFilter = ({ selectedFeatures, onFeaturesChange, options, isLoading, placeholder }: SelectFilterProps) => {
 
   if (isLoading) {
     return (
       <div>
-        <div className='font-bold text-xl mb-3'>Features & Amenities</div>
+        <div className='font-bold text-xl mb-3'>{placeholder}</div>
         <div className='rounded-full bg-neutral-light px-4 py-6 animate-pulse'>
           <div className='h-4 bg-gray-300 rounded w-32'></div>
         </div>
@@ -30,15 +23,16 @@ export const SelectFilter = ({ selectedFeatures, onFeaturesChange }: SelectFilte
   }
 
   return (
-    <div>
-      <div className='font-bold text-xl mb-3'>Features & Amenities</div>
+    <div className='flex flex-col gap-2'>
+      <div className='font-bold text-xl mb-3'>{placeholder}</div>
       <MultiSelect
-        options={amenitiesOptions}
+        options={options}
         selected={selectedFeatures}
         onSelectedChange={onFeaturesChange}
-        placeholder='Feature & Anemeties'
+        placeholder={placeholder}
         maxDisplay={3}
       />
+
     </div>
   )
 }

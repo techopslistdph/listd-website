@@ -275,6 +275,8 @@ export type SearchParams = {
   maxPrice?: string;
   minFloorArea?: string;
   maxFloorArea?: string;
+  amenityIds?: string;
+  featureIds?: string;
 };
 
 export const getProperties = async (
@@ -289,6 +291,9 @@ export const getProperties = async (
       queryParams.append(key, value);
     }
   });
+
+  console.log({queryParams})
+
 
   try {
     const response = (await fetchProperties(

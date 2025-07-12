@@ -32,6 +32,7 @@ export function Properties({
   const [currentPage, setCurrentPage] = useState(1);
   const { user } = useUser();
 
+
   // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(properties.data);
 
@@ -39,8 +40,8 @@ export function Properties({
   const { paginatedProperties, totalPages } = useMemo(() => {
     const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
     const endIndex = startIndex + PROPERTIES_PER_PAGE;
-    const paginatedData = filteredProperties.slice(startIndex, endIndex);
-    const totalPagesCount = Math.ceil(filteredProperties.length / PROPERTIES_PER_PAGE);
+    const paginatedData = filteredProperties?.slice(startIndex, endIndex);
+    const totalPagesCount = Math.ceil(filteredProperties?.length / PROPERTIES_PER_PAGE);
 
     return {
       paginatedProperties: paginatedData,
