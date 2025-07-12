@@ -1,4 +1,3 @@
- 
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -28,12 +27,23 @@ export const getPropertyFeatures = (property: PropertyDetail) => {
 };
 
 export default function MyFavorites() {
-  const { data: userLikedProperties, isLoading } = useGetUserLikedProperties();
+  const {
+    data: userLikedProperties,
+    isLoading,
+    refetch,
+  } = useGetUserLikedProperties();
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const [showModal, setShowModal] = useState(false);
   const [propertyToRemove, setPropertyToRemove] = useState<string | null>(null);
   const { mutate: likeProperty } = useLikeProperty();
 
-  const handleHeartClick = (event: React.MouseEvent<HTMLDivElement>, propertyId: string) => {
+  const handleHeartClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+    propertyId: string
+  ) => {
     event.preventDefault();
     event.stopPropagation();
     setPropertyToRemove(propertyId);
@@ -88,7 +98,6 @@ export default function MyFavorites() {
             const features = getPropertyFeatures(property);
             return (
               <Link
-               
                 href={`/property/${property.id}?property=${property?.property?.propertyTypeName?.replaceAll(' ', '-').toLowerCase()}`}
                 key={property.id}
                 className='grid grid-cols-1 lg:grid-cols-4 bg-white rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 cursor-pointer transition w-full relative'
@@ -118,7 +127,8 @@ export default function MyFavorites() {
                     <div className='text-lg lg:text-xl font-semibold mb-1 break-words'>
                       {property.property.listingTitle.length > 70
                         ? property.property.listingTitle.slice(0, 70) + '...'
-                        : property.property.listingTitle || 'Title not available'}
+                        : property.property.listingTitle ||
+                          'Title not available'}
                     </div>
                     {property?.property?.address && (
                       <div className='flex items-center text-gray-400 text-sm lg:text-base mb-1'>
@@ -201,7 +211,7 @@ export default function MyFavorites() {
                 </div>
                 <div
                   className='absolute sm:top-10 sm:right-10 lg:top-6 lg:right-6 cursor-pointer bg-white p-3 rounded-full shadow-xl'
-                  onClick={(e) => handleHeartClick(e, property.property.id)}
+                  onClick={e => handleHeartClick(e, property.property.id)}
                 >
                   <Heart className='w-5 h-5 lg:w-7 lg:h-7 text-[#4B23A0] fill-current rounded-full p-1' />
                 </div>
@@ -221,5 +231,3 @@ export default function MyFavorites() {
     </div>
   );
 }
-
-

@@ -8,54 +8,30 @@ import { useState } from 'react';
 import ImageUploadModal from './ImageUploadModal';
 import WaitAlertModal from './WaitAlertModal';
 import { AiValuation } from '@/lib/queries/hooks/types/ai-generate';
-import { generateValuationPDF } from '@/lib/utils/generateValuationPDF';
-import { toast } from 'sonner';
+import { useValuationPDF } from '@/hooks/useValuationPDF';
 
 interface ResultsStepProps {
   onHome: () => void;
   propertyType: PropertyType;
   valuationResult?: AiValuation;
+  userId?: string;
 }
 
 export function ResultsStep({
   onHome,
   propertyType,
+  userId,
   valuationResult,
 }: ResultsStepProps) {
   const pathname = usePathname();
   const [showWaitModal, setShowWaitModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const router = useRouter();
-  const handleDownloadPDF = async () => {
-    if (!valuationResult) {
-      toast.error('No valuation data available');
-      return;
-    }
 
-    try {
-      setIsGeneratingPDF(true);
-      try {
-        await generateValuationPDF({
-          valuation: valuationResult,
-          propertyType: propertyType,
-        });
-        toast.success('PDF report opened for printing');
-      } catch (pdfError) {
-        console.warn(
-          'PDF generation failed, falling back to HTML download:',
-          pdfError
-        );
-
-        toast.success('HTML report downloaded successfully');
-      }
-    } catch (error) {
-      console.error('Error downloading report:', error);
-      toast.error('Failed to download report');
-    } finally {
-      setIsGeneratingPDF(false);
-    }
-  };
+  const { isGeneratingPDF, handleDownloadPDF } = useValuationPDF({
+    valuationResult,
+    propertyType,
+  });
 
   if (pathname.includes('/valuation')) {
     return (
@@ -105,12 +81,14 @@ export function ResultsStep({
                 {isGeneratingPDF ? 'Generating Report...' : 'Download Report'}
               </span>
             </div>
-            <Button
-              className='rounded-full py-5 px-8 w-44 border border-primary-main bg-white text-primary-main hover:bg-white cursor-pointer'
-              onClick={() => router.push('/profile')}
-            >
-              View My Valuation
-            </Button>
+            {userId && (
+              <Button
+                className='rounded-full py-5 px-8 w-44 border border-primary-main bg-white text-primary-main hover:bg-white cursor-pointer'
+                onClick={() => router.push('/profile')}
+              >
+                View My Valuation
+              </Button>
+            )}
           </div>
         </div>
       </>

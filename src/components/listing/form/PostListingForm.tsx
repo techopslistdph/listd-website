@@ -27,6 +27,7 @@ import {
 } from '@/lib/utils/propertyPrompBuilder';
 import { useAiValuate } from '@/lib/queries/hooks/use-ai-generate';
 import { AiValuation } from '@/lib/queries/hooks/types/ai-generate';
+import { useUser } from '@clerk/nextjs';
 
 interface PostListingFormProps {
   propertyTypes: Array<{
@@ -59,6 +60,7 @@ export default function PostListingForm({
   features,
   amenities,
 }: PostListingFormProps) {
+  const { user } = useUser();
   const [step, setStep] = useState<Step>(0);
   const router = useRouter();
   const pathname = usePathname();
@@ -149,7 +151,7 @@ export default function PostListingForm({
     const prompt = buildPropertyPrompt(formData, 'valuate');
 
     valuate(
-      { ...prompt },
+      { prompt, userId: user?.id || '' },
       {
         onSuccess: data => {
           if (data.success) {
@@ -225,6 +227,7 @@ export default function PostListingForm({
             <ResultsStep
               onHome={handleHome}
               valuationResult={valuationResponse}
+              userId={user?.id || ''}
               propertyType={form.getValues('propertyType') as PropertyType}
             />
           )}

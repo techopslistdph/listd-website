@@ -24,9 +24,17 @@ export default function MyListing() {
   const [activeTab, setActiveTab] = useState<'published' | 'draft' | 'closed'>(
     'published'
   );
-  const { data: userListings, isLoading } = useGetUserListings({
+  const {
+    data: userListings,
+    isLoading,
+    refetch,
+  } = useGetUserListings({
     status: activeTab,
   });
+
+  React.useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const [selectedListing, setSelectedListing] = useState<null | PropertyDetail>(
     null
