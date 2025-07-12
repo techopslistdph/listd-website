@@ -5,7 +5,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useSignIn } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import loginImage from '@/../public/images/login-image.png';
 import { Label } from '@/components/ui/label';
 import google from '@/../public/images/icons/google.svg';
 import facebook from '@/../public/images/icons/facebook.svg';
@@ -164,13 +163,15 @@ export default function LoginPage() {
               'Login'
             )}
           </button>
-          <button
-            type='button'
-            disabled={isSubmitting}
-            className='w-full cursor-pointer text-sm md:text-base border-2 border-[var(--primary-main)] text-[var(--primary-main)] font-semibold py-4 rounded-full mb-2 disabled:opacity-50 disabled:cursor-not-allowed'
-          >
-            Continue as a Guest
-          </button>
+          <Link href='/'>
+            <button
+              type='button'
+              disabled={isSubmitting}
+              className='w-full cursor-pointer text-sm md:text-base border-2 border-[var(--primary-main)] text-[var(--primary-main)] font-semibold py-4 rounded-full mb-2 disabled:opacity-50 disabled:cursor-not-allowed'
+            >
+              Continue as a Guest
+            </button>{' '}
+          </Link>
         </form>
       </FormProvider>
       <div className='flex items-center my-8'>

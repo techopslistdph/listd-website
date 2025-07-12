@@ -20,7 +20,7 @@ const messaging = {
 
       return {
         success: true,
-        ...response.data,
+        data: response.data,
         message: 'Conversation created successfully',
       };
     } catch (error) {

@@ -4,69 +4,48 @@ import React, { useState, useRef, useEffect } from 'react';
 import verified from '@/../public/images/icons/verified.png';
 import Link from 'next/link';
 import { ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
-import file from '@/../public/images/icons/file.svg';
-import image from '@/../public/images/icons/image.svg';
+// import file from '@/../public/images/icons/file.svg';
+// import image from '@/../public/images/icons/image.svg';
 import { Input } from '../ui/input';
 import send from '@/../public/images/icons/send.svg';
-import { Skeleton } from '../ui/skeleton';
 import {
   useMarkMessagesAsRead,
   useSendMessage,
+  useCreateConversation,
 } from '@/lib/queries/hooks/use-messaging';
-import {
-  Message,
-  MessageListResponse,
-} from '@/lib/queries/server/messaging/types';
 import { useOptimisticMessages } from '@/hooks/useOptimisticMessages';
-
-interface Conversation {
-  id: string;
-  property: {
-    image: string;
-    name: string;
-  };
-  lastMessage: string;
-  lastDate: string;
-  isRead: boolean;
-}
-
-interface User {
-  avatar: string;
-  name: string;
-  verified?: boolean;
-}
-
-interface PropertyDetails {
-  image: string;
-  name: string;
-  location: string;
-  price: string;
-}
-
-interface OptimisticMessage {
-  id: string;
-  text: string;
-  isMe: boolean;
-  time: string;
-  createdAt: number; // Add this field for proper sorting
-  isOptimistic: boolean;
-  isFailed?: boolean;
-  tempId: string;
-}
-
-interface Selected {
-  user: User;
-  propertyDetails: PropertyDetails;
-  messages: Message[] | undefined;
-}
+import { DraftConversation } from '@/lib/utils/draftConversation';
+import {
+  combineMessages,
+  Conversations,
+  createOptimisticMessage,
+  getOldOptimisticMessages,
+  Selected,
+  shouldRemoveOptimisticMessage,
+  transformMessages,
+} from '@/lib/utils/Message';
+import {
+  ChatSkeletonDesktop,
+  ConversationsSkeletonMobile,
+  MessagesSkeletonMobile,
+  PropertyCardSkeleton,
+} from './Skeleton';
+import { Skeleton } from '../ui/skeleton';
 
 interface ChatProps {
-  conversations: Conversation[];
+  conversations: Conversations[];
   selectedId: string;
   setSelectedId: (id: string) => void;
-  selected?: Selected;
+  selected?: Selected & {
+    isDraft?: boolean;
+    draftData?: DraftConversation;
+  };
   isLoading: boolean;
   userId: string;
+  onConversationCreated?: (
+    conversationId: string,
+    messageContent: string
+  ) => void;
 }
 
 export default function Chat({
@@ -76,6 +55,7 @@ export default function Chat({
   selected,
   isLoading,
   userId,
+  onConversationCreated,
 }: ChatProps) {
   const [inputValue, setInputValue] = useState('');
   const [mobileView, setMobileView] = useState<'conversations' | 'messages'>(
@@ -91,6 +71,7 @@ export default function Chat({
   } = useOptimisticMessages();
 
   const sendMessage = useSendMessage();
+  const createConversation = useCreateConversation();
 
   // Auto-scroll to bottom when new messages arrive (desktop)
   useEffect(() => {
@@ -109,64 +90,82 @@ export default function Chat({
   }, [selected?.messages, optimisticMessages, mobileView]);
 
   // Transform messages for Chat component
-  const transformedMessages = selected?.messages
-    ?.sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    )
-    ?.map((msg: MessageListResponse['data'][number]) => ({
-      id: msg.id,
-      text: msg.content,
-      isMe: msg.sender.id === userId,
-      time: new Date(msg.createdAt).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      createdAt: new Date(msg.createdAt).getTime(), // Add createdAt for sorting
-      isOptimistic: false,
-      tempId: '',
-    }));
+  const transformedMessages = transformMessages(selected?.messages, userId);
 
   // Combine server messages with optimistic messages
-  const allMessages: OptimisticMessage[] = [
-    ...(transformedMessages || []),
-    ...optimisticMessages,
-  ].sort((a, b) => {
-    // Sort by createdAt timestamp instead of formatted time string
-    return a.createdAt - b.createdAt;
-  });
+  const allMessages = combineMessages(transformedMessages, optimisticMessages);
 
   // Remove optimistic messages that have been confirmed by server
   useEffect(() => {
-    if (!transformedMessages) return;
-
-    const serverMessageTexts = transformedMessages.map(msg => msg.text);
-
-    // Remove optimistic messages that now exist in server messages
-    optimisticMessages.forEach(optimisticMsg => {
-      if (serverMessageTexts.includes(optimisticMsg.text)) {
-        removeOptimisticMessage(optimisticMsg.tempId);
-      }
-    });
+    const tempIdsToRemove = shouldRemoveOptimisticMessage(
+      transformedMessages,
+      optimisticMessages
+    );
+    tempIdsToRemove.forEach(tempId => removeOptimisticMessage(tempId));
   }, [transformedMessages, optimisticMessages, removeOptimisticMessage]);
 
-  const handleSendMessage = () => {
-    if (!selectedId || !inputValue.trim()) return;
+  // Add a new effect to handle optimistic message removal when conversation changes
+  useEffect(() => {
+    const oldOptimisticTempIds = getOldOptimisticMessages(
+      optimisticMessages,
+      selectedId
+    );
+    oldOptimisticTempIds.forEach(tempId => removeOptimisticMessage(tempId));
+  }, [selectedId, optimisticMessages, removeOptimisticMessage]);
 
-    const tempId = `temp-${Date.now()}-${Math.random()}`;
-    const optimisticMessage: OptimisticMessage = {
-      id: tempId,
-      text: inputValue,
-      isMe: true,
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      createdAt: Date.now(), // Add createdAt timestamp
-      isOptimistic: true,
-      tempId,
-    };
+  // Update the handleSendMessage function to use explicit IDs
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
 
+    // Handle draft conversation
+    if (selectedId === 'draft' && selected?.isDraft && selected?.draftData) {
+      const { propertyId, propertyOwnerId } = selected.draftData;
+
+      const optimisticMessage = createOptimisticMessage(inputValue);
+      addOptimisticMessage(optimisticMessage);
+      const messageContent = inputValue;
+      setInputValue('');
+
+      try {
+        // Create conversation first using the IDs from URL
+        const conversationResult = await createConversation.mutateAsync({
+          propertyId: propertyId,
+          participantId: propertyOwnerId,
+        });
+
+        if (conversationResult.success && conversationResult.data) {
+          // Send message to the new conversation
+          await sendMessage.mutateAsync({
+            conversationId: conversationResult.data.id,
+            data: { content: messageContent },
+          });
+
+          // Remove the optimistic message after successful creation and sending
+          removeOptimisticMessage(optimisticMessage.tempId);
+
+          // Notify parent component with message content
+          onConversationCreated?.(conversationResult.data.id, messageContent);
+        } else {
+          console.error(
+            'Failed to create conversation:',
+            conversationResult.message
+          );
+          markAsFailed(optimisticMessage.tempId);
+        }
+      } catch (error) {
+        console.error(
+          'Error creating conversation and sending message:',
+          error
+        );
+        markAsFailed(optimisticMessage.tempId);
+      }
+      return;
+    }
+
+    // Handle regular conversation
+    if (!selectedId || selectedId === 'draft') return;
+
+    const optimisticMessage = createOptimisticMessage(inputValue);
     addOptimisticMessage(optimisticMessage);
     setInputValue('');
 
@@ -189,7 +188,7 @@ export default function Chat({
       },
       {
         onError: () => {
-          markAsFailed(tempId);
+          markAsFailed(optimisticMessage.tempId);
         },
       }
     );
@@ -223,6 +222,7 @@ export default function Chat({
       setMobileView('messages');
     }
   }, [selectedId]);
+
   // Mark messages as read when conversation is selected
   const { mutate: markMessagesAsRead } = useMarkMessagesAsRead();
   const handleConversationSelect = (
@@ -252,20 +252,9 @@ export default function Chat({
           <div className='bg-white p-4'>
             <h2 className='text-xl font-bold mb-4'>Messages</h2>
             {isLoading ? (
-              <div className='space-y-3'>
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className='flex items-center p-3 rounded-xl'>
-                    <Skeleton className='w-12 h-12 rounded-xl mr-3' />
-                    <div className='flex-1'>
-                      <Skeleton className='h-4 w-3/4 mb-2' />
-                      <Skeleton className='h-3 w-1/2' />
-                    </div>
-                    <Skeleton className='w-12 h-3 ml-2' />
-                  </div>
-                ))}
-              </div>
+              <ConversationsSkeletonMobile />
             ) : (
-              <div className='space-y-3'>
+              <div className='space-y-3 max-h-[80vh] overflow-y-auto'>
                 {conversations.map(conv => (
                   <div
                     key={conv.id}
@@ -331,18 +320,10 @@ export default function Chat({
 
             {/* Mobile Property Card */}
             {isLoading ? (
-              <div className='bg-white border-b border-gray-200 p-4 flex items-center w-full gap-2'>
-                <Skeleton className='w-14 h-14 rounded-xl' />
-                <div className='flex-1'>
-                  <Skeleton className='h-4 w-3/4 mb-2' />
-                  <Skeleton className='h-3 w-1/2' />
-                </div>
-                <Skeleton className='w-16 h-4' />
-                <Skeleton className='w-6 h-6' />
-              </div>
+              <PropertyCardSkeleton />
             ) : (
               <Link
-                href='/property/luxury-skyline-residences'
+                href={`/property/${selected?.propertyDetails.specificPropertyId}?property=${selected?.propertyDetails.propertyType.toLowerCase().split(' ').join('-')}`}
                 className='bg-white border-b border-gray-200 p-4 flex items-center w-full gap-2'
               >
                 <img
@@ -371,17 +352,7 @@ export default function Chat({
               className='flex-1 overflow-y-auto p-4 flex flex-col gap-4'
             >
               {isLoading ? (
-                <div className='space-y-4'>
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className='flex w-full justify-start'>
-                      <Skeleton className='w-8 h-8 rounded-full mr-2 self-end mb-2' />
-                      <div className='max-w-[80vw] flex flex-col justify-end items-start mr-auto'>
-                        <Skeleton className='h-12 w-48 rounded-xl' />
-                        <Skeleton className='h-3 w-16 mt-2' />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <MessagesSkeletonMobile />
               ) : allMessages && allMessages.length > 0 ? (
                 allMessages.map(msg => (
                   <div
@@ -451,7 +422,7 @@ export default function Chat({
 
             {/* Mobile Input - Keep the exact same input implementation */}
             <div className='flex items-center gap-2 md:gap-3 p-4 border-t border-gray-200'>
-              <button className='bg-none border-none text-xl cursor-pointer'>
+              {/* <button className='bg-none border-none text-xl cursor-pointer'>
                 <Image
                   src={file}
                   alt='upload file'
@@ -464,7 +435,7 @@ export default function Chat({
                   alt='upload image'
                   className='w-6 h-6 md:w-7 md:h-7'
                 />
-              </button>
+              </button> */}
               <div className='relative flex-1 flex gap-2'>
                 <Input
                   type='text'
@@ -502,7 +473,7 @@ export default function Chat({
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r border-gray-200'>
+      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r border-gray-200 max-h-[85vh] overflow-y-auto'>
         {conversations.map(conv => (
           <div
             key={conv.id}
@@ -533,15 +504,7 @@ export default function Chat({
       {/* Desktop Messages View */}
       <main className='hidden lg:flex flex-1 w-full flex-col pb-5'>
         {isLoading ? (
-          <>
-            <Skeleton className='h-8 w-48 mb-4' />
-            <Skeleton className='h-32 w-full mb-4' />
-            <div className='space-y-4'>
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className='h-16 w-3/4' />
-              ))}
-            </div>
-          </>
+          <ChatSkeletonDesktop />
         ) : (
           <>
             {/* Header */}
@@ -564,7 +527,7 @@ export default function Chat({
             </div>
             {/* Property Card */}
             <Link
-              href='/property/luxury-skyline-residences'
+              href={`/property/${selected?.propertyDetails.specificPropertyId}?property=${selected?.propertyDetails.propertyType.toLowerCase().split(' ').join('-')}`}
               className='bg-white rounded-xl shadow-md p-5 mb-6 flex flex-row gap-3 items-center w-full'
             >
               <img
@@ -658,12 +621,12 @@ export default function Chat({
             </div>
             {/* Input - Keep the exact same input implementation */}
             <div className='flex items-center gap-3'>
-              <button className='bg-none border-none text-xl cursor-pointer'>
+              {/* <button className='bg-none border-none text-xl cursor-pointer'>
                 <Image src={file} alt='upload file' className='w-7 h-7' />
               </button>
               <button className='bg-none border-none text-xl cursor-pointer'>
                 <Image src={image} alt='upload image' className='w-7 h-7' />
-              </button>
+              </button> */}
               <div className='relative flex-1 flex gap-2'>
                 <Input
                   type='text'
