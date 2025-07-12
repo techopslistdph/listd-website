@@ -52,7 +52,7 @@ export default function UserProfileCard() {
           <LogOut className='h-4 w-4 text-primary-main' />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' >
+      <DropdownMenuContent align='end'>
         <DropdownMenuItem>
           <Link href='/profile' className='flex items-center gap-2 w-full'>
             <User className='mr-2 h-4 w-4' />
@@ -60,7 +60,7 @@ export default function UserProfileCard() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>
+        <DropdownMenuItem onClick={handleLogout} className='cursor-pointer'>
           <LogOut className='mr-2 h-4 w-4' />
           <span>Log out</span>
         </DropdownMenuItem>

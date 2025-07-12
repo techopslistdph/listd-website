@@ -110,7 +110,11 @@ export default function Property({
           {/* Right Column - Agent Card */}
           {agent?.name && (
             <div className='lg:col-span-1'>
-              <AgentCard agent={agent} propertyOwnerId={propertyOwnerId} />
+              <AgentCard
+                agent={agent}
+                propertyDetail={propertyDetail}
+                propertyOwnerId={propertyOwnerId}
+              />
             </div>
           )}
         </div>

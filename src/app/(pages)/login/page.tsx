@@ -5,7 +5,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useSignIn } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import loginImage from '@/../public/images/login-image.png';
 import { Label } from '@/components/ui/label';
 import google from '@/../public/images/icons/google.svg';
 import facebook from '@/../public/images/icons/facebook.svg';

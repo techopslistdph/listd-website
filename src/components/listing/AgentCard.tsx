@@ -4,6 +4,9 @@ import Image, { StaticImageData } from 'next/image';
 import verified from '@/../public/images/icons/verified.png';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
+import { Button } from '../ui/button';
+import { draftConversation } from '@/lib/utils/draftConversation';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
 interface Agent {
   name: string;
@@ -16,10 +19,15 @@ interface Agent {
 
 interface AgentCardProps {
   agent: Agent;
+  propertyDetail: PropertyDetail;
   propertyOwnerId: string;
 }
 
-export function AgentCard({ agent, propertyOwnerId }: AgentCardProps) {
+export function AgentCard({
+  agent,
+  propertyDetail,
+  propertyOwnerId,
+}: AgentCardProps) {
   return (
     <div className='sticky top-5'>
       <div className='rounded-lg border p-4 flex flex-col  gap-2'>
@@ -51,34 +59,32 @@ export function AgentCard({ agent, propertyOwnerId }: AgentCardProps) {
           </a>
         )}
         {propertyOwnerId && (
-          <Link
-            href='/message'
-            className='w-full py-3 rounded-full border border-primary-main text-primary-main text-center font-semibold'
-          >
-            Direct Message
-          </Link>
+          <div>
+            <Button
+              className='w-full mt-2 py-6 text-base rounded-full hover:bg-primary-main bg-primary-main text-white text-center font-semibold'
+              onClick={() => {
+                // Validate IDs before creating draft
+                if (!propertyOwnerId) {
+                  console.error('Property Owner ID not available');
+                  return;
+                }
+
+                if (!propertyDetail.property?.id) {
+                  console.error('Property ID not available');
+                  return;
+                }
+
+                draftConversation(
+                  propertyDetail.property.propertyOwner,
+                  propertyDetail
+                );
+              }}
+            >
+              <Link href={`/message`}>Direct Message</Link>
+            </Button>
+          </div>
         )}
       </div>
-      {/* <div className='rounded-lg border p-4 flex flex-col items-center gap-2 py-10 mt-5'>
-        <div className='flex items-center gap-2 py-3 cursor-pointer'>
-          <Image
-            src={calculateMortgageIcon}
-            alt='calculate-mortgage'
-            width={20}
-            height={20}
-          />
-          <span className='underline'>Calculate Mortgage</span>
-        </div>
-        <div className='flex items-center gap-2 py-3 cursor-pointer'>
-          <Image
-            src={shortMortgageCaseIcon}
-            alt='calculate-mortgage'
-            width={20}
-            height={20}
-          />
-          <span className='underline'>Short Mortgage Case</span>
-        </div>
-      </div> */}
     </div>
   );
 }

@@ -13,6 +13,8 @@ import { SearchParams } from '@/lib/queries/server/propety';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 import { useState } from 'react';
 import { User } from '@clerk/nextjs/server';
+import { draftConversation } from '@/lib/utils/draftConversation';
+import { Button } from '../ui/button';
 
 export default function PropertyCard({
   propertyDetail,
@@ -35,7 +37,7 @@ export default function PropertyCard({
       cityName,
       barangayName,
       scrapeContactInfo,
-      propertyOwnerId,
+      propertyOwner,
     },
     id,
     numberOfBathrooms,
@@ -130,17 +132,19 @@ export default function PropertyCard({
                 </span>
               </div>
 
-              <div className='flex items-center text-gray-400  gap-2 mb-4 '>
+              <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
+                <PhoneIcon className='w-4 text-primary-main h-4' />
+                <span className='font-medium line-clamp-1'>
+                  {scrapeContactInfo?.agentName}
+                </span>
                 {scrapeContactInfo?.agentName && (
-                  <div className='flex items-center gap-1'>
-                    <PhoneIcon className='w-4 text-primary-main' />
-                    <span className='font-medium'>
-                      {scrapeContactInfo?.agentName}
-                    </span>
-                  </div>
-                )}
-                {scrapeContactInfo?.agentName && (
-                  <Image src={verified} alt='verified' width={16} height={16} />
+                  <Image
+                    src={verified}
+                    alt='verified'
+                    width={16}
+                    height={16}
+                    className='h-4 w-4'
+                  />
                 )}
               </div>
               <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2'>
@@ -177,13 +181,34 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {propertyOwnerId && (
-              <Link
-                href='/message'
-                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+            {propertyOwner?.id && (
+              <button
+                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold cursor-pointer'
+                onClick={() => {
+                  // Validate IDs before creating draft
+                  if (!propertyOwner?.id) {
+                    console.error('Property Owner ID not available');
+                    return;
+                  }
+
+                  if (!propertyDetail.property?.id) {
+                    console.error('Property ID not available');
+                    return;
+                  }
+
+                  draftConversation(
+                    propertyDetail.property.propertyOwner,
+                    propertyDetail
+                  );
+                }}
               >
-                Direct Message
-              </Link>
+                <Link
+                  href='/message'
+                  className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                >
+                  Direct Message
+                </Link>
+              </button>
             )}
           </div>
         </div>
@@ -228,12 +253,18 @@ export default function PropertyCard({
             )}
             {scrapeContactInfo?.agentName && (
               <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
-                <PhoneIcon className='w-4 text-primary-main' />
-                <span className='font-medium'>
+                <PhoneIcon className='w-4 text-primary-main h-4' />
+                <span className='font-medium line-clamp-1'>
                   {scrapeContactInfo?.agentName}
                 </span>
                 {scrapeContactInfo?.agentName && (
-                  <Image src={verified} alt='verified' width={16} height={16} />
+                  <Image
+                    src={verified}
+                    alt='verified'
+                    width={16}
+                    height={16}
+                    className='h-4 w-4'
+                  />
                 )}
               </div>
             )}
@@ -269,13 +300,36 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {propertyOwnerId && (
-              <Link
-                href='/message'
-                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
-              >
-                Direct Message
-              </Link>
+            {propertyOwner?.id && (
+              <>
+                <Button
+                  className='bg-primary-main flex-1 text-white rounded-full hover:bg-primary-main'
+                  onClick={() => {
+                    // Validate IDs before creating draft
+                    if (!propertyOwner?.id) {
+                      console.error('Property Owner ID not available');
+                      return;
+                    }
+
+                    if (!propertyDetail.property?.id) {
+                      console.error('Property ID not available');
+                      return;
+                    }
+
+                    draftConversation(
+                      propertyDetail.property.propertyOwner,
+                      propertyDetail
+                    );
+                  }}
+                >
+                  <Link
+                    href='/message'
+                    className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                  >
+                    Direct Message
+                  </Link>
+                </Button>
+              </>
             )}
           </div>
         </div>

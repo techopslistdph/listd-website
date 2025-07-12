@@ -22,43 +22,41 @@ import { useAmenitiesAndFeatures } from '@/lib/queries/hooks/use-amenities';
 const PropertySidebar = () => {
   const router = useRouter();
   const { getParam, updateParams, deleteParams } = useUrlParams();
-  const { 
-    filters, 
-    hasChanges, 
-    updateFilter, 
-    updateMultipleFilters, 
-    resetFilters, 
-    getApplicableFilters 
+  const {
+    filters,
+    hasChanges,
+    updateFilter,
+    updateMultipleFilters,
+    resetFilters,
+    getApplicableFilters,
   } = usePropertyFilters();
 
-  const { data, isLoading } = useAmenitiesAndFeatures()
-  const [amenities, features] = data || []
-  
+  const { data, isLoading } = useAmenitiesAndFeatures();
+  const [amenities, features] = data || [];
 
   const amenitiesOptions: MultiSelectOption[] = useMemo(() => {
-    if (!amenities?.data?.data.length) return []
+    if (!amenities?.data?.data.length) return [];
     return amenities.data.data.map(amenity => ({
       label: amenity.name,
       value: amenity.id,
-    }))
-  }, [amenities])
+    }));
+  }, [amenities]);
 
   const featuresOptions: MultiSelectOption[] = useMemo(() => {
-    if (!features?.data?.data.length) return []
+    if (!features?.data?.data.length) return [];
     return features.data.data.map(feature => ({
       label: feature.name,
       value: feature.id,
-    }))
-  }, [features])
+    }));
+  }, [features]);
 
-  
   const [isApplying, setIsApplying] = useState(false);
-  
+
   const propertyType = getParam('property');
 
   const showBedroomBathroomFilters =
     PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
-    
+
   const showParkingFilters = PROPERTY_TYPES_WITH_PARKING_FILTER.includes(
     propertyType || ''
   );
@@ -152,21 +150,27 @@ const PropertySidebar = () => {
 
   const getActiveBedroomValue = () => {
     if (filters.minBedrooms && filters.maxBedrooms) {
-      return filters.minBedrooms === filters.maxBedrooms ? filters.minBedrooms : filters.minBedrooms;
+      return filters.minBedrooms === filters.maxBedrooms
+        ? filters.minBedrooms
+        : filters.minBedrooms;
     }
     return filters.minBedrooms || filters.maxBedrooms || '';
   };
 
   const getActiveBathroomValue = () => {
     if (filters.minBathrooms && filters.maxBathrooms) {
-      return filters.minBathrooms === filters.maxBathrooms ? filters.minBathrooms : filters.minBathrooms;
+      return filters.minBathrooms === filters.maxBathrooms
+        ? filters.minBathrooms
+        : filters.minBathrooms;
     }
     return filters.minBathrooms || filters.maxBathrooms || '';
   };
 
   const getActiveParkingValue = () => {
     if (filters.minParking && filters.maxParking) {
-      return filters.minParking === filters.maxParking ? filters.minParking : filters.minParking;
+      return filters.minParking === filters.maxParking
+        ? filters.minParking
+        : filters.minParking;
     }
     return filters.minParking || filters.maxParking || '';
   };
@@ -200,7 +204,7 @@ const PropertySidebar = () => {
         />
       )}
 
-      <RangeSlider 
+      <RangeSlider
         minPrice={Number(filters.minPrice) || 0}
         maxPrice={Number(filters.maxPrice) || 10000000}
         onPriceRangeChange={(min, max) => {
@@ -210,8 +214,8 @@ const PropertySidebar = () => {
           });
         }}
       />
-      
-      <InputFilter 
+
+      <InputFilter
         minFloorArea={filters.minFloorArea || ''}
         maxFloorArea={filters.maxFloorArea || ''}
         onFloorAreaChange={(min, max) => {
@@ -221,37 +225,36 @@ const PropertySidebar = () => {
           });
         }}
       />
-      
-      <SelectFilter 
+
+      <SelectFilter
         placeholder='Amenities'
         options={amenitiesOptions}
         isLoading={isLoading}
         selectedFeatures={filters.amenityIds || []}
-        onFeaturesChange={(amenities) => {
+        onFeaturesChange={amenities => {
           updateFilter('amenityIds', amenities);
         }}
       />
 
-      <SelectFilter 
+      <SelectFilter
         placeholder='Features'
         options={featuresOptions}
         isLoading={isLoading}
         selectedFeatures={filters.featureIds || []}
-        onFeaturesChange={(features) => {
+        onFeaturesChange={features => {
           updateFilter('featureIds', features);
         }}
       />
-      
 
       <div className='flex flex-col xl:flex-row gap-2'>
-        <Button 
+        <Button
           className={`flex px-4 justify-center relative ${hasChanges ? 'bg-primary-main' : ''}`}
           onClick={handleApplyFilters}
           disabled={isApplying}
         >
           {isApplying ? 'Applying...' : 'Apply Filters'}
           {hasChanges && (
-            <span className='absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full'></span>
+            <span className='absolute -top-1 -right-1 w-3 h-3 rounded-full'></span>
           )}
         </Button>
         <Button

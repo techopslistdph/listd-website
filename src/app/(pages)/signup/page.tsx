@@ -285,13 +285,15 @@ export default function SignUpPage() {
                   'Sign up'
                 )}
               </button>
-              <button
-                type='button'
-                disabled={isSubmitting}
-                className='w-full cursor-pointer border-2 border-[var(--primary-main)] text-[var(--primary-main)] text-sm md:text-base font-semibold py-4 rounded-full mb-2 disabled:opacity-50 disabled:cursor-not-allowed'
-              >
-                Continue as a Guest
-              </button>
+              <Link href='/'>
+                <button
+                  type='button'
+                  disabled={isSubmitting}
+                  className='w-full cursor-pointer text-sm md:text-base border-2 border-[var(--primary-main)] text-[var(--primary-main)] font-semibold py-4 rounded-full mb-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  Continue as a Guest
+                </button>{' '}
+              </Link>
             </form>
           </FormProvider>
           <div className='flex items-center my-5'>
