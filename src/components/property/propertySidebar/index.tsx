@@ -112,7 +112,7 @@ const PropertySidebar = () => {
     setIsApplying(true);
     try {
       const applicableFilters = getApplicableFilters();
-      const params = updateParams(applicableFilters);
+      const params = updateParams({ ...applicableFilters, page: 1 }); // Always reset page to 1
       router.push(`/property?${params}`);
     } finally {
       setIsApplying(false);

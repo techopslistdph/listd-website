@@ -37,6 +37,7 @@ export default function PropertyTopBar({
   useEffect(() => {
     const paramsString = updateParams({
       search: debouncedSearch,
+      page: 1 // Always reset page to 1 on new search
     });
     push(`/property?${paramsString}`);
   }, [debouncedSearch, updateParams, push]);
@@ -52,6 +53,7 @@ export default function PropertyTopBar({
   const handleBuyOrRentChange = (listingTypeId: ListingType['id']) => {
     const paramsString = updateParams({
       listingTypeId: listingTypeId,
+      page: 1 // Always reset page to 1 on listing type change
     });
     push(`/property?${paramsString}`);
   };
