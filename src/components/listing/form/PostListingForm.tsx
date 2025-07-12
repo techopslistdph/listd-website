@@ -103,7 +103,13 @@ export default function PostListingForm({
     handleNext
   );
 
-  const handleBack = () => setStep(s => (s > 0 ? ((s - 1) as Step) : s));
+  const handleBack = () => {
+    if (step === 0) {
+      router.back();
+    } else {
+      setStep(s => (s > 0 ? ((s - 1) as Step) : s));
+    }
+  };
 
   const handleDraft = () => {
     handleSubmit(true);
