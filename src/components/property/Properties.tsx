@@ -1,7 +1,7 @@
 'use client';
 import PropertyCard from '@/components/listing/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
 import { PropertyListResponse } from '@/lib/queries/server/propety/type';
@@ -13,10 +13,9 @@ import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { filterProperties } from '@/lib/utils/filterProperty';
 import { PropertyPagination } from './PropertyPagination';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export type View = 'list' | 'map';
-
-const PROPERTIES_PER_PAGE = 12;
 
 export function Properties({
   properties,
@@ -29,26 +28,22 @@ export function Properties({
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const { user } = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  console.log({properties: properties.data.meta})
 
 
   const filteredProperties = filterProperties(properties?.data?.data || []);
-
-  const { paginatedProperties, totalPages } = useMemo(() => {
-    const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
-    const endIndex = startIndex + PROPERTIES_PER_PAGE;
-    const paginatedData = filteredProperties?.slice(startIndex, endIndex);
-    const totalPagesCount = Math.ceil(filteredProperties?.length / PROPERTIES_PER_PAGE);
-
-    return {
-      paginatedProperties: paginatedData,
-      totalPages: totalPagesCount
-    };
-  }, [filteredProperties, currentPage]);
+  const currentPage = properties?.data?.meta?.page || 1;
+  const totalPages = properties?.data?.meta?.totalPages || 1;
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // Update the page param in the URL
+    const params = new URLSearchParams(searchParams?.toString() || '')
+    params.set('page', String(page))
+    router.push(`?${params.toString()}`)
     // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -120,7 +115,7 @@ export function Properties({
         {view === 'list' ? (
           <div className='flex flex-col gap-8'>
             <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-              {paginatedProperties?.map((property, idx) => (
+              {filteredProperties?.map((property, idx) => (
                 <PropertyCard
                   user={user as unknown as User}
                   key={idx}
@@ -142,10 +137,10 @@ export function Properties({
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={paginatedProperties} minHeight='480px' />
+              <PropertyMap properties={filteredProperties} minHeight='480px' />
             </div>
             <div className='space-y-6'>
-              {paginatedProperties?.map((property, idx) => (
+              {filteredProperties?.map((property, idx) => (
                 <PropertyCard
                   user={user as unknown as User}
                   key={idx}
