@@ -20,6 +20,8 @@ export interface PropertyFilters {
   maxLatitude?: string
   minLongitude?: string
   maxLongitude?: string
+  amenityIds?: string[]
+  featureIds?: string[]
 }
 
 const DEFAULT_FILTERS: PropertyFilters = {
@@ -52,6 +54,8 @@ export const usePropertyFilters = () => {
       maxLatitude: getParam('maxLatitude') || undefined,
       minLongitude: getParam('minLongitude') || undefined,
       maxLongitude: getParam('maxLongitude') || undefined,
+      amenityIds: getParam('amenityIds')?.split(',') || undefined,
+      featureIds: getParam('featureIds')?.split(',') || undefined,
     }
     
     setLocalFilters(urlFilters)

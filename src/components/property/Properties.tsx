@@ -12,6 +12,8 @@ import PropertyMap from '../map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { filterProperties } from '@/lib/utils/filterProperty';
+import { PropertyPagination } from './PropertyPagination';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export type View = 'list' | 'map';
 
@@ -27,9 +29,25 @@ export function Properties({
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user } = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // filter properties that have images and has valid image url
-  const filteredProperties = filterProperties(properties.data);
+  console.log({properties: properties.data.meta})
+
+
+  const filteredProperties = filterProperties(properties?.data?.data || []);
+  const currentPage = properties?.data?.meta?.page || 1;
+  const totalPages = properties?.data?.meta?.totalPages || 1;
+
+  const handlePageChange = (page: number) => {
+    // Update the page param in the URL
+    const params = new URLSearchParams(searchParams?.toString() || '')
+    params.set('page', String(page))
+    router.push(`?${params.toString()}`)
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>
@@ -38,6 +56,7 @@ export function Properties({
           onViewChange={setView}
           isSidebarOpen={sidebarOpen}
           onFilterClick={() => setSidebarOpen(v => !v)}
+          currentView={view}
         />
       </div>
       {sidebarOpen && <PropertySidebar />}
@@ -49,6 +68,7 @@ export function Properties({
             isSidebarOpen={sidebarOpen}
             onFilterClick={() => setSidebarOpen(v => !v)}
             onViewChange={setView}
+            currentView={view}
           />
         </div>
         {!properties.success && (
@@ -71,26 +91,47 @@ export function Properties({
           </div>
         )}
         {/* Property Cards Grid */}
-        {filterProperties?.length === 0 ? (
+        {filteredProperties?.length === 0 && (
           <>
-            <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filteredProperties} minHeight='480px' />
+          <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
+            <Image
+              src={'/images/icons/empty.svg'}
+              alt='Error loading properties'
+              width={150}
+              height={50}
+              className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+            />
+            <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+              {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
             </div>
-            <div className='text-center text-gray-500 py-20 text-lg'>
-              No properties found matching your filters.
+            <div className='text-sm lg:text-base text-gray-400 text-center'>
+              {
+                'Please check your spelling or adjust your filters and try again.'
+              }
             </div>
+          </div>
           </>
-        ) : view === 'list' ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-            {filteredProperties?.map((property, idx) => (
-              <PropertyCard
-                user={user as unknown as User}
-                key={idx}
-                propertyDetail={property}
-                view='list'
-                propertyType={propertyType}
-              />
-            ))}
+        )}
+        {view === 'list' ? (
+          <div className='flex flex-col gap-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
+              {filteredProperties?.map((property, idx) => (
+                <PropertyCard
+                  user={user as unknown as User}
+                  key={idx}
+                  propertyDetail={property}
+                  view='list'
+                  propertyType={propertyType}
+                />
+              ))}
+            </div>
+            {/* Pagination */}
+            <PropertyPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className='mt-8'
+            />
           </div>
         ) : (
           <div className='flex flex-col gap-6'>
@@ -109,6 +150,13 @@ export function Properties({
                 />
               ))}
             </div>
+            {/* Pagination for map view */}
+            <PropertyPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className='mt-8'
+            />
           </div>
         )}
       </main>

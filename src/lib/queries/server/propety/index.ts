@@ -28,9 +28,15 @@ const getCondominiums = async (
         message: response?.error?.message || 'An unexpected error occurred',
       };
     }
+
+
+
     return {
       success: true,
-      ...response.data,
+      data: {
+        data: response.data.data,
+        meta: response.data.meta,
+      },
       message: 'Properties fetched successfully',
     };
   } catch (error) {
@@ -65,7 +71,7 @@ const getHouseAndLots = async (
     }
     return {
       success: true,
-      ...response.data,
+      data: response.data,
       message: 'Properties fetched successfully',
     };
   } catch (error) {
@@ -97,7 +103,7 @@ const getWarehouses = async (queryParams: string, sessionId: string | null) => {
     }
     return {
       success: true,
-      ...response.data,
+      data: response.data,
       message: 'Properties fetched successfully',
     };
   } catch (error) {
@@ -129,7 +135,7 @@ const getLots = async (queryParams: string, sessionId: string | null) => {
     }
     return {
       success: true,
-      ...response.data,
+      data: response.data,
       message: 'Properties fetched successfully',
     };
   } catch (error) {
@@ -275,6 +281,8 @@ export type SearchParams = {
   maxPrice?: string;
   minFloorArea?: string;
   maxFloorArea?: string;
+  amenityIds?: string;
+  featureIds?: string;
 };
 
 export const getProperties = async (
@@ -290,24 +298,15 @@ export const getProperties = async (
     }
   });
 
+
+
   try {
     const response = (await fetchProperties(
       queryParams.toString(),
       sessionId
     )) as unknown as PropertyListResponse;
-
-    if (!response.success) {
-      return {
-        success: false,
-        data: null,
-        message: response.message,
-      };
-    }
-    return {
-      success: true,
-      data: response.data,
-      message: 'Properties fetched successfully',
-    };
+    
+    return response
   } catch (error) {
     return {
       success: false,

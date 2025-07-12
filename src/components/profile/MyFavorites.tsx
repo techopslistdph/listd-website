@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -6,7 +6,7 @@ import verified from '@/../public/images/icons/verified.png';
 import areaIcon from '../../../public/images/icons/squaremeter.svg';
 import bedIcon from '../../../public/images/icons/bedroom.svg';
 import bathIcon from '../../../public/images/icons/bath.svg';
-import { PhoneIcon } from 'lucide-react';
+import { Heart, MapPin, PhoneIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 
 import { useGetUserLikedProperties } from '@/lib/queries/hooks/use-user-profile';
@@ -33,7 +33,9 @@ export default function MyFavorites() {
   const [propertyToRemove, setPropertyToRemove] = useState<string | null>(null);
   const { mutate: likeProperty } = useLikeProperty();
 
-  const handleHeartClick = (propertyId: string) => {
+  const handleHeartClick = (event: React.MouseEvent<HTMLDivElement>, propertyId: string) => {
+    event.preventDefault();
+    event.stopPropagation();
     setPropertyToRemove(propertyId);
     setShowModal(true);
   };
@@ -51,7 +53,6 @@ export default function MyFavorites() {
     setPropertyToRemove(null);
   };
 
-  // filter properties that have images and has valid image url
   const filteredProperties = filterProperties(userLikedProperties?.data);
   return (
     <div className='lg:p-8'>
@@ -87,14 +88,15 @@ export default function MyFavorites() {
             const features = getPropertyFeatures(property);
             return (
               <Link
-                href={`/property/${property.id}?property=${property.property.propertyTypeName.replaceAll(' ', '-').toLowerCase()}`}
+               
+                href={`/property/${property.id}?property=${property?.property?.propertyTypeName?.replaceAll(' ', '-').toLowerCase()}`}
                 key={property.id}
                 className='grid grid-cols-1 lg:grid-cols-4 bg-white rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 cursor-pointer transition w-full relative'
               >
                 {/* Image */}
                 <div className='flex-shrink-0 flex items-center mb-4 lg:mb-0 col-span-1'>
-                  <img
-                    src={property?.property?.images[0].imageUrl}
+                  <Image
+                    src={property?.property?.images[0]?.imageUrl}
                     alt={property?.property?.listingTitle}
                     width={240}
                     height={200}
@@ -114,28 +116,13 @@ export default function MyFavorites() {
                       ) || 'Price not available'}
                     </div>
                     <div className='text-lg lg:text-xl font-semibold mb-1 break-words'>
-                      {property.property.listingTitle || 'Title not available'}
+                      {property.property.listingTitle.length > 70
+                        ? property.property.listingTitle.slice(0, 70) + '...'
+                        : property.property.listingTitle || 'Title not available'}
                     </div>
                     {property?.property?.address && (
                       <div className='flex items-center text-gray-400 text-sm lg:text-base mb-1'>
-                        <svg
-                          className='w-4 h-4 lg:w-5 lg:h-5 mr-1'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          viewBox='0 0 24 24'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z'
-                          />
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M15 11a3 3 0 11-6 0 3 3 0 016 0z'
-                          />
-                        </svg>
+                        <MapPin className='w-4 h-4 lg:w-5 lg:h-5 mr-1' />
                         {property?.property?.address}
                       </div>
                     )}
@@ -212,19 +199,11 @@ export default function MyFavorites() {
                     </div>
                   </div>
                 </div>
-                {/* Heart Icon */}
                 <div
-                  className='absolute top-10 right-10 lg:top-6 lg:right-6 cursor-pointer bg-white p-3 rounded-full'
-                  onClick={() => handleHeartClick(property.property.id)}
+                  className='absolute sm:top-10 sm:right-10 lg:top-6 lg:right-6 cursor-pointer bg-white p-3 rounded-full shadow-xl'
+                  onClick={(e) => handleHeartClick(e, property.property.id)}
                 >
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='currentColor'
-                    viewBox='0 0 24 24'
-                    className='w-5 h-5 lg:w-7 lg:h-7 text-[#4B23A0]'
-                  >
-                    <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
-                  </svg>
+                  <Heart className='w-5 h-5 lg:w-7 lg:h-7 text-[#4B23A0] fill-current rounded-full p-1' />
                 </div>
               </Link>
             );
@@ -242,3 +221,5 @@ export default function MyFavorites() {
     </div>
   );
 }
+
+

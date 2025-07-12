@@ -15,6 +15,7 @@ interface PropertyTopBarProps {
   isSidebarOpen: boolean;
   onFilterClick: () => void;
   listingTypes: ListingType[];
+  currentView: View;
 }
 
 export default function PropertyTopBar({
@@ -22,13 +23,13 @@ export default function PropertyTopBar({
   onFilterClick,
   isSidebarOpen,
   listingTypes,
+  currentView,
 }: PropertyTopBarProps) {
   const { push } = useRouter();
   const params = useSearchParams();
   const { updateParams, getParam } = useUrlParams();
   const typeId = params.get('listingTypeId');
   const searchQuery = getParam('search');
-  const [view, setView] = useState<View>('list');
   const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>(searchQuery || '');
   const debouncedSearch = useDebounce(search, 500);
@@ -36,6 +37,7 @@ export default function PropertyTopBar({
   useEffect(() => {
     const paramsString = updateParams({
       search: debouncedSearch,
+      page: 1 // Always reset page to 1 on new search
     });
     push(`/property?${paramsString}`);
   }, [debouncedSearch, updateParams, push]);
@@ -45,13 +47,13 @@ export default function PropertyTopBar({
   };
 
   const handleViewChange = (newView: View) => {
-    setView(newView);
     onViewChange(newView);
   };
 
   const handleBuyOrRentChange = (listingTypeId: ListingType['id']) => {
     const paramsString = updateParams({
       listingTypeId: listingTypeId,
+      page: 1 // Always reset page to 1 on listing type change
     });
     push(`/property?${paramsString}`);
   };
@@ -99,7 +101,7 @@ export default function PropertyTopBar({
         <button
           className={cn(
             'h-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
-            view === 'list' ? 'bg-primary-main' : 'bg-transparent'
+            currentView === 'list' ? 'bg-primary-main' : 'bg-transparent'
           )}
           onClick={() => handleViewChange('list')}
         >
@@ -113,14 +115,14 @@ export default function PropertyTopBar({
           >
             <path
               d='M3 6.75C3.59674 6.75 4.16903 6.51295 4.59099 6.09099C5.01295 5.66903 5.25 5.09674 5.25 4.5C5.25 3.90326 5.01295 3.33097 4.59099 2.90901C4.16903 2.48705 3.59674 2.25 3 2.25C2.40326 2.25 1.83097 2.48705 1.40901 2.90901C0.987053 3.33097 0.75 3.90326 0.75 4.5C0.75 5.09674 0.987053 5.66903 1.40901 6.09099C1.83097 6.51295 2.40326 6.75 3 6.75ZM9 3C8.17031 3 7.5 3.67031 7.5 4.5C7.5 5.32969 8.17031 6 9 6H22.5C23.3297 6 24 5.32969 24 4.5C24 3.67031 23.3297 3 22.5 3H9ZM9 10.5C8.17031 10.5 7.5 11.1703 7.5 12C7.5 12.8297 8.17031 13.5 9 13.5H22.5C23.3297 13.5 24 12.8297 24 12C24 11.1703 23.3297 10.5 22.5 10.5H9ZM9 18C8.17031 18 7.5 18.6703 7.5 19.5C7.5 20.3297 8.17031 21 9 21H22.5C23.3297 21 24 20.3297 24 19.5C24 18.6703 23.3297 18 22.5 18H9ZM3 21.75C3.59674 21.75 4.16903 21.5129 4.59099 21.091C5.01295 20.669 5.25 20.0967 5.25 19.5C5.25 18.9033 5.01295 18.331 4.59099 17.909C4.16903 17.4871 3.59674 17.25 3 17.25C2.40326 17.25 1.83097 17.4871 1.40901 17.909C0.987053 18.331 0.75 18.9033 0.75 19.5C0.75 20.0967 0.987053 20.669 1.40901 21.091C1.83097 21.5129 2.40326 21.75 3 21.75ZM5.25 12C5.25 11.7045 5.1918 11.4119 5.07873 11.139C4.96566 10.866 4.79992 10.6179 4.59099 10.409C4.38206 10.2001 4.13402 10.0343 3.86104 9.92127C3.58806 9.8082 3.29547 9.75 3 9.75C2.70453 9.75 2.41194 9.8082 2.13896 9.92127C1.86598 10.0343 1.61794 10.2001 1.40901 10.409C1.20008 10.6179 1.03434 10.866 0.921271 11.139C0.808198 11.4119 0.75 11.7045 0.75 12C0.75 12.2955 0.808198 12.5881 0.921271 12.861C1.03434 13.134 1.20008 13.3821 1.40901 13.591C1.61794 13.7999 1.86598 13.9657 2.13896 14.0787C2.41194 14.1918 2.70453 14.25 3 14.25C3.29547 14.25 3.58806 14.1918 3.86104 14.0787C4.13402 13.9657 4.38206 13.7999 4.59099 13.591C4.79992 13.3821 4.96566 13.134 5.07873 12.861C5.1918 12.5881 5.25 12.2955 5.25 12Z'
-              fill={view === 'list' ? 'white' : 'black'}
+              fill={currentView === 'list' ? 'white' : 'black'}
             />
           </svg>
         </button>
         <button
           className={cn(
             'h-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
-            view === 'map' ? 'bg-primary-main' : 'bg-transparent'
+            currentView === 'map' ? 'bg-primary-main' : 'bg-transparent'
           )}
           onClick={() => handleViewChange('map')}
         >
@@ -134,7 +136,7 @@ export default function PropertyTopBar({
           >
             <path
               d='M26.5125 1.69688C26.8172 1.90782 27 2.2547 27 2.62501V18.375C27 18.8438 26.7094 19.2609 26.2734 19.425L18.3984 22.425C18.1547 22.5188 17.8875 22.5234 17.6437 22.4391L9.02344 19.5703L1.52344 22.4297C1.17656 22.5609 0.7875 22.5141 0.482813 22.3031C0.178125 22.0922 0 21.7453 0 21.375V5.62501C0 5.15626 0.285938 4.73907 0.726562 4.57501L8.60156 1.57501C8.84531 1.48126 9.1125 1.47657 9.35625 1.56095L17.9766 4.4297L25.4766 1.57032C25.8234 1.43907 26.2125 1.48595 26.5172 1.69688H26.5125ZM2.25 6.39845V19.7391L7.875 17.5969V4.25626L2.25 6.39845ZM16.875 19.8141V6.43595L10.125 4.18595V17.5641L16.875 19.8141ZM19.125 19.7438L24.75 17.6016V4.26095L19.125 6.39845V19.7391V19.7438Z'
-              fill={view === 'map' ? 'white' : 'black'}
+              fill={currentView === 'map' ? 'white' : 'black'}
             />
           </svg>
         </button>
