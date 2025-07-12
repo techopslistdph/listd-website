@@ -37,7 +37,7 @@ const ai = {
     }
   },
 
-  valuate: async (prompt: AiGeneratePrompt) => {
+  valuate: async (prompt: AiGeneratePrompt, userId: string) => {
     try {
       // First, generate the AI valuation
       const aiResponse = await ai.generate(prompt);
@@ -67,6 +67,14 @@ const ai = {
         manualValuationResult: aiResponse.data.valuation?.analysis,
         status: 'completed',
       };
+
+      if (!userId) {
+        return {
+          success: true,
+          data: valuationPayload,
+          message: 'Valuation completed',
+        };
+      }
 
       const valuationResponse = await api.post<ValuationResponse>(
         '/api/valuations',
@@ -107,6 +115,12 @@ export const useAiGenerate = () => {
 
 export const useAiValuate = () => {
   return useMutation({
-    mutationFn: (prompt: AiGeneratePrompt) => ai.valuate(prompt),
+    mutationFn: ({
+      prompt,
+      userId,
+    }: {
+      prompt: AiGeneratePrompt;
+      userId: string;
+    }) => ai.valuate(prompt, userId),
   });
 };

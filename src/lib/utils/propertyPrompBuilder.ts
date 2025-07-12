@@ -218,7 +218,7 @@ export function buildPropertyPrompt(
         : type === 'description'
           ? 'Generate a description for the property based on the context provided'
           : type === 'valuate'
-            ? `What is the estimated market value of this ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} ${propertyType.replaceAll('-', ' ')} in ${location}? Include rental potential analysis.`
+            ? `What is the estimated market value of this ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} ${propertyType.replaceAll('-', ' ')} in ${location}? Include rental potential analysis. Avoid giving 0php as the value.`
             : 'Generate content for the property based on the context provided'
       : request;
   return {

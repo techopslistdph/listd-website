@@ -40,17 +40,19 @@ export default function Tab({ userProfile }: { userProfile: UserProfile }) {
         </Link>
       </div>
 
-      <Tabs defaultValue='profile-information' className='w-full   '>
-        <TabsList className='md:overflow-x-hidden'>
-          <TabsTrigger value='profile-information'>
-            Profile Information
-          </TabsTrigger>
-          <TabsTrigger value='edit-profile'>Edit Profile</TabsTrigger>
-          <TabsTrigger value='my-listing'>My Listing</TabsTrigger>
-          <TabsTrigger value='my-valuation'>My Valuation</TabsTrigger>
-          <TabsTrigger value='my-favorites'>My Favorites</TabsTrigger>
-          <TabsTrigger value='login-security'>Login Security</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue='profile-information' className='w-full'>
+        <div className='w-full overflow-x-auto'>
+          <TabsList className='inline-flex min-w-max whitespace-nowrap'>
+            <TabsTrigger value='profile-information'>
+              Profile Information
+            </TabsTrigger>
+            <TabsTrigger value='edit-profile'>Edit Profile</TabsTrigger>
+            <TabsTrigger value='my-listing'>My Listing</TabsTrigger>
+            <TabsTrigger value='my-valuation'>My Valuation</TabsTrigger>
+            <TabsTrigger value='my-favorites'>My Favorites</TabsTrigger>
+            <TabsTrigger value='login-security'>Login Security</TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value='profile-information'>
           <ProfileInformation userProfile={userProfile} />
         </TabsContent>
