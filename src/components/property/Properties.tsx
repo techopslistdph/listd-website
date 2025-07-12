@@ -63,6 +63,7 @@ export function Properties({
           onViewChange={setView}
           isSidebarOpen={sidebarOpen}
           onFilterClick={() => setSidebarOpen(v => !v)}
+          currentView={view}
         />
       </div>
       {sidebarOpen && <PropertySidebar />}
@@ -74,6 +75,7 @@ export function Properties({
             isSidebarOpen={sidebarOpen}
             onFilterClick={() => setSidebarOpen(v => !v)}
             onViewChange={setView}
+            currentView={view}
           />
         </div>
         {!properties.success && (
@@ -98,12 +100,23 @@ export function Properties({
         {/* Property Cards Grid */}
         {filteredProperties?.length === 0 ? (
           <>
-            <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filteredProperties} minHeight='480px' />
+          <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
+            <Image
+              src={'/images/icons/empty.svg'}
+              alt='Error loading properties'
+              width={150}
+              height={50}
+              className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+            />
+            <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+              {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
             </div>
-            <div className='text-center text-gray-500 py-20 text-lg'>
-              No properties found matching your filters.
+            <div className='text-sm lg:text-base text-gray-400 text-center'>
+              {
+                'Please check your spelling or adjust your filters and try again.'
+              }
             </div>
+          </div>
           </>
         ) : view === 'list' ? (
           <div className='flex flex-col gap-8'>
