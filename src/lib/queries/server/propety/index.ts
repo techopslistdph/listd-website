@@ -59,9 +59,13 @@ const getHouseAndLots = async (
       api.setAuthToken(token);
     }
 
+
     const response = await api.get<PropertyListResponse | ErrorResponse>(
       `${API_ENDPOINTS.houseAndLot.list}?${queryParams}`
     );
+
+   
+
     if ('error' in response) {
       return {
         success: false,

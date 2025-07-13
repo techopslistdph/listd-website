@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View } from '@/components/property/Properties';
 import { ListingType } from '@/lib/queries/server/home/type';
 import { useSearchParams } from 'next/navigation';
@@ -8,7 +8,6 @@ import { useRouter } from 'nextjs-toploader/app';
 
 import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { useDebounce } from '@/hooks/useDebounce';
 
 interface PropertyTopBarProps {
   onViewChange: (view: View) => void;
@@ -32,18 +31,21 @@ export default function PropertyTopBar({
   const searchQuery = getParam('search');
   const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>(searchQuery || '');
-  const debouncedSearch = useDebounce(search, 500);
 
-  useEffect(() => {
-    const paramsString = updateParams({
-      search: debouncedSearch,
-      page: 1 // Always reset page to 1 on new search
-    });
-    push(`/property?${paramsString}`);
-  }, [debouncedSearch, updateParams, push]);
+  
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const paramsString = updateParams({
+        search: search,
+        page: 1
+      });
+      push(`/property?${paramsString}`);
+    }
   };
 
   const handleViewChange = (newView: View) => {
@@ -150,6 +152,7 @@ export default function PropertyTopBar({
           className='w-full bg-transparent outline-none text-neutral-text text-base font-light'
           value={search || ''}
           onChange={handleSearchChange}
+          onKeyDown={handleSearchKeyDown}
         />
         <svg
           xmlns='http://www.w3.org/2000/svg'

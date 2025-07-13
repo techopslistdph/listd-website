@@ -57,7 +57,7 @@ export function PropertyPagination({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className={cn(
-          'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+          'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer',
           'border border-neutral-mid/20 bg-white hover:bg-neutral-light',
           'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white',
           'text-neutral-main hover:text-neutral-text'
@@ -89,7 +89,7 @@ export function PropertyPagination({
               key={pageNumber}
               onClick={() => onPageChange(pageNumber)}
               className={cn(
-                'w-10 h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-all',
+                'w-10 h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-all cursor-pointer',
                 isActive
                   ? 'bg-primary-main text-white shadow-sm'
                   : 'text-neutral-main hover:bg-neutral-light hover:text-neutral-text border border-neutral-mid/20 bg-white'
@@ -106,7 +106,7 @@ export function PropertyPagination({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className={cn(
-          'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+          'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer',
           'border border-neutral-mid/20 bg-white hover:bg-neutral-light',
           'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white',
           'text-neutral-main hover:text-neutral-text'

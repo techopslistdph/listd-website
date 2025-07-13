@@ -299,7 +299,7 @@ export function PropertyImages({
           onClick={() => openGallery(0)}
         >
           <img
-            src={mainImage.imageUrl}
+            src={mainImage?.imageUrl}
             alt={title}
             className='object-cover transition duration-300 group-hover:scale-105 h-full w-full'
             sizes='50vw'

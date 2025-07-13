@@ -86,7 +86,7 @@ export const getSelectedData = (
           ) || 'N/A',
         image:
           (draftConversation.property.property as any)?.imageUrl ||
-          draftConversation.property.property.images[0].imageUrl ||
+          draftConversation.property.property.images[0]?.imageUrl ||
           '',
       },
       messages: [], // No messages for draft conversation
