@@ -137,7 +137,7 @@ export default function MessagePage() {
               draftConversation.property.property?.listingTitle || 'Property',
             image:
               (draftConversation.property.property as any)?.imageUrl ||
-              draftConversation.property.property.images[0].imageUrl ||
+              draftConversation.property.property.images[0]?.imageUrl ||
               '',
           },
           lastMessage: 'Start a conversation...',
@@ -191,7 +191,7 @@ export default function MessagePage() {
           ) || 'N/A',
         image:
           (draftConversation?.property.property as any)?.imageUrl ||
-          draftConversation?.property.property.images[0].imageUrl ||
+          draftConversation?.property.property.images[0]?.imageUrl ||
           '',
       },
       messages: [

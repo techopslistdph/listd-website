@@ -13,7 +13,8 @@ import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { filterProperties } from '@/lib/utils/filterProperty';
 import { PropertyPagination } from './PropertyPagination';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useUrlParams } from '@/hooks/useUrlParams';
 
 export type View = 'list' | 'map';
 
@@ -30,21 +31,19 @@ export function Properties({
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user } = useUser();
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  console.log({properties: properties.data.meta})
+  const { updateParams } = useUrlParams();
 
 
   const filteredProperties = filterProperties(properties?.data?.data || []);
+
+  console.log({filteredProperties})
+
   const currentPage = properties?.data?.meta?.page || 1;
   const totalPages = properties?.data?.meta?.totalPages || 1;
 
   const handlePageChange = (page: number) => {
-    // Update the page param in the URL
-    const params = new URLSearchParams(searchParams?.toString() || '')
-    params.set('page', String(page))
-    router.push(`?${params.toString()}`)
-    // Scroll to top when page changes
+    const params = updateParams({ page: page })
+    router.push(`/property?${params}`)
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

@@ -141,6 +141,8 @@ const PropertySidebar = () => {
         'maxLongitude',
         'amenityIds',
         'featureIds',
+        'page',
+        'search',
       ]);
       router.push(`/property?${params}`);
     } finally {
