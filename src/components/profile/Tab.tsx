@@ -5,7 +5,7 @@ import Image from 'next/image';
 import profileImage from '@/../public/images/profile.png';
 import verifiedIcon from '@/../public/images/icons/verified.png';
 import EditProfile from './EditProfile';
-import MyListing from './MyListing';
+import MyListing from './my-listing';
 import ValuationListing from './ValuationListing';
 import LoginSecurity from './LoginSecurity';
 import MyFavorites from './MyFavorites';
