@@ -302,7 +302,16 @@ export const getProperties = async (
     }
   });
 
-
+  // delete params if exists 
+  // Max Latitute
+  if (queryParams.get('maxLatitude') && queryParams.get('minLatitude')) {
+    queryParams.delete('maxLatitude');
+    queryParams.delete('minLatitude');
+  }
+  if (queryParams.get('maxLongitude') && queryParams.get('minLongitude')) {
+    queryParams.delete('maxLongitude');
+    queryParams.delete('minLongitude');
+  }
 
   try {
     const response = (await fetchProperties(
