@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { User } from '@clerk/nextjs/server';
 import { draftConversation } from '@/lib/utils/draftConversation';
 import { Button } from '../ui/button';
+import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 
 export default function PropertyCard({
   propertyDetail,
@@ -48,6 +49,7 @@ export default function PropertyCard({
 
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const { mutate: likeProperty } = useLikeProperty();
+  const { data: currentUser } = useGetProfile();
 
   const handleLikeProperty = () => {
     if (!user) {
@@ -181,35 +183,37 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {propertyOwner?.id && (
-              <button
-                className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold cursor-pointer'
-                onClick={() => {
-                  // Validate IDs before creating draft
-                  if (!propertyOwner?.id) {
-                    console.error('Property Owner ID not available');
-                    return;
-                  }
+            {currentUser &&
+              propertyOwner?.id &&
+              currentUser?.data?.id !== propertyOwner?.id && (
+                <button
+                  className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold cursor-pointer'
+                  onClick={() => {
+                    // Validate IDs before creating draft
+                    if (!propertyOwner?.id) {
+                      console.error('Property Owner ID not available');
+                      return;
+                    }
 
-                  if (!propertyDetail.property?.id) {
-                    console.error('Property ID not available');
-                    return;
-                  }
+                    if (!propertyDetail.property?.id) {
+                      console.error('Property ID not available');
+                      return;
+                    }
 
-                  draftConversation(
-                    propertyDetail.property.propertyOwner,
-                    propertyDetail
-                  );
-                }}
-              >
-                <Link
-                  href='/message'
-                  className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                    draftConversation(
+                      propertyDetail.property.propertyOwner,
+                      propertyDetail
+                    );
+                  }}
                 >
-                  Direct Message
-                </Link>
-              </button>
-            )}
+                  <Link
+                    href='/message'
+                    className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                  >
+                    Direct Message
+                  </Link>
+                </button>
+              )}
           </div>
         </div>
       </div>
@@ -300,37 +304,39 @@ export default function PropertyCard({
                 Whatsapp
               </a>
             )}
-            {propertyOwner?.id && (
-              <>
-                <Button
-                  className='bg-primary-main flex-1 text-white rounded-full hover:bg-primary-main'
-                  onClick={() => {
-                    // Validate IDs before creating draft
-                    if (!propertyOwner?.id) {
-                      console.error('Property Owner ID not available');
-                      return;
-                    }
+            {currentUser &&
+              propertyOwner?.id &&
+              currentUser?.data?.id !== propertyOwner?.id && (
+                <>
+                  <Button
+                    className='bg-primary-main flex-1 text-white rounded-full hover:bg-primary-main'
+                    onClick={() => {
+                      // Validate IDs before creating draft
+                      if (!propertyOwner?.id) {
+                        console.error('Property Owner ID not available');
+                        return;
+                      }
 
-                    if (!propertyDetail.property?.id) {
-                      console.error('Property ID not available');
-                      return;
-                    }
+                      if (!propertyDetail.property?.id) {
+                        console.error('Property ID not available');
+                        return;
+                      }
 
-                    draftConversation(
-                      propertyDetail.property.propertyOwner,
-                      propertyDetail
-                    );
-                  }}
-                >
-                  <Link
-                    href='/message'
-                    className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                      draftConversation(
+                        propertyDetail.property.propertyOwner,
+                        propertyDetail
+                      );
+                    }}
                   >
-                    Direct Message
-                  </Link>
-                </Button>
-              </>
-            )}
+                    <Link
+                      href='/message'
+                      className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
+                    >
+                      Direct Message
+                    </Link>
+                  </Button>
+                </>
+              )}
           </div>
         </div>
       </div>
