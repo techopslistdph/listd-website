@@ -61,6 +61,7 @@ export default async function PropertyPage({
     email: scrapeContactInfo?.email || '',
     isVerified: true,
     position: scrapeContactInfo?.agencyName || 'Real Estate Agent',
+    avatarUrl: scrapeContactInfo?.avatarUrl || '',
   };
 
   return (

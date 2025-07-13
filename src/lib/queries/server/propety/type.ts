@@ -154,6 +154,7 @@ interface ScrapeContactInfo {
   extractedAt: string;
   phoneNumber: string;
   email: string;
+  avatarUrl: string;
 }
 
 export interface PropertyImage {

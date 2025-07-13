@@ -32,18 +32,15 @@ export function Properties({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  console.log({properties: properties.data.meta})
-
-
   const filteredProperties = filterProperties(properties?.data?.data || []);
   const currentPage = properties?.data?.meta?.page || 1;
   const totalPages = properties?.data?.meta?.totalPages || 1;
 
   const handlePageChange = (page: number) => {
     // Update the page param in the URL
-    const params = new URLSearchParams(searchParams?.toString() || '')
-    params.set('page', String(page))
-    router.push(`?${params.toString()}`)
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    params.set('page', String(page));
+    router.push(`?${params.toString()}`);
     // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -93,23 +90,23 @@ export function Properties({
         {/* Property Cards Grid */}
         {filteredProperties?.length === 0 && (
           <>
-          <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
-            <Image
-              src={'/images/icons/empty.svg'}
-              alt='Error loading properties'
-              width={150}
-              height={50}
-              className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
-            />
-            <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
-              {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
+            <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
+              <Image
+                src={'/images/icons/empty.svg'}
+                alt='Error loading properties'
+                width={150}
+                height={50}
+                className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+              />
+              <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+                {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
+              </div>
+              <div className='text-sm lg:text-base text-gray-400 text-center'>
+                {
+                  'Please check your spelling or adjust your filters and try again.'
+                }
+              </div>
             </div>
-            <div className='text-sm lg:text-base text-gray-400 text-center'>
-              {
-                'Please check your spelling or adjust your filters and try again.'
-              }
-            </div>
-          </div>
           </>
         )}
         {view === 'list' ? (

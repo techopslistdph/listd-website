@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import { draftConversation } from '@/lib/utils/draftConversation';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 
 interface Agent {
   name: string;
@@ -15,6 +16,7 @@ interface Agent {
   email: string;
   isVerified: boolean;
   position: string;
+  avatarUrl: string;
 }
 
 interface AgentCardProps {
@@ -28,13 +30,14 @@ export function AgentCard({
   propertyDetail,
   propertyOwnerId,
 }: AgentCardProps) {
+  const { data: currentUser } = useGetProfile();
   return (
     <div className='sticky top-5'>
       <div className='rounded-lg border p-4 flex flex-col  gap-2'>
         <div className='flex items-center gap-2'>
           <Avatar className='size-[60px]'>
-            {agent?.image && (
-              <AvatarImage src={agent?.image?.src} alt={agent?.name} />
+            {agent?.avatarUrl && (
+              <AvatarImage src={agent?.avatarUrl} alt={agent?.name} />
             )}
             <AvatarFallback className='bg-primary-main text-white text-lg'>
               {agent?.name?.charAt(0).toUpperCase()}
@@ -58,32 +61,34 @@ export function AgentCard({
             Whatsapp
           </a>
         )}
-        {propertyOwnerId && (
-          <div>
-            <Button
-              className='w-full mt-2 py-6 text-base rounded-full hover:bg-primary-main bg-primary-main text-white text-center font-semibold'
-              onClick={() => {
-                // Validate IDs before creating draft
-                if (!propertyOwnerId) {
-                  console.error('Property Owner ID not available');
-                  return;
-                }
+        {currentUser &&
+          propertyOwnerId &&
+          currentUser?.data?.id !== propertyOwnerId && (
+            <div>
+              <Button
+                className='w-full mt-2 py-6 text-base rounded-full hover:bg-primary-main bg-primary-main text-white text-center font-semibold'
+                onClick={() => {
+                  // Validate IDs before creating draft
+                  if (!propertyOwnerId) {
+                    console.error('Property Owner ID not available');
+                    return;
+                  }
 
-                if (!propertyDetail.property?.id) {
-                  console.error('Property ID not available');
-                  return;
-                }
+                  if (!propertyDetail.property?.id) {
+                    console.error('Property ID not available');
+                    return;
+                  }
 
-                draftConversation(
-                  propertyDetail.property.propertyOwner,
-                  propertyDetail
-                );
-              }}
-            >
-              <Link href={`/message`}>Direct Message</Link>
-            </Button>
-          </div>
-        )}
+                  draftConversation(
+                    propertyDetail.property.propertyOwner,
+                    propertyDetail
+                  );
+                }}
+              >
+                <Link href={`/message`}>Direct Message</Link>
+              </Button>
+            </div>
+          )}
       </div>
     </div>
   );

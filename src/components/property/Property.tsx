@@ -42,6 +42,7 @@ export default function Property({
     email: string;
     isVerified: boolean;
     position: string;
+    avatarUrl: string;
   };
   listingDescription: string;
   userId: string;

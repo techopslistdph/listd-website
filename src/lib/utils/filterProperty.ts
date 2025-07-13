@@ -1,7 +1,6 @@
 import { PropertyDetail, PropertyImage } from '../queries/server/propety/type';
 
 export const filterProperties = (properties: PropertyDetail[]) => {
-  console.log({properties})
   return properties?.filter((property: PropertyDetail) => {
     // Check if property has images
     if (property?.property?.images?.length === 0) {
