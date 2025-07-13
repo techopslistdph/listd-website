@@ -139,7 +139,6 @@ export const useListingSubmission = (
         }),
       };
 
-      console.log(listingData);
       // Submit the listing with image upload functionality
       listMyProperty(
         {

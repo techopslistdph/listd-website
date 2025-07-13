@@ -38,7 +38,6 @@ export default async function PropertyPage({
       </div>
     );
 
-  console.log(propertyDetail.data);
   const {
     property: {
       images,
