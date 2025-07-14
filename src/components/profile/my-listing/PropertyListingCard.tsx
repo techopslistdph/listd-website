@@ -1,56 +1,53 @@
 /* eslint-disable @next/next/no-img-element */
-import Image from 'next/image'
-import { PhoneIcon } from 'lucide-react'
-import { PropertyDetail } from '@/lib/queries/server/propety/type'
-import { Button } from '../../ui/button'
-import PropertyFeatures from './PropertyFeatures'
-import verified from '@/../public/images/icons/verified.png'
-import placeholderImg from '../../../../public/images/placeholder-image.png'
+import Image from 'next/image';
+import { PhoneIcon } from 'lucide-react';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import { Button } from '../../ui/button';
+import PropertyFeatures from './PropertyFeatures';
+import verified from '@/../public/images/icons/verified.png';
+import placeholderImg from '../../../../public/images/placeholder-image.png';
+import { usePublishListing } from '@/lib/queries/hooks/use-property';
 
 interface PropertyListingCardProps {
-  property: PropertyDetail
+  property: PropertyDetail;
   features: {
-    numberOfBedrooms?: number | null
-    numberOfBathrooms?: number | null
-    floorArea?: number | null
-    lotSize?: number | null
-  }
-  onCardClick: () => void
-  onDelete: (id: string, propertyType: string) => void
-  onEdit: (property: PropertyDetail) => void
+    numberOfBedrooms?: number | null;
+    numberOfBathrooms?: number | null;
+    floorArea?: number | null;
+    lotSize?: number | null;
+  };
+  onCardClick: () => void;
+  onEdit: (property: PropertyDetail) => void;
 }
 
 export default function PropertyListingCard({
   property,
   features,
   onCardClick,
-  onDelete,
-  onEdit
+  onEdit,
 }: PropertyListingCardProps) {
-  const isDraft = property.property.isDraft
-  const listingType = property.property.listingTypeName
-
+  const isDraft = property.property.isDraft;
+  const listingType = property.property.listingTypeName;
+  const { mutate: publishListing } = usePublishListing();
   const getListingTypeStyle = () => {
     switch (listingType) {
       case 'Buy':
-        return 'bg-green-100 text-green-600'
+        return 'bg-green-100 text-green-600';
       case 'Rent':
-        return 'bg-primary-light text-primary-main'
+        return 'bg-primary-light text-primary-main';
       default:
-        return 'bg-gray-200 text-gray-500'
+        return 'bg-gray-200 text-gray-500';
     }
-  }
+  };
 
   const getListingTypeLabel = () => {
-    return listingType === 'Buy' ? 'For Sale' : 'For Rent'
-  }
+    return listingType === 'Buy' ? 'For Sale' : 'For Rent';
+  };
 
   return (
     <div
-      className={`grid grid-cols-1 lg:grid-cols-4 bg-white rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 transition w-full ${
-        !isDraft ? 'cursor-pointer' : ''
-      }`}
-      onClick={!isDraft ? onCardClick : undefined}
+      className={`grid grid-cols-1 lg:grid-cols-4 bg-white rounded-3xl shadow-2xl shadow-[#F7EFFD] p-4 lg:p-6 transition w-full cursor-pointer`}
+      onClick={onCardClick}
     >
       {/* Property Image */}
       <div className='flex-shrink-0 flex items-center mb-4 lg:mb-0 col-span-1'>
@@ -80,7 +77,7 @@ export default function PropertyListingCard({
             <div className='text-[#4B23A0] font-bold text-xl lg:text-2xl mb-1'>
               {property.property.listingPrice.toLocaleString('en-US', {
                 style: 'currency',
-                currency: 'PHP'
+                currency: 'PHP',
               }) || 'Price not available'}
             </div>
           )}
@@ -132,25 +129,28 @@ export default function PropertyListingCard({
         {/* Features and Actions */}
         <div className='flex flex-wrap gap-4 justify-between text-gray-400 text-sm lg:text-base'>
           <PropertyFeatures features={features} />
-          
+
           {/* Draft Actions */}
           {isDraft && (
             <div className='flex justify-end mt-2 gap-2 items-end'>
               <Button
                 variant='outline'
-                className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer'
+                className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer z-50'
                 type='button'
-                onClick={() =>
-                  onDelete(property.id, property.property.propertyTypeName)
-                }
+                onClick={() => {
+                  publishListing({
+                    propertyId: property.id,
+                    propertyType: property.property.propertyTypeName,
+                  });
+                }}
               >
-                Delete
+                Publish
               </Button>
               <Button
                 type='button'
                 onClick={(e: React.MouseEvent) => {
-                  e.stopPropagation()
-                  onEdit(property)
+                  e.stopPropagation();
+                  onEdit(property);
                 }}
                 className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer'
               >
@@ -161,5 +161,5 @@ export default function PropertyListingCard({
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

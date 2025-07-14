@@ -82,11 +82,6 @@ export default function MyListing({
     );
   }
 
-  const handleDelete = (id: string, propertyType: string) => {
-    setPropertyToDelete({ id, propertyType });
-    setDeleteDialogOpen(true);
-  };
-
   const handleCancel = () => {
     setDeleteDialogOpen(false);
     setPropertyToDelete(null);
@@ -147,7 +142,6 @@ export default function MyListing({
                 property={property}
                 features={features}
                 onCardClick={() => setSelectedListing(property)}
-                onDelete={handleDelete}
                 onEdit={handleEdit}
               />
             );

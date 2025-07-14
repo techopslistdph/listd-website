@@ -9,6 +9,7 @@ import {
   PropertyLikeResponse,
   PropertyListResponse,
 } from '../server/propety/type';
+import { toast } from 'sonner';
 
 const property = {
   getNearbyProperties: async (location: {
@@ -238,6 +239,53 @@ const property = {
           success: false,
           data: null,
           message: error.message,
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        message: 'An unexpected error occurred',
+      };
+    }
+  },
+
+  publishListing: async (propertyId: string, propertyType: string) => {
+    try {
+      const endpointMap = {
+        condominium: `/api/condominiums/${propertyId}/publish`,
+        'house and lot': `/api/house-and-lots/${propertyId}/publish`,
+        warehouse: `/api/warehouses/${propertyId}/publish`,
+        'vacant lot': `/api/vacant-lots/${propertyId}/publish`,
+      };
+
+      const endpoint =
+        endpointMap[propertyType.toLowerCase() as keyof typeof endpointMap];
+      if (!endpoint) {
+        return {
+          success: false,
+          data: null,
+          message: `Invalid property type: ${propertyType}`,
+        };
+      }
+      const response = await api.post<PropertyListResponse>(endpoint);
+      if ('error' in response) {
+        return {
+          success: false,
+          data: null,
+          message: response?.error?.message || 'An unexpected error occurred',
+        };
+      }
+      return {
+        success: false,
+        data: null,
+        message: 'An unexpected error occurred',
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return {
+          success: false,
+          data: null,
+          message: 'An unexpected error occurred',
         };
       }
       return {
@@ -532,6 +580,26 @@ export const useDeleteProperty = () => {
     },
     onSuccess: () => {
       // Invalidate user liked properties
+      queryClient.invalidateQueries({
+        queryKey: ['userListings'],
+      });
+    },
+  });
+};
+
+export const usePublishListing = () => {
+  return useMutation({
+    mutationFn: async ({
+      propertyId,
+      propertyType,
+    }: {
+      propertyId: string;
+      propertyType: string;
+    }) => {
+      return property.publishListing(propertyId, propertyType);
+    },
+    onSuccess: () => {
+      toast.success('Listing published successfully');
       queryClient.invalidateQueries({
         queryKey: ['userListings'],
       });
