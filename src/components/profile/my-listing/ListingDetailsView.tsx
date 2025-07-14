@@ -1,13 +1,12 @@
- 
- 
 import React from 'react';
 import 'swiper/css';
 
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ArrowLeft } from 'lucide-react';
-import { PropertyImages } from '../listing/PropertyImages';
-import PropertyDetailsDisplay from '../listing/PropertyDetailsDisplay';
-import { Button } from '../ui/button';
+
+import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
+import { PropertyImages } from '@/components/listing/PropertyImages';
+import { Button } from '@/components/ui/button';
 
 interface ListingDetailsViewProps {
   listing: PropertyDetail;
@@ -170,7 +169,6 @@ export default function ListingDetailsView({
         >
           Update Status
         </Button>
-     
       </div>
     </div>
   );

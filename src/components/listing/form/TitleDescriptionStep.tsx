@@ -19,6 +19,7 @@ interface TitleDescriptionStepProps {
   onDraft: () => void;
   form: UseFormReturn<ListingFormData>;
   isSubmitting: boolean;
+  isEditing?: boolean;
 }
 
 export function TitleDescriptionStep({
@@ -26,6 +27,7 @@ export function TitleDescriptionStep({
   onDraft,
   form,
   isSubmitting,
+  isEditing = false,
 }: TitleDescriptionStepProps) {
   const [titleGenerated, setTitleGenerated] = useState<string | null>(null);
   const [descriptionGenerated, setDescriptionGenerated] = useState<
@@ -156,11 +158,13 @@ export function TitleDescriptionStep({
           </div>
         </div>
       </div>
-      <ActionButtons
-        onDraft={onDraft}
-        onNext={onNext}
-        isLoading={isSubmitting}
-      />
+      {!isEditing && (
+        <ActionButtons
+          onDraft={onDraft}
+          onNext={onNext}
+          isLoading={isSubmitting}
+        />
+      )}
     </div>
   );
 }

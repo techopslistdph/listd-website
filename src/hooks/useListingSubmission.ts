@@ -7,13 +7,17 @@ import { CreateListingRequest } from '@/lib/queries/server/propety/type';
 
 export const useListingSubmission = (
   data: ListingFormData,
-  onNext: () => void
+  onNext?: () => void
 ) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useUser();
   const { mutate: listMyProperty } = useListMyProperty();
 
-  const handleSubmit = async (isDraft: boolean = false) => {
+  const handleSubmit = async (
+    isDraft: boolean = false,
+    isEditing: boolean = false,
+    propertyId?: string
+  ) => {
     try {
       setIsSubmitting(true);
       if (!user) {
@@ -27,9 +31,12 @@ export const useListingSubmission = (
         ...(data?.street && { streetAddress: data?.street }),
         ...(data?.barangay && { barangayId: data?.barangay }),
         ...(data?.city && { cityId: data?.city }),
+        ...(data?.street && { streetAddress: data?.street }),
         ...(data?.city &&
-          data?.barangay && {
-            streetAddress: `${data?.city}, ${data?.barangay}`,
+          data?.barangay &&
+          data?.street &&
+          data?.state && {
+            address: `${data?.city}, ${data?.barangay}, ${data?.street}, ${data?.state}`,
           }),
         ...(data?.state && { region: data?.state }),
         ...(data?.images && { photos: data?.images }),
@@ -70,6 +77,7 @@ export const useListingSubmission = (
           ...(data?.ceilingHeight && {
             ceilingHeight: parseInt(data?.ceilingHeight),
           }),
+          ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),
           }),
@@ -144,6 +152,8 @@ export const useListingSubmission = (
         {
           data: listingData,
           propertyType: data.propertyType,
+          isEditing,
+          propertyId,
         },
         {
           onSuccess: result => {
@@ -151,24 +161,37 @@ export const useListingSubmission = (
               toast.success(
                 isDraft
                   ? 'Listing saved as draft'
-                  : 'Listing created successfully'
+                  : isEditing
+                    ? 'Listing updated successfully'
+                    : 'Listing created successfully'
               );
-              onNext(); // This will show the ResultsStep
+              onNext?.(); // This will show the ResultsStep
             } else {
-              toast.error(result.message || 'Failed to create listing');
+              toast.error(
+                result.message ||
+                  (isEditing
+                    ? 'Failed to update listing'
+                    : 'Failed to create listing')
+              );
             }
             setIsSubmitting(false);
           },
           onError: error => {
             console.error('Error creating listing:', error);
-            toast.error('Failed to create listing');
+            toast.error(
+              isEditing
+                ? 'Failed to update listing'
+                : 'Failed to create listing'
+            );
             setIsSubmitting(false);
           },
         }
       );
     } catch (error) {
       console.error('Error creating listing:', error);
-      toast.error('Failed to create listing');
+      toast.error(
+        isEditing ? 'Failed to update listing' : 'Failed to create listing'
+      );
       setIsSubmitting(false);
     }
   };

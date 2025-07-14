@@ -16,6 +16,7 @@ interface PaymentStepProps {
   handleSubmit: () => void;
   isSubmitting: boolean;
   form: UseFormReturn<ListingFormData>;
+  isEditing?: boolean;
 }
 
 export function PaymentStep({
@@ -25,6 +26,7 @@ export function PaymentStep({
   handleSubmit,
   onDraft,
   isSubmitting,
+  isEditing = false,
 }: PaymentStepProps) {
   return (
     <div className='bg-white'>
@@ -110,12 +112,14 @@ export function PaymentStep({
           />
         </div>
       </div>
-      <ActionButtons
-        onDraft={onDraft}
-        onNext={handleSubmit}
-        onBack={onBack}
-        isLoading={isSubmitting}
-      />
+      {!isEditing && (
+        <ActionButtons
+          onDraft={onDraft}
+          onNext={handleSubmit}
+          onBack={onBack}
+          isLoading={isSubmitting}
+        />
+      )}
     </div>
   );
 }

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Eye, ArrowLeft } from 'lucide-react';
-import ListingDetailsView from './ListingDetailsView';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
-import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
-import ConfirmationDialog from './ConfirmationDialog';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { useDeleteProperty } from '@/lib/queries/hooks/use-property';
 import { toast } from 'sonner';
+import ListingDetailsView from './ListingDetailsView';
+import ConfirmationDialog from '../ConfirmationDialog';
+import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
 
 interface ListingAnalyticsViewProps {
   listing: PropertyDetail;

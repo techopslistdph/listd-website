@@ -279,11 +279,6 @@ export const useLikeProperty = () => {
       queryClient.invalidateQueries({
         queryKey: ['userLikedProperties'],
       });
-
-      // Invalidate general properties queries
-      queryClient.invalidateQueries({
-        queryKey: ['properties'],
-      });
     },
   });
 };
@@ -303,26 +298,46 @@ export const useListMyProperty = () => {
     mutationFn: async ({
       data,
       propertyType,
+      isEditing = false,
+      propertyId,
     }: {
       data: CreateListingRequest;
       propertyType: string;
+      isEditing?: boolean;
+      propertyId?: string;
     }) => {
       try {
         const isDraft = data.isDraft;
 
+        if (isEditing && !propertyId) {
+          return {
+            success: false,
+            data: null,
+            message: 'Property ID is required',
+          };
+        }
+
         const endpointMap = {
-          condominium: isDraft
-            ? '/api/condominiums/draft'
-            : '/api/condominiums/complete',
-          'house and lot': isDraft
-            ? '/api/house-and-lots/draft'
-            : '/api/house-and-lots/complete',
-          warehouse: isDraft
-            ? '/api/warehouses/draft'
-            : '/api/warehouses/complete',
-          'vacant lot': isDraft
-            ? '/api/vacant-lots/draft'
-            : '/api/vacant-lots/complete',
+          condominium: isEditing
+            ? `/api/condominiums/${propertyId}`
+            : isDraft
+              ? '/api/condominiums/draft'
+              : '/api/condominiums/complete',
+          'house and lot': isEditing
+            ? `/api/house-and-lots/${propertyId}`
+            : isDraft
+              ? '/api/house-and-lots/draft'
+              : '/api/house-and-lots/complete',
+          warehouse: isEditing
+            ? `/api/warehouses/${propertyId}`
+            : isDraft
+              ? '/api/warehouses/draft'
+              : '/api/warehouses/complete',
+          'vacant lot': isEditing
+            ? `/api/vacant-lots/${propertyId}`
+            : isDraft
+              ? '/api/vacant-lots/draft'
+              : '/api/vacant-lots/complete',
         };
 
         const endpoint =
@@ -372,18 +387,37 @@ export const useListMyProperty = () => {
 
         // Upload images first
         const imageUploadPromises = data?.photos?.map(
-          async (file: File, index: number) => {
-            const uploadResult = await property.uploadImage(file);
-            if (!uploadResult.success) {
-              throw new Error(
-                `Failed to upload image: ${uploadResult.message}`
-              );
+          async (
+            item: File | { id: string; imageUrl: string },
+            index: number
+          ) => {
+            // If it's a File, upload it
+            if (item instanceof File) {
+              const uploadResult = await property.uploadImage(item);
+              if (!uploadResult.success) {
+                throw new Error(
+                  `Failed to upload image: ${uploadResult.message}`
+                );
+              }
+              return {
+                url: uploadResult.data,
+                caption: item?.name,
+                order: index + 1,
+              };
             }
-            return {
-              url: uploadResult.data,
-              caption: file?.name,
-              order: index + 1,
-            };
+
+            // If it's an existing image object, just return it with updated order
+            if (typeof item === 'object' && 'imageUrl' in item) {
+              return {
+                url: item.imageUrl,
+                caption: item.id, // or you can use a different caption
+                order: index + 1,
+                id: item.id, // preserve the original ID
+              };
+            }
+
+            // Fallback for unexpected types
+            throw new Error('Invalid image item type');
           }
         );
 
@@ -400,10 +434,19 @@ export const useListMyProperty = () => {
           }),
           photos: uploadedImages,
         };
-        const response = await api.post<PropertyListResponse>(
-          `${endpoint}`,
-          listingDataWithUrls
-        );
+
+        let response;
+        if (isEditing) {
+          response = await api.put<PropertyListResponse>(
+            `${endpoint}`,
+            listingDataWithUrls
+          );
+        } else {
+          response = await api.post<PropertyListResponse>(
+            `${endpoint}`,
+            listingDataWithUrls
+          );
+        }
         if ('error' in response) {
           return {
             success: false,
@@ -429,7 +472,7 @@ export const useListMyProperty = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['properties'],
+        queryKey: ['userListings'],
       });
     },
   });

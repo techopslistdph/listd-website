@@ -53,6 +53,7 @@ export function PropertySpecificFields({
   nearbyLocations,
 }: PropertySpecificFieldsProps) {
   const propertyType = form.getValues('propertyType');
+
   switch (propertyType) {
     case 'Condominium':
       return (

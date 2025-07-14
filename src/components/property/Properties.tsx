@@ -33,17 +33,14 @@ export function Properties({
   const router = useRouter();
   const { updateParams } = useUrlParams();
 
-
   const filteredProperties = filterProperties(properties?.data?.data || []);
-
-  console.log({filteredProperties})
 
   const currentPage = properties?.data?.meta?.page || 1;
   const totalPages = properties?.data?.meta?.totalPages || 1;
 
   const handlePageChange = (page: number) => {
-    const params = updateParams({ page: page })
-    router.push(`/property?${params}`)
+    const params = updateParams({ page: page });
+    router.push(`/property?${params}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
