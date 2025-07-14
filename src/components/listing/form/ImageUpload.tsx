@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import uploadIcon from '@/../public/images/icons/upload.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 
 interface ImageUploadProps {
@@ -14,15 +14,23 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (!value || value.length === 0) {
+      setPreviews([]);
+      return;
+    }
+    const urls = value.map(file => URL.createObjectURL(file));
+    setPreviews(urls);
+    return () => {
+      urls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [value]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
       const newFiles = [...value, ...files];
       onChange(newFiles);
-
-      // Create preview URLs for the uploaded files
-      const newPreviews = files.map(file => URL.createObjectURL(file));
-      setPreviews(prev => [...prev, ...newPreviews]);
     }
   };
 
