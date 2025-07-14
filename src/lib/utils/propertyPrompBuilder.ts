@@ -211,16 +211,32 @@ export function buildPropertyPrompt(
     context.facingWest = fields.facingWest;
   }
 
+  let baseInstruction = '';
+  switch (type) {
+    case 'title':
+      baseInstruction =
+        'Write a compelling and concise title for the property using the provided context.';
+      break;
+    case 'description':
+      baseInstruction =
+        'Craft a detailed, engaging, and informative property description based on the given context.';
+      break;
+    case 'valuate':
+      baseInstruction = `Estimate the market value of this ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} ${propertyType.replaceAll('-', ' ')} located in ${location}. Include a brief analysis of its rental potential if applicable. Do not return a value of 0 PHP.`;
+      break;
+    default:
+      baseInstruction =
+        'Generate useful content for the property listing based on the provided context.';
+  }
+
+  const creativityInstruction =
+    'Use only the provided information to generate your response. Do not ask follow-up questions. Be clear, highly creative, and professional. Make the result stand out and feel original.';
+
   const requestTitle =
-    !request || request === ''
-      ? type === 'title'
-        ? 'Generate a title for the property based on the context provided'
-        : type === 'description'
-          ? 'Generate a description for the property based on the context provided'
-          : type === 'valuate'
-            ? `What is the estimated market value of this ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} ${propertyType.replaceAll('-', ' ')} in ${location}? Include rental potential analysis. Avoid giving 0php as the value.`
-            : 'Generate content for the property based on the context provided'
-      : request;
+    request && request.trim() !== ''
+      ? `${baseInstruction} The user also gave this input: "${request.trim()}". Use it as inspiration and enhance or refine it based on the context. ${creativityInstruction}`
+      : `${baseInstruction} ${creativityInstruction}`;
+
   return {
     request: requestTitle,
     propertyType: propertyType.toLowerCase().split(' ').join('-'),
