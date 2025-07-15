@@ -21,6 +21,14 @@ export interface Participant {
   profile?: string;
 }
 
+export interface Attachment {
+  id: string;
+  fileUrl: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+}
+
 export interface Message {
   id: string;
   conversationId: string;
@@ -31,6 +39,7 @@ export interface Message {
     email?: string;
   };
   content: string;
+  attachments?: Attachment[];
   isRead: boolean;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +52,7 @@ export interface CreateConversationRequest {
 
 export interface SendMessageRequest {
   content: string;
+  attachments?: File[];
 }
 
 export interface MarkMessageReadRequest {

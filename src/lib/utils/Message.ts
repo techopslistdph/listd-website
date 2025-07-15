@@ -48,7 +48,30 @@ export interface OptimisticMessage {
   isOptimistic: boolean;
   isFailed?: boolean;
   tempId: string;
+  attachments?: any[];
 }
+
+// Add function to create optimistic conversation
+export const createOptimisticConversation = (
+  conversationId: string,
+  property: any,
+  lastMessage: string,
+  tempId: string
+): Conversations & { isOptimistic: boolean; tempId: string } => {
+  return {
+    id: conversationId,
+    property: {
+      name: property.listingTitle || 'Property',
+      image:
+        (property as any)?.imageUrl || property.images?.[0]?.imageUrl || '',
+    },
+    lastMessage,
+    lastDate: 'Now',
+    isRead: false,
+    isOptimistic: true,
+    tempId,
+  };
+};
 
 // Handle selected conversation data
 export const getSelectedData = (
@@ -87,7 +110,7 @@ export const getSelectedData = (
         image:
           (draftConversation.property.property as any)?.imageUrl ||
           draftConversation.property.property.images[0]?.imageUrl ||
-          '',
+          null,
       },
       messages: [], // No messages for draft conversation
       isDraft: true,
@@ -126,7 +149,7 @@ export const getSelectedData = (
           }
         ),
       image:
-        (conversationData.data.propertyData?.property as any)?.imageUrl || '',
+        (conversationData.data.propertyData?.property as any)?.imageUrl || null,
       propertyId: conversationData.data.propertyData?.property?.id || '',
       specificPropertyId: conversationData.data.propertyData?.id || '',
       propertyType:
@@ -139,11 +162,13 @@ export const getSelectedData = (
   };
 };
 
+// Update transformConversations to handle optimistic conversations
 export const transformConversations = (
   conversationsData: any,
-  userProfile: any
+  userProfile: any,
+  optimisticConversations: any[] = []
 ) => {
-  return conversationsData?.success
+  const realConversations = conversationsData?.success
     ? (
         conversationsData.data as unknown as ConversationListResponse['data']
       )?.map(conv => ({
@@ -152,7 +177,9 @@ export const transformConversations = (
           name: conv.propertyData?.property?.listingTitle,
           image: (conv.propertyData?.property as any)?.imageUrl || '',
         },
-        lastMessage: conv.lastMessage?.content || 'No messages yet',
+        lastMessage:
+          conv.lastMessage?.content ||
+          (conv.lastMessage?.attachments ? 'Sent an image' : 'No messages yet'),
         lastDate: conv.lastMessage
           ? new Date(conv.lastMessage.createdAt).toLocaleDateString()
           : new Date(conv.createdAt).toLocaleDateString(),
@@ -163,6 +190,8 @@ export const transformConversations = (
           : true,
       }))
     : [];
+
+  return [...realConversations, ...optimisticConversations];
 };
 
 /**
@@ -181,6 +210,7 @@ export const transformMessages = (
       ?.map((msg: MessageListResponse['data'][number]) => ({
         id: msg.id,
         text: msg.content,
+        attachments: msg.attachments,
         isMe: msg.sender.id === userId,
         time: new Date(msg.createdAt).toLocaleTimeString([], {
           hour: '2-digit',
@@ -195,14 +225,68 @@ export const transformMessages = (
 
 /**
  * Combine server messages with optimistic messages and sort by timestamp
+ * Filter out optimistic messages that are likely duplicates to prevent flickering
  */
 export const combineMessages = (
   serverMessages: OptimisticMessage[],
   optimisticMessages: OptimisticMessage[]
 ): OptimisticMessage[] => {
-  return [...serverMessages, ...optimisticMessages].sort(
-    (a, b) => a.createdAt - b.createdAt
+  // Filter out optimistic messages that have likely been confirmed by server
+  const filteredOptimisticMessages = optimisticMessages.filter(
+    optimisticMsg => {
+      // Keep failed messages so user can retry
+      if (optimisticMsg.isFailed) return true;
+
+      // Quick check - if there's a very recent server message with same content,
+      // temporarily hide the optimistic message to prevent flickering
+      const hasRecentMatch = serverMessages.some(serverMsg => {
+        const timeDiff = Math.abs(
+          serverMsg.createdAt - optimisticMsg.createdAt
+        );
+
+        if (!serverMsg.isMe || timeDiff > 3000) return false; // Within 3 seconds only
+
+        // For text messages, check exact text match
+        if (optimisticMsg.text && serverMsg.text) {
+          return (
+            serverMsg.text === optimisticMsg.text &&
+            (serverMsg.attachments?.length || 0) ===
+              (optimisticMsg.attachments?.length || 0)
+          );
+        }
+
+        // For image-only messages, be more careful with matching
+        if (!optimisticMsg.text && !serverMsg.text) {
+          const optAttachmentCount = optimisticMsg.attachments?.length || 0;
+          const serverAttachmentCount = serverMsg.attachments?.length || 0;
+
+          return (
+            optAttachmentCount > 0 &&
+            optAttachmentCount === serverAttachmentCount &&
+            timeDiff < 2000 // Tighter window for image-only messages
+          );
+        }
+
+        return false;
+      });
+
+      return !hasRecentMatch;
+    }
   );
+
+  const combined = [...serverMessages, ...filteredOptimisticMessages];
+
+  // Sort by timestamp with stable sorting for same timestamps
+  return combined.sort((a, b) => {
+    const timeDiff = a.createdAt - b.createdAt;
+    if (timeDiff !== 0) return timeDiff;
+
+    // For same timestamp, prioritize server messages over optimistic
+    if (a.isOptimistic && !b.isOptimistic) return 1;
+    if (!a.isOptimistic && b.isOptimistic) return -1;
+
+    return 0;
+  });
 };
 
 /**
@@ -210,21 +294,33 @@ export const combineMessages = (
  */
 export const createOptimisticMessage = (
   text: string,
-  isMe: boolean = true
+  isMe: boolean = true,
+  attachments?: any[]
 ): OptimisticMessage => {
-  const tempId = `temp-${Date.now()}-${Math.random()}`;
-  return {
+  const now = Date.now();
+  // Use a more deterministic temp ID based on content and timestamp
+  const contentHash = text + (attachments?.length || 0);
+  const tempId = `temp-${now}-${contentHash.length}`;
+
+  const message = {
     id: tempId,
     text,
     isMe,
-    time: new Date().toLocaleTimeString([], {
+    time: new Date(now).toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
     }),
-    createdAt: Date.now(),
+    createdAt: now,
     isOptimistic: true,
     tempId,
+    attachments: attachments?.map((att, index) => ({
+      ...att,
+      // Ensure each attachment has a stable ID
+      id: att.id || `${tempId}-attachment-${index}`,
+    })),
   };
+
+  return message;
 };
 
 /**
@@ -236,22 +332,64 @@ export const shouldRemoveOptimisticMessage = (
 ): string[] => {
   if (!serverMessages || serverMessages.length === 0) return [];
 
-  const latestServerMessage = serverMessages[serverMessages.length - 1];
   const tempIdsToRemove: string[] = [];
 
-  // Only check if the latest message is from the current user (our sent message)
-  if (latestServerMessage.isMe) {
-    // Find and mark matching optimistic messages for removal
-    optimisticMessages.forEach(optimisticMsg => {
-      if (
-        optimisticMsg.isMe &&
-        optimisticMsg.text === latestServerMessage.text &&
-        optimisticMsg.createdAt <= latestServerMessage.createdAt
-      ) {
-        tempIdsToRemove.push(optimisticMsg.tempId);
+  // Check each optimistic message against all server messages
+  optimisticMessages.forEach(optimisticMsg => {
+    if (!optimisticMsg.isMe || optimisticMsg.isFailed) return;
+
+    // Find matching server messages within a reasonable time window
+    const matchingServerMessage = serverMessages.find(serverMsg => {
+      if (!serverMsg.isMe) return false;
+
+      // Time-based matching - server message should be after optimistic message
+      const isWithinTimeWindow =
+        serverMsg.createdAt >= optimisticMsg.createdAt - 2000 && // Allow 2s before (clock differences)
+        serverMsg.createdAt <= optimisticMsg.createdAt + 30000; // Allow 30s after
+
+      if (!isWithinTimeWindow) return false;
+
+      // Content matching
+      const textMatches = optimisticMsg.text === serverMsg.text;
+      const attachmentCountMatches =
+        (optimisticMsg.attachments?.length || 0) ===
+        (serverMsg.attachments?.length || 0);
+
+      // For text messages, require exact text match
+      if (optimisticMsg.text && serverMsg.text) {
+        return textMatches && attachmentCountMatches;
       }
+
+      // For image-only messages, match by attachment count and filename if available
+      if (!optimisticMsg.text && !serverMsg.text && attachmentCountMatches) {
+        // Additional validation for image messages
+        if ((optimisticMsg.attachments?.length || 0) > 0) {
+          // Try to match filenames if available
+          const optimisticFileNames =
+            optimisticMsg.attachments?.map(att => att.fileName) || [];
+          const serverFileNames =
+            serverMsg.attachments?.map(att => att.fileName) || [];
+
+          // If we have filenames, use them for matching
+          if (optimisticFileNames.length > 0 && serverFileNames.length > 0) {
+            const filenamesMatch = optimisticFileNames.every(name =>
+              serverFileNames.includes(name)
+            );
+            return filenamesMatch;
+          }
+
+          // Otherwise, just match by count and time window
+          return true;
+        }
+      }
+
+      return false;
     });
-  }
+
+    if (matchingServerMessage) {
+      tempIdsToRemove.push(optimisticMsg.tempId);
+    }
+  });
 
   return tempIdsToRemove;
 };
