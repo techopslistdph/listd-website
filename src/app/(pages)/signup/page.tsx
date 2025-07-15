@@ -210,7 +210,7 @@ export default function SignUpPage() {
                     name='mobile'
                     label='Mobile number'
                     type='tel'
-                    placeholder='Enter mobile number'
+                    placeholder='09123456789'
                     disabled={isSubmitting}
                   />
                 </div>

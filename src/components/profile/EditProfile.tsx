@@ -37,6 +37,7 @@ export default function EditProfile({
       ...userProfile.profile,
       email: userProfile.email,
       companyName: userProfile.profile?.companyName || 'Not Provided',
+      phone: formatPhoneNumber(userProfile.profile?.phone || ''),
     },
   });
 

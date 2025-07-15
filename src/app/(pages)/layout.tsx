@@ -6,6 +6,7 @@ import { QueryProvider } from '@/lib/queries';
 import Main from './main';
 import { Toaster } from 'sonner';
 import NextTopLoader from 'nextjs-toploader';
+import { getUser } from '@/lib/queries/server/user';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -18,11 +19,13 @@ export const metadata: Metadata = {
   description: 'Listd',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [userProfile] = await Promise.all([getUser()]);
+
   return (
     <ClerkProvider>
       <html lang='en'>
@@ -35,7 +38,7 @@ export default function RootLayout({
           />
           <QueryProvider>
             <Toaster position='top-right' />
-            <Main>{children}</Main>
+            <Main userProfile={userProfile?.data || null}>{children}</Main>
           </QueryProvider>
         </body>
       </html>

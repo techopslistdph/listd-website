@@ -4,11 +4,14 @@ import { Button } from './Button';
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from '../ui/sheet';
 import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import UserProfileCard from './UserProfileCard';
+import { UserProfile } from '@/lib/queries/hooks/types/user';
 
 export default function NavigationBar({
   navigtionItems,
+  userProfile,
 }: {
   navigtionItems: { label: string; href: string }[];
+  userProfile: UserProfile | null;
 }) {
   return (
     <div className='flex justify-between items-center p-4 md:p-8 container mx-auto max-w-[1300px]'>
@@ -70,7 +73,7 @@ export default function NavigationBar({
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <UserProfileCard />
+          <UserProfileCard userProfile={userProfile} />
         </SignedIn>
       </div>
     </div>

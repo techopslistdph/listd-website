@@ -2,7 +2,7 @@
 'use client';
 
 import { useForm, FormProvider } from 'react-hook-form';
-import { useSignIn } from '@clerk/nextjs';
+import { useSignIn, useUser } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
@@ -26,10 +26,11 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const { signIn, isLoaded, setActive } = useSignIn();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
