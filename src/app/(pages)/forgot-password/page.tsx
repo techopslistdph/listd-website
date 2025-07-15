@@ -8,15 +8,22 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { toast } from 'sonner';
+import { Eye, EyeOff } from 'lucide-react';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
-const resetPasswordSchema = z.object({
-  code: z.string().min(1, 'Code is required'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-});
+const resetPasswordSchema = z
+  .object({
+    code: z.string().min(1, 'Code is required'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
@@ -26,6 +33,10 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
+  const [showPasswords, setShowPasswords] = useState({
+    password: false,
+    confirm: false,
+  });
 
   const emailForm = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -33,7 +44,7 @@ export default function ForgotPasswordPage() {
   });
   const resetForm = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { code: '', password: '' },
+    defaultValues: { code: '', password: '', confirmPassword: '' },
   });
 
   const onSubmitEmail = async (data: ForgotPasswordFormData) => {
@@ -84,6 +95,13 @@ export default function ForgotPasswordPage() {
     }
   };
 
+  const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
   return (
     <AuthLayout
       title={showReset ? 'Check Your Email' : 'Reset Password'}
@@ -117,13 +135,47 @@ export default function ForgotPasswordPage() {
               placeholder='Enter code'
               disabled={isSubmitting}
             />
-            <FormInput
-              name='password'
-              label='New Password'
-              type='password'
-              placeholder='New password'
-              disabled={isSubmitting}
-            />
+            <div className='relative'>
+              <FormInput
+                name='password'
+                label='New Password'
+                type={showPasswords.password ? 'text' : 'password'}
+                placeholder='New password'
+                disabled={isSubmitting}
+              />
+              <button
+                type='button'
+                onClick={() => togglePasswordVisibility('password')}
+                className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
+              >
+                {showPasswords.confirm ? (
+                  <EyeOff className='h-4 w-4' />
+                ) : (
+                  <Eye className='h-4 w-4' />
+                )}
+              </button>
+            </div>
+            <div className='relative'>
+              <FormInput
+                name='confirmPassword'
+                label='Confirm New Password'
+                type={showPasswords.confirm ? 'text' : 'password'}
+                placeholder='Confirm password'
+                disabled={isSubmitting}
+              />
+              <button
+                type='button'
+                onClick={() => togglePasswordVisibility('confirm')}
+                className='absolute right-3 top-12 -translate-y-1/2 text-neutral-mid hover:text-neutral-text cursor-pointer'
+              >
+                {showPasswords.confirm ? (
+                  <EyeOff className='h-4 w-4' />
+                ) : (
+                  <Eye className='h-4 w-4' />
+                )}
+              </button>
+            </div>
+
             <button
               type='submit'
               disabled={isSubmitting}
