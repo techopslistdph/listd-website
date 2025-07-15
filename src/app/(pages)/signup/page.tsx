@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { formatPhoneNumberRaw } from '@/utils/phoneUtils';
 
 const signUpSchema = z
   .object({
@@ -22,7 +23,10 @@ const signUpSchema = z
     email: z.string().email('Invalid email address'),
     mobile: z
       .string()
-      .regex(/^[+]?\d[\d\s-]{9,}$/, 'Please enter a valid phone number')
+      .regex(
+        /^(?:\+63|0)9\d{2}[-\s]?\d{3}[-\s]?\d{4}$/,
+        'Please enter a valid phone number'
+      )
       .optional(),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
@@ -67,7 +71,7 @@ export default function SignUpPage() {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        phoneNumber: data.mobile,
+        phoneNumber: formatPhoneNumberRaw(data.mobile || ''),
       });
       if (
         result.status === 'missing_requirements' &&

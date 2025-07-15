@@ -9,12 +9,17 @@ import { useUpdateProfile } from '@/lib/queries/hooks/use-user-profile';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import { UserProfile } from '@/lib/queries/hooks/types/user';
-import { formatPhoneNumber } from '@/utils/phoneUtils';
+import { formatPhoneNumber, formatPhoneNumberRaw } from '@/utils/phoneUtils';
 
 const userSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  phone: z.string().min(1),
+  phone: z
+    .string()
+    .regex(
+      /^(\(\+63\)|0) ?9\d{2}[-\s]?\d{3}[-\s]?\d{4}$/,
+      'Please enter a valid phone number'
+    ),
   email: z.string().email(),
   companyName: z.string().min(1),
 });
@@ -41,6 +46,7 @@ export default function EditProfile({
     updateProfile(
       {
         ...data,
+        phone: formatPhoneNumberRaw(data.phone || ''),
       },
       {
         onSuccess: () => {
@@ -95,15 +101,20 @@ export default function EditProfile({
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='(+1) 234 567 8900'
+                        placeholder='(+63) 234 567 8900'
                         {...field}
-                        onChange={(e) => {
+                        onChange={e => {
                           const formatted = formatPhoneNumber(e.target.value);
                           field.onChange(formatted);
                         }}
                         className='text-sm lg:text-base'
                       />
                     </FormControl>
+                    {form.formState.errors.phone && (
+                      <span className='text-xs text-red-500'>
+                        {form.formState.errors.phone.message}
+                      </span>
+                    )}
                   </FormItem>
                 )}
               />
@@ -116,6 +127,11 @@ export default function EditProfile({
                     <FormControl>
                       <Input {...field} className='text-sm lg:text-base' />
                     </FormControl>
+                    {form.formState.errors.email && (
+                      <span className='text-xs text-red-500'>
+                        {form.formState.errors.email.message}
+                      </span>
+                    )}
                   </FormItem>
                 )}
               />
