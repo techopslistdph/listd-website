@@ -43,7 +43,7 @@ export const useListingSubmission = (
         ...(data?.title && { listingTitle: data?.title }),
         ...(data?.description && { listingDescription: data?.description }),
         ...(data?.grossAskingPrice && {
-          listingPrice: Math.max(parseInt(data?.grossAskingPrice), 1),
+          listingPrice: Math.max(Number(data?.grossAskingPrice), 1),
           listingPriceFormatted: data?.grossAskingPrice,
         }),
         ...(data?.longitude && { longitude: Number(data?.longitude) }),
@@ -57,8 +57,8 @@ export const useListingSubmission = (
         ...baseListingData,
         ...(data.propertyType === 'Condominium' && {
           buildingName: data?.buildingName || '',
-          ...(data?.floorNo && { floorNumber: parseInt(data?.floorNo) }),
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorNo && { floorNumber: Number(data?.floorNo) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.fullyFurnished && {
             furnishingStatus: data?.fullyFurnished,
           }),
@@ -73,9 +73,9 @@ export const useListingSubmission = (
           featureIds: data?.features.map(item => item.value) || [],
         }),
         ...(data?.propertyType === 'Warehouse' && {
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.ceilingHeight && {
-            ceilingHeight: parseInt(data?.ceilingHeight),
+            ceilingHeight: Number(data?.ceilingHeight),
           }),
           ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.parking && {
@@ -93,7 +93,7 @@ export const useListingSubmission = (
           }),
         }),
         ...(data.propertyType === 'House and lot' && {
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.fullyFurnished && {
             furnishingStatus: data?.fullyFurnished,
@@ -138,10 +138,10 @@ export const useListingSubmission = (
         }),
         ...(data?.grossAskingPrice && {
           pricePerSqm: Math.max(
-            parseInt(data.grossAskingPrice) /
+            Number(data.grossAskingPrice) /
               (data.propertyType === 'Vacant lot'
                 ? Number(data.lotSize)
-                : parseInt(data.floorArea) || 1),
+                : Number(data.floorArea) || 1),
             0
           ),
         }),

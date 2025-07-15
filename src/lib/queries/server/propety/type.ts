@@ -218,7 +218,7 @@ export interface CreateListingRequest {
   listingTitle?: string;
   listingDescription?: string;
   listingPrice?: number;
-  listingPriceFormatted?: string;
+  listingPriceFormatted?: string | number;
   pricePerSqm?: number;
   longitude?: number;
   latitude?: number;

@@ -41,7 +41,6 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
       const newValue = [...value, ...files];
       onChange(newValue);
 
-      // Create preview URLs for the uploaded files
       const newPreviews = files.map(file => URL.createObjectURL(file));
       setPreviews(prev => [...prev, ...newPreviews]);
     }
