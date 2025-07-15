@@ -9,8 +9,15 @@ import {
   footerAppButtons,
   footerSocials,
 } from '../data';
+import { UserProfile } from '@/lib/queries/hooks/types/user';
 
-export default function Main({ children }: { children: React.ReactNode }) {
+export default function Main({
+  children,
+  userProfile,
+}: {
+  children: React.ReactNode;
+  userProfile: UserProfile | null;
+}) {
   const pathname = usePathname();
   const hideNavAndFooter =
     pathname === '/login' ||
@@ -19,7 +26,12 @@ export default function Main({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {!hideNavAndFooter && <NavigationBar navigtionItems={navigationlinks} />}
+      {!hideNavAndFooter && (
+        <NavigationBar
+          userProfile={userProfile}
+          navigtionItems={navigationlinks}
+        />
+      )}
       {children}
       {!hideNavAndFooter && (
         <Footer
