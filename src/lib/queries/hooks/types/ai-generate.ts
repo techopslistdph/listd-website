@@ -67,8 +67,8 @@ export interface AiGeneratePrompt {
     bathrooms?: number;
     parking?: number;
     buildingName?: string;
-    floorNo?: string;
-    grossAskingPrice?: string;
+    floorNo?: number;
+    grossAskingPrice?: number;
     downPaymentPercent?: string;
     downPaymentPHP?: string;
     commissionPercent?: string;

@@ -27,8 +27,8 @@ export type FormData = {
   barangay: string;
   street: string;
   zipCode: string;
-  floorNo: string;
-  floorArea: string;
+  floorNo: number;
+  floorArea: number;
   lotSize: string;
   lotType: string[];
   ceilingHeight: string;
@@ -52,7 +52,7 @@ export type FormData = {
   // Step 3
   package: 'free' | 'paid';
   period: string;
-  grossAskingPrice: string;
+  grossAskingPrice: number;
   downPaymentPercent: string;
   downPaymentPHP: string;
   commissionPercent: string;
@@ -72,10 +72,10 @@ export const initialFormData: FormData = {
   isDraft: false,
   isPublished: false,
   zipCode: '',
-  floorNo: '',
+  floorNo: 0,
   longitude: 0,
   latitude: 0,
-  floorArea: '',
+  floorArea: 0,
   lotSize: '',
   lotType: [],
   ceilingHeight: '',
@@ -93,7 +93,7 @@ export const initialFormData: FormData = {
   forSale: true,
   package: 'free',
   period: '5',
-  grossAskingPrice: '',
+  grossAskingPrice: 0,
   downPaymentPercent: '',
   downPaymentPHP: '',
   commissionPercent: '',
