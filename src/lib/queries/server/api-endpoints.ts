@@ -7,6 +7,11 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/users/listings?status=${status}`,
   },
 
+  messaging: {
+    conversations: (page: number, limit: number) =>
+      `${API_BASE_URL}/messaging/conversations?page=${page}&limit=${limit}`,
+  },
+
   listingTypes: {
     list: `${API_BASE_URL}/listing-types`,
     create: `${API_BASE_URL}/listing-types`,

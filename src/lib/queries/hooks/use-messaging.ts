@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from '@/lib/queries';
 import {
@@ -9,6 +10,7 @@ import {
   SendMessageRequest,
   MarkMessageReadRequest,
 } from '../server/messaging/types';
+import { property } from './use-property';
 
 const messaging = {
   createConversation: async (data: CreateConversationRequest) => {
@@ -98,9 +100,40 @@ const messaging = {
 
   sendMessage: async (conversationId: string, data: SendMessageRequest) => {
     try {
+      //upload the attachments first
+      const uploadedAttachments = data?.attachments?.map(
+        async (attachment: any) => {
+          const uploadResult = await property.uploadImage(attachment);
+          if (!uploadResult.success) {
+            throw new Error('Failed to upload attachment');
+          }
+          return {
+            fileUrl: uploadResult.data,
+            fileName: attachment?.name,
+            fileSize: attachment?.size,
+            fileType: attachment?.type,
+          };
+        }
+      );
+      const uploadedImages = uploadedAttachments
+        ? await Promise.all(uploadedAttachments)
+        : [];
+
+      let messageData;
+      if (uploadedImages.length > 0) {
+        messageData = {
+          content: data.content,
+          attachments: uploadedImages,
+        };
+      } else {
+        messageData = {
+          content: data.content,
+        };
+      }
+
       const response = await api.post<MessageResponse>(
         `/api/messaging/conversations/${conversationId}/messages`,
-        data
+        messageData
       );
       return {
         success: true,

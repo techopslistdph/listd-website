@@ -11,7 +11,7 @@ import {
 } from '../server/propety/type';
 import { toast } from 'sonner';
 
-const property = {
+export const property = {
   getNearbyProperties: async (location: {
     lat: number | null;
     lng: number | null;

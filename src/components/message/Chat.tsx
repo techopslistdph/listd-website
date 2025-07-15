@@ -3,23 +3,21 @@ import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react';
 import verified from '@/../public/images/icons/verified.png';
 import Link from 'next/link';
-import { ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
-// import file from '@/../public/images/icons/file.svg';
-// import image from '@/../public/images/icons/image.svg';
+import {
+  ChevronRight,
+  ArrowLeft,
+  Paperclip,
+  Image as ImageIcon,
+  X,
+} from 'lucide-react';
 import { Input } from '../ui/input';
 import send from '@/../public/images/icons/send.svg';
-import {
-  useMarkMessagesAsRead,
-  useSendMessage,
-  useCreateConversation,
-} from '@/lib/queries/hooks/use-messaging';
-import { useOptimisticMessages } from '@/hooks/useOptimisticMessages';
+import { useMessageActions } from '@/hooks/useMessageActions';
 import { DraftConversation } from '@/lib/utils/draftConversation';
 import {
   combineMessages,
   Conversations,
-  createOptimisticMessage,
-  getOldOptimisticMessages,
+  OptimisticMessage,
   Selected,
   shouldRemoveOptimisticMessage,
   transformMessages,
@@ -31,6 +29,8 @@ import {
   PropertyCardSkeleton,
 } from './Skeleton';
 import { Skeleton } from '../ui/skeleton';
+import Message from './Message';
+import ConversationItem from './ConversationItem';
 
 interface ChatProps {
   conversations: Conversations[];
@@ -46,6 +46,17 @@ interface ChatProps {
     conversationId: string,
     messageContent: string
   ) => void;
+  // Add optimistic message props
+  optimisticMessages: OptimisticMessage[];
+  onAddOptimisticMessage: (message: OptimisticMessage) => void;
+  onRemoveOptimisticMessage: (tempId: string) => void;
+  onMarkAsFailed: (tempId: string) => void;
+}
+
+interface AttachmentPreview {
+  file: File;
+  preview: string;
+  id: string;
 }
 
 export default function Chat({
@@ -56,22 +67,34 @@ export default function Chat({
   isLoading,
   userId,
   onConversationCreated,
+  optimisticMessages,
+  onAddOptimisticMessage,
+  onRemoveOptimisticMessage,
+  onMarkAsFailed,
 }: ChatProps) {
   const [inputValue, setInputValue] = useState('');
+  const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
   const [mobileView, setMobileView] = useState<'conversations' | 'messages'>(
     'conversations'
   );
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const mobileMessagesRef = useRef<HTMLDivElement>(null);
-  const {
-    optimisticMessages,
-    addOptimisticMessage,
-    removeOptimisticMessage,
-    markAsFailed,
-  } = useOptimisticMessages();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const sendMessage = useSendMessage();
-  const createConversation = useCreateConversation();
+  const { handleSendMessage, handleRetryMessage, isPending } =
+    useMessageActions({
+      selectedId,
+      selected,
+      onConversationCreated,
+      setInputValue,
+      setAttachments,
+      attachments,
+      // Pass optimistic message handlers
+      onAddOptimisticMessage,
+      onRemoveOptimisticMessage,
+      onMarkAsFailed,
+    });
 
   // Auto-scroll to bottom when new messages arrive (desktop)
   useEffect(() => {
@@ -101,73 +124,73 @@ export default function Chat({
       transformedMessages,
       optimisticMessages
     );
-    tempIdsToRemove.forEach(tempId => removeOptimisticMessage(tempId));
-  }, [transformedMessages, optimisticMessages, removeOptimisticMessage]);
+    tempIdsToRemove.forEach(tempId => onRemoveOptimisticMessage(tempId));
+  }, [transformedMessages, optimisticMessages, onRemoveOptimisticMessage]);
 
-  // Add a new effect to handle optimistic message removal when conversation changes
-  useEffect(() => {
-    const oldOptimisticTempIds = getOldOptimisticMessages(
-      optimisticMessages,
-      selectedId
-    );
-    oldOptimisticTempIds.forEach(tempId => removeOptimisticMessage(tempId));
-  }, [selectedId, optimisticMessages, removeOptimisticMessage]);
+  // Handle file selection
+  const handleFileSelect = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    isImage: boolean = false
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
 
-  // Update the handleSendMessage function to use explicit IDs
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
+    const allowedImageTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+    ];
+    const allowedFileTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
 
-    // Handle draft conversation
-    if (selectedId === 'draft' && selected?.isDraft && selected?.draftData) {
-      const { propertyId, propertyOwnerId } = selected.draftData;
-
-      const optimisticMessage = createOptimisticMessage(inputValue);
-      addOptimisticMessage(optimisticMessage);
-      const messageContent = inputValue;
-      setInputValue('');
-
-      try {
-        // Create conversation first using the IDs from URL
-        const conversationResult = await createConversation.mutateAsync({
-          propertyId: propertyId,
-          participantId: propertyOwnerId,
-        });
-
-        if (conversationResult.success && conversationResult.data) {
-          // Send message to the new conversation
-          await sendMessage.mutateAsync({
-            conversationId: conversationResult.data.id,
-            data: { content: messageContent },
-          });
-
-          // Remove the optimistic message after successful creation and sending
-          removeOptimisticMessage(optimisticMessage.tempId);
-
-          // Notify parent component with message content
-          onConversationCreated?.(conversationResult.data.id, messageContent);
-        } else {
-          console.error(
-            'Failed to create conversation:',
-            conversationResult.message
-          );
-          markAsFailed(optimisticMessage.tempId);
-        }
-      } catch (error) {
-        console.error(
-          'Error creating conversation and sending message:',
-          error
-        );
-        markAsFailed(optimisticMessage.tempId);
+    Array.from(files).forEach(file => {
+      if (file.size > maxFileSize) {
+        alert('File size must be less than 10MB');
+        return;
       }
-      return;
-    }
 
-    // Handle regular conversation
-    if (!selectedId || selectedId === 'draft') return;
+      if (isImage && !allowedImageTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, WebP)');
+        return;
+      }
 
-    const optimisticMessage = createOptimisticMessage(inputValue);
-    addOptimisticMessage(optimisticMessage);
-    setInputValue('');
+      if (!isImage && !allowedFileTypes.includes(file.type)) {
+        alert('Please select a valid file (PDF, DOC, DOCX)');
+        return;
+      }
+
+      const preview = isImage ? URL.createObjectURL(file) : '';
+      const attachment: AttachmentPreview = {
+        file,
+        preview,
+        id: `${Date.now()}-${Math.random()}`,
+      };
+
+      setAttachments(prev => [...prev, attachment]);
+    });
+
+    // Reset input
+    event.target.value = '';
+  };
+
+  // Remove attachment
+  const removeAttachment = (id: string) => {
+    setAttachments(prev => {
+      const attachment = prev.find(att => att.id === id);
+      if (attachment?.preview) {
+        URL.revokeObjectURL(attachment.preview);
+      }
+      return prev.filter(att => att.id !== id);
+    });
+  };
+
+  const onSendMessage = () => {
+    handleSendMessage(inputValue);
 
     // Force scroll to bottom immediately after adding optimistic message
     setTimeout(() => {
@@ -180,68 +203,61 @@ export default function Chat({
           mobileMessagesRef.current.scrollHeight;
       }
     }, 0);
-
-    sendMessage.mutate(
-      {
-        conversationId: selectedId,
-        data: { content: inputValue },
-      },
-      {
-        onError: () => {
-          markAsFailed(optimisticMessage.tempId);
-        },
-      }
-    );
   };
 
-  const handleRetryMessage = (tempId: string) => {
-    const failedMessage = optimisticMessages.find(msg => msg.tempId === tempId);
-    if (!failedMessage) return;
-
-    // Remove the failed message
-    removeOptimisticMessage(tempId);
-
-    // Resend the message
-    sendMessage.mutate(
-      {
-        conversationId: selectedId,
-        data: { content: failedMessage.text },
-      },
-      {
-        onError: () => {
-          // Re-add as failed if it fails again
-          addOptimisticMessage({ ...failedMessage, isFailed: true });
-        },
-      }
-    );
+  const onRetryMessage = (tempId: string) => {
+    const retryHandler = handleRetryMessage(tempId);
+    retryHandler(optimisticMessages);
   };
 
-  // Switch to messages view when a conversation is selected on mobile
   useEffect(() => {
     if (selectedId) {
       setMobileView('messages');
     }
   }, [selectedId]);
 
-  // Mark messages as read when conversation is selected
-  const { mutate: markMessagesAsRead } = useMarkMessagesAsRead();
-  const handleConversationSelect = (
-    conversationId: string,
-    isMobile = false
-  ) => {
-    setSelectedId(conversationId);
-    if (isMobile) {
-      setMobileView('messages');
-    }
-    if (selected?.messages && selected?.messages.length > 0) {
-      markMessagesAsRead({
-        messageIds: selected?.messages.map(msg => msg.id) || [],
-      });
-    }
-  };
-
   const handleBackToConversations = () => {
     setMobileView('conversations');
+  };
+
+  // Render attachment preview
+  const renderAttachmentPreview = (attachment: AttachmentPreview) => {
+    const isImage = attachment.file.type.startsWith('image/');
+
+    return (
+      <div key={attachment.id} className='relative inline-block mr-2 mb-2'>
+        {isImage ? (
+          <div className='relative'>
+            <img
+              src={attachment.preview}
+              alt={attachment.file.name}
+              className='w-20 h-20 object-cover rounded-lg'
+            />
+            <button
+              onClick={() => removeAttachment(attachment.id)}
+              className='absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600'
+            >
+              <X className='w-3 h-3' />
+            </button>
+          </div>
+        ) : (
+          <div className='relative bg-gray-100 p-3 rounded-lg border'>
+            <div className='flex items-center gap-2'>
+              <Paperclip className='w-4 h-4 text-gray-500' />
+              <span className='text-xs text-gray-700 truncate max-w-32'>
+                {attachment.file.name}
+              </span>
+              <button
+                onClick={() => removeAttachment(attachment.id)}
+                className='text-red-500 hover:text-red-600'
+              >
+                <X className='w-3 h-3' />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -256,28 +272,15 @@ export default function Chat({
             ) : (
               <div className='space-y-3 max-h-[80vh] overflow-y-auto'>
                 {conversations.map(conv => (
-                  <div
+                  <ConversationItem
                     key={conv.id}
-                    onClick={() => handleConversationSelect(conv.id, true)}
-                    className='flex items-center cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-colors'
-                  >
-                    <img
-                      src={conv.property.image}
-                      alt='property'
-                      className='w-14 h-14 rounded-xl object-cover mr-3'
-                    />
-                    <div className='flex-1'>
-                      <div className='font-bold text-base line-clamp-2'>
-                        {conv.property.name}
-                      </div>
-                      <div className='text-gray-500 text-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]'>
-                        {conv.lastMessage}
-                      </div>
-                    </div>
-                    <div className='text-xs text-gray-300 ml-2'>
-                      {conv.lastDate}
-                    </div>
-                  </div>
+                    conv={conv}
+                    selectedId={selectedId}
+                    isMobile={true}
+                    setSelectedId={setSelectedId}
+                    setMobileView={setMobileView}
+                    selected={selected}
+                  />
                 ))}
               </div>
             )}
@@ -327,7 +330,10 @@ export default function Chat({
                 className='bg-white border-b border-gray-200 p-4 flex items-center w-full gap-2'
               >
                 <img
-                  src={selected?.propertyDetails.image}
+                  src={
+                    selected?.propertyDetails.image ||
+                    'https://www.trical.co.nz/modules/custom/legrand_ecat/assets/img/no-image.png'
+                  }
                   alt='property'
                   className='w-14 h-14 rounded-xl object-cover'
                 />
@@ -355,56 +361,12 @@ export default function Chat({
                 <MessagesSkeletonMobile />
               ) : allMessages && allMessages.length > 0 ? (
                 allMessages.map(msg => (
-                  <div
+                  <Message
                     key={msg.id}
-                    className={`flex w-full ${
-                      msg.isMe ? 'justify-end' : 'justify-start'
-                    }`}
-                  >
-                    {!msg.isMe && (
-                      <img
-                        src={selected?.user.avatar}
-                        alt='avatar'
-                        className='w-8 h-8 rounded-full mr-2 self-end mb-2'
-                      />
-                    )}
-
-                    <div
-                      className={`max-w-[80vw] flex flex-col justify-end ${
-                        msg.isMe ? 'items-end ml-auto' : 'items-start mr-auto'
-                      }`}
-                    >
-                      <div
-                        className={`rounded-xl px-4 py-3 text-sm shadow relative ${
-                          msg.isMe
-                            ? 'bg-primary-mid text-white shadow-violet-100'
-                            : 'bg-neutral-light text-[#222]'
-                        } ${msg.isOptimistic ? 'opacity-70' : ''} ${
-                          msg?.isFailed ? 'border border-red-300' : ''
-                        }`}
-                      >
-                        {msg.text}
-                        {msg.isOptimistic && (
-                          <div className='absolute -bottom-1 right-2 w-2 h-2 bg-blue-400 rounded-full animate-pulse' />
-                        )}
-                      </div>
-                      <div className='flex items-center gap-2 text-gray-400 text-xs m-2'>
-                        <span>{msg.time}</span>
-                        {msg?.isFailed && (
-                          <div className='flex items-center gap-1 text-red-500'>
-                            <AlertCircle className='w-3 h-3' />
-                            <span className='text-xs'>Failed to send</span>
-                            <button
-                              onClick={() => handleRetryMessage(msg.tempId)}
-                              className='text-xs underline hover:no-underline'
-                            >
-                              Retry
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                    msg={msg}
+                    selected={selected}
+                    handleRetryMessage={onRetryMessage}
+                  />
                 ))
               ) : (
                 <div className='flex-1 flex items-center justify-center'>
@@ -420,22 +382,39 @@ export default function Chat({
               )}
             </div>
 
-            {/* Mobile Input - Keep the exact same input implementation */}
+            {/* Mobile Input */}
             <div className='flex items-center gap-2 md:gap-3 p-4 border-t border-gray-200'>
-              {/* <button className='bg-none border-none text-xl cursor-pointer'>
-                <Image
-                  src={file}
-                  alt='upload file'
-                  className='w-6 h-6 md:w-7 md:h-7'
-                />
+              <button
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip className='w-5 h-5 text-gray-500' />
               </button>
-              <button className='bg-none border-none text-xl cursor-pointer'>
-                <Image
-                  src={image}
-                  alt='upload image'
-                  className='w-6 h-6 md:w-7 md:h-7'
-                />
-              </button> */}
+              <button
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                onClick={() => imageInputRef.current?.click()}
+              >
+                <ImageIcon className='w-5 h-5 text-gray-500' />
+              </button>
+
+              {/* Hidden file inputs */}
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='.pdf,.doc,.docx'
+                multiple
+                onChange={e => handleFileSelect(e, false)}
+                className='hidden'
+              />
+              <input
+                ref={imageInputRef}
+                type='file'
+                accept='image/*'
+                multiple
+                onChange={e => handleFileSelect(e, true)}
+                className='hidden'
+              />
+
               <div className='relative flex-1 flex gap-2'>
                 <Input
                   type='text'
@@ -446,18 +425,17 @@ export default function Chat({
                   onKeyPress={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      handleSendMessage();
+                      onSendMessage();
                     }
                   }}
-                  disabled={sendMessage.isPending}
                 />
-                {inputValue && (
+                {(inputValue || attachments.length > 0) && (
                   <button
                     type='button'
                     className='p-1 cursor-pointer disabled:opacity-50'
                     tabIndex={0}
-                    onClick={handleSendMessage}
-                    disabled={sendMessage.isPending}
+                    onClick={onSendMessage}
+                    disabled={isPending}
                   >
                     <Image
                       src={send}
@@ -468,36 +446,31 @@ export default function Chat({
                 )}
               </div>
             </div>
+
+            {/* Attachment previews */}
+            {attachments.length > 0 && (
+              <div className='px-4 pb-4 border-t border-gray-200'>
+                <div className='flex flex-wrap gap-2'>
+                  {attachments.map(renderAttachmentPreview)}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r border-gray-200 max-h-[85vh] overflow-y-auto'>
+      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r gap-3 border-gray-200 max-h-[85vh] overflow-y-scroll'>
         {conversations.map(conv => (
-          <div
+          <ConversationItem
             key={conv.id}
-            onClick={() => handleConversationSelect(conv.id, false)}
-            className='flex items-center mb-4 cursor-pointer p-2 rounded-xl hover:bg-gray-50 transition-colors'
-          >
-            <img
-              src={conv.property.image}
-              alt='property'
-              className='w-12 h-12 rounded-xl object-cover mr-3'
-            />
-            <div className='flex-1'>
-              <div className='font-bold text-base line-clamp-2'>
-                {conv.property.name}
-              </div>
-              <div className='text-gray-500 text-sm whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px]'>
-                {conv.lastMessage}
-              </div>
-            </div>
-            <div className='text-xs text-gray-300 ml-2'>{conv.lastDate}</div>
-            {!conv.isRead && (
-              <span className='w-2 h-2 bg-primary-mid rounded-full inline-block ml-2' />
-            )}
-          </div>
+            conv={conv}
+            selectedId={selectedId}
+            isMobile={false}
+            setSelectedId={setSelectedId}
+            setMobileView={setMobileView}
+            selected={selected}
+          />
         ))}
       </aside>
 
@@ -531,7 +504,10 @@ export default function Chat({
               className='bg-white rounded-xl shadow-md p-5 mb-6 flex flex-row gap-3 items-center w-full'
             >
               <img
-                src={selected?.propertyDetails.image}
+                src={
+                  selected?.propertyDetails.image ||
+                  'https://www.trical.co.nz/modules/custom/legrand_ecat/assets/img/no-image.png'
+                }
                 alt='property'
                 className='w-12 h-12 rounded-xl object-cover mr-4'
               />
@@ -555,56 +531,12 @@ export default function Chat({
             >
               {allMessages && allMessages.length > 0 ? (
                 allMessages.map(msg => (
-                  <div
+                  <Message
                     key={msg.id}
-                    className={`flex w-full ${
-                      msg.isMe ? 'justify-end' : 'justify-start'
-                    }`}
-                  >
-                    {!msg.isMe && (
-                      <img
-                        src={selected?.user.avatar}
-                        alt='avatar'
-                        className='w-10 h-10 rounded-full mr-3 self-end mb-2'
-                      />
-                    )}
-
-                    <div
-                      className={`max-w-xl flex flex-col justify-end ${
-                        msg.isMe ? 'items-end ml-auto' : 'items-start mr-auto'
-                      }`}
-                    >
-                      <div
-                        className={`rounded-xl px-4 py-3 text-sm shadow relative ${
-                          msg.isMe
-                            ? 'bg-primary-mid text-white shadow-violet-100'
-                            : 'bg-neutral-light text-[#222]'
-                        } ${msg.isOptimistic ? 'opacity-70' : ''} ${
-                          msg?.isFailed ? 'border border-red-300' : ''
-                        }`}
-                      >
-                        {msg.text}
-                        {msg.isOptimistic && (
-                          <div className='absolute -bottom-1 right-2 w-2 h-2 bg-blue-400 rounded-full animate-pulse' />
-                        )}
-                      </div>
-                      <div className='flex items-center gap-2 text-gray-400 text-sm m-2'>
-                        <span>{msg.time}</span>
-                        {msg?.isFailed && (
-                          <div className='flex items-center gap-1 text-red-500'>
-                            <AlertCircle className='w-3 h-3' />
-                            <span className='text-xs'>Failed to send</span>
-                            <button
-                              onClick={() => handleRetryMessage(msg.tempId)}
-                              className='text-xs underline hover:no-underline'
-                            >
-                              Retry
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                    msg={msg}
+                    selected={selected}
+                    handleRetryMessage={onRetryMessage}
+                  />
                 ))
               ) : (
                 <div className='flex-1 flex items-center justify-center'>
@@ -619,14 +551,39 @@ export default function Chat({
                 </div>
               )}
             </div>
-            {/* Input - Keep the exact same input implementation */}
+            {/* Input */}
             <div className='flex items-center gap-3'>
-              {/* <button className='bg-none border-none text-xl cursor-pointer'>
-                <Image src={file} alt='upload file' className='w-7 h-7' />
+              <button
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip className='w-6 h-6 text-gray-500' />
               </button>
-              <button className='bg-none border-none text-xl cursor-pointer'>
-                <Image src={image} alt='upload image' className='w-7 h-7' />
-              </button> */}
+              <button
+                className='p-2 hover:bg-gray-100 rounded-lg transition-colors'
+                onClick={() => imageInputRef.current?.click()}
+              >
+                <ImageIcon className='w-6 h-6 text-gray-500' />
+              </button>
+
+              {/* Hidden file inputs */}
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='.pdf,.doc,.docx'
+                multiple
+                onChange={e => handleFileSelect(e, false)}
+                className='hidden'
+              />
+              <input
+                ref={imageInputRef}
+                type='file'
+                accept='image/*'
+                multiple
+                onChange={e => handleFileSelect(e, true)}
+                className='hidden'
+              />
+
               <div className='relative flex-1 flex gap-2'>
                 <Input
                   type='text'
@@ -637,24 +594,32 @@ export default function Chat({
                   onKeyPress={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
-                      handleSendMessage();
+                      onSendMessage();
                     }
                   }}
-                  disabled={sendMessage.isPending}
                 />
-                {inputValue && (
+                {(inputValue || attachments.length > 0) && (
                   <button
                     type='button'
                     className='p-1 cursor-pointer disabled:opacity-50'
                     tabIndex={0}
-                    onClick={handleSendMessage}
-                    disabled={sendMessage.isPending}
+                    onClick={onSendMessage}
+                    disabled={isPending}
                   >
                     <Image src={send} alt='send' className='w-7 h-7' />
                   </button>
                 )}
               </div>
             </div>
+
+            {/* Attachment previews */}
+            {attachments.length > 0 && (
+              <div className='mt-4 p-4 bg-gray-50 rounded-lg'>
+                <div className='flex flex-wrap gap-2'>
+                  {attachments.map(renderAttachmentPreview)}
+                </div>
+              </div>
+            )}
           </>
         )}
       </main>

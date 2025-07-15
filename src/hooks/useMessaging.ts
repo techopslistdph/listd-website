@@ -23,9 +23,8 @@ export function useMessaging() {
   const [draft, setDraft] = useState<ReturnType<
     typeof getDraftConversation
   > | null>(null);
-  const [optimisticConversation, setOptimisticConversation] = useState<any>(
-    null
-  );
+  const [optimisticConversation, setOptimisticConversation] =
+    useState<any>(null);
 
   // Initial check for a draft conversation from local storage
   useEffect(() => {
@@ -220,7 +219,9 @@ export function useMessaging() {
     selected: optimisticConversation || selected,
     isLoading:
       conversationsLoading ||
-      (!!selectedId && !isDraftSelected && (conversationLoading || messagesLoading)),
+      (!!selectedId &&
+        !isDraftSelected &&
+        (conversationLoading || messagesLoading)),
     handleConversationCreated,
   };
 }
