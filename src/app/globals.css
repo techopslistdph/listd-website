@@ -321,3 +321,20 @@ input[type='checkbox']:checked::after {
 .swiper-pagination-bullet + .swiper-pagination-bullet {
   margin-left: 8px !important;
 }
+
+
+/* Hide Edge/IE eye icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Hide Chrome/Safari/Edge eye icon (newer versions) */
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
+/* Hide Chrome/Safari/Edge eye icon (older versions) */
+input[type="password"]::-webkit-input-decoration-container {
+  display: none !important;
+}
