@@ -102,11 +102,13 @@ export function PropertySpecificFields({
               <FormInput
                 name='floorNo'
                 label='Floor no.'
+                type='number'
                 placeholder='Enter floor no'
               />
               <FormInput
                 name='floorArea'
                 label='Floor area'
+                type='number'
                 placeholder='Enter your sqm'
               />
             </div>

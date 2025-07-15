@@ -105,6 +105,7 @@ export function PaymentStep({
           <FormInput
             name='grossAskingPrice'
             label='Gross Asking Price'
+            type='number'
             placeholder='PHP'
           />
         </div>

@@ -38,23 +38,24 @@ export function Stepper({
   const pathname = usePathname();
   const steps = pathname.includes('valuation') ? valuationSteps : defaultSteps;
   const currentListingTypeId = form.watch('listingTypeId');
+  const isLastStep = step === steps.length - 1;
   return (
     <div>
       <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0'>
-        {/* {step !== 0 &&
-          (pathname.includes('valuation') ? step !== 1 : step !== 3) && ( */}
-        <div
-          className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
-          onClick={onBack}
-        >
-          <ArrowLeft
-            className='w-4 h-4 sm:w-5 sm:h-5 text-primary-main'
-            strokeWidth={3}
-          />
-          <span className='font-semibold text-base sm:text-lg text-primary-main'>
-            Back
-          </span>
-        </div>
+        {!isLastStep && (
+          <div
+            className='flex items-center gap-2 mb-2 sm:mb-5 cursor-pointer'
+            onClick={onBack}
+          >
+            <ArrowLeft
+              className='w-4 h-4 sm:w-5 sm:h-5 text-primary-main'
+              strokeWidth={3}
+            />
+            <span className='font-semibold text-base sm:text-lg text-primary-main'>
+              Back
+            </span>
+          </div>
+        )}
         {/* )} */}
         {steps.length === 4 && step === 1 && listingTypes.length > 0 && (
           <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
@@ -92,15 +93,17 @@ export function Stepper({
             <div
               className={`w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center mb-1 sm:mb-2
               ${
-                idx === step
-                  ? 'border-4 border-primary-main bg-white text-primary-main'
-                  : idx < step
-                    ? 'bg-primary-main border-4 border-primary-main text-white'
-                    : 'bg-primary-light border-4 border-gray-200 text-gray-200 opacity-60'
+                idx === step && idx === steps.length - 1
+                  ? 'bg-primary-main border-4 border-primary-main text-white'
+                  : idx === step
+                    ? 'border-4 border-primary-main bg-white text-primary-main'
+                    : idx < step
+                      ? 'bg-primary-main border-4 border-primary-main text-white'
+                      : 'bg-primary-light border-4 border-gray-200 text-gray-200 opacity-60'
               }
               rounded-full transition-colors duration-200`}
             >
-              {idx < step && (
+              {(idx < step || (idx === step && idx === steps.length - 1)) && (
                 <Check
                   className='w-2 h-2 sm:w-3 sm:h-3 text-white'
                   strokeWidth={3}
