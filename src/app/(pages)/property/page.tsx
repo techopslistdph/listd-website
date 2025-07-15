@@ -16,8 +16,6 @@ export default async function Page({
     getListingTypes(),
   ]);
 
-  console.log({properties})
-
   return (
     <Properties
       properties={properties as unknown as PropertyListResponse}

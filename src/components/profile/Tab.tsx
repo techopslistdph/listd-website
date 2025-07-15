@@ -5,15 +5,24 @@ import Image from 'next/image';
 import profileImage from '@/../public/images/profile.png';
 import verifiedIcon from '@/../public/images/icons/verified.png';
 import EditProfile from './EditProfile';
-import MyListing from './MyListing';
+import MyListing from './my-listing';
 import ValuationListing from './ValuationListing';
 import LoginSecurity from './LoginSecurity';
 import MyFavorites from './MyFavorites';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
 import { UserProfile } from '@/lib/queries/hooks/types/user';
+import { FeatureAndAmenity } from './my-listing';
 
-export default function Tab({ userProfile }: { userProfile: UserProfile }) {
+export default function Tab({
+  userProfile,
+  features,
+  amenities,
+}: {
+  userProfile: UserProfile;
+  features: FeatureAndAmenity;
+  amenities: FeatureAndAmenity;
+}) {
   return (
     <div className='w-full'>
       <div className='mb-5 border-b border-neutral-mid/40 pb-5 flex flex-col md:flex-row gap-5 md:gap-0 items-center justify-between '>
@@ -86,7 +95,7 @@ export default function Tab({ userProfile }: { userProfile: UserProfile }) {
           <EditProfile userProfile={userProfile} />
         </TabsContent>
         <TabsContent value='my-listing'>
-          <MyListing />
+          <MyListing features={features} amenities={amenities} />
         </TabsContent>
         <TabsContent value='my-valuation'>
           <ValuationListing />

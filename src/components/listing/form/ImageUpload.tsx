@@ -1,12 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import uploadIcon from '@/../public/images/icons/upload.svg';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface ImageUploadProps {
-  onChange: (files: File[]) => void;
-  value?: File[];
+  onChange: (files: (File | { id: string; imageUrl: string })[]) => void;
+  value?: (File | { id: string; imageUrl: string })[];
   error?: string;
 }
 
@@ -14,29 +15,40 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
+  // Update previews when value changes
   useEffect(() => {
-    if (!value || value.length === 0) {
+    if (value && value.length > 0) {
+      const imageUrls = value
+        .map(item => {
+          if (item instanceof File) {
+            return URL.createObjectURL(item);
+          } else if (typeof item === 'object' && 'imageUrl' in item) {
+            return item.imageUrl;
+          }
+          return '';
+        })
+        .filter(url => url !== '');
+
+      setPreviews(imageUrls);
+    } else {
       setPreviews([]);
-      return;
     }
-    const urls = value.map(file => URL.createObjectURL(file));
-    setPreviews(urls);
-    return () => {
-      urls.forEach(url => URL.revokeObjectURL(url));
-    };
   }, [value]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      const newFiles = [...value, ...files];
-      onChange(newFiles);
+      const newValue = [...value, ...files];
+      onChange(newValue);
+
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
     }
   };
 
   const removeImage = (index: number) => {
-    const newFiles = value.filter((_, i) => i !== index);
-    onChange(newFiles);
+    const newValue = value.filter((_, i) => i !== index);
+    onChange(newValue);
     setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -59,11 +71,11 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
       return;
     }
 
-    // Reorder files
-    const newFiles = [...value];
-    const [draggedFile] = newFiles.splice(draggedIndex, 1);
-    newFiles.splice(dropIndex, 0, draggedFile);
-    onChange(newFiles);
+    // Reorder the value array
+    const newValue = [...value];
+    const [draggedItem] = newValue.splice(draggedIndex, 1);
+    newValue.splice(dropIndex, 0, draggedItem);
+    onChange(newValue);
 
     // Reorder previews
     const newPreviews = [...previews];
@@ -121,11 +133,10 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
               onDragEnd={handleDragEnd}
             >
               <div className='aspect-square relative rounded-lg overflow-hidden'>
-                <Image
+                <img
                   src={preview}
                   alt={`Preview ${index + 1}`}
-                  fill
-                  className='object-cover pointer-events-none'
+                  className='object-cover pointer-events-none h-full w-full'
                 />
                 {/* Drag indicator */}
                 <div className='absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors pointer-events-none' />
@@ -137,7 +148,7 @@ export function ImageUpload({ onChange, value = [], error }: ImageUploadProps) {
                 <X className='w-4 h-4 text-gray-600' />
               </button>
               {/* Order indicator */}
-              <div className='absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full'>
+              <div className='absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 h-5 w-5 flex items-center justify-center rounded-full'>
                 {index + 1}
               </div>
             </div>

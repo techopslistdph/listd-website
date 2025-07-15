@@ -1,5 +1,3 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '../../ui/label';
 import freelistingIcon from '@/../public/images/icons/freelisting.svg';
 import packagenameIcon from '@/../public/images/icons/packagename.svg';
 import Image from 'next/image';
@@ -7,6 +5,7 @@ import { ActionButtons } from './ActionButtons';
 
 import { UseFormReturn } from 'react-hook-form';
 import { ListingFormData } from './Schema';
+import { FormInput } from '@/components/ui/form-input';
 
 interface PaymentStepProps {
   onNext: () => void;
@@ -16,6 +15,7 @@ interface PaymentStepProps {
   handleSubmit: () => void;
   isSubmitting: boolean;
   form: UseFormReturn<ListingFormData>;
+  isEditing?: boolean;
 }
 
 export function PaymentStep({
@@ -25,6 +25,7 @@ export function PaymentStep({
   handleSubmit,
   onDraft,
   isSubmitting,
+  isEditing = false,
 }: PaymentStepProps) {
   return (
     <div className='bg-white'>
@@ -101,21 +102,21 @@ export function PaymentStep({
       <h2 className='heading-5 mb-5'>Terms</h2>
       <div className='mb-4'>
         <div className='space-y-4'>
-          <Label>Gross Asking Price</Label>
-          <Input
+          <FormInput
+            name='grossAskingPrice'
+            label='Gross Asking Price'
             placeholder='PHP'
-            value={form.getValues('grossAskingPrice')}
-            onChange={e => onChange('grossAskingPrice', e.target.value)}
-            className='mb-1'
           />
         </div>
       </div>
-      <ActionButtons
-        onDraft={onDraft}
-        onNext={handleSubmit}
-        onBack={onBack}
-        isLoading={isSubmitting}
-      />
+      {!isEditing && (
+        <ActionButtons
+          onDraft={onDraft}
+          onNext={handleSubmit}
+          onBack={onBack}
+          isLoading={isSubmitting}
+        />
+      )}
     </div>
   );
 }

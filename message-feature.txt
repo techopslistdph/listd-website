@@ -1,0 +1,38 @@
+## Messaging Features Detailed Breakdown
+
+This document outlines the features of the messaging system based on the implementation in `@src/app/(pages)/message/page.tsx`.
+
+### 1. Conversation List & Management
+
+- **Fetch Conversations:** The application fetches a paginated list of the user's conversations from the server using the `useConversations` hook.
+- **Display Conversation Snippets:** The list on the side panel displays a summary for each conversation, including:
+    - Property Image
+    - Property Name
+    - The content of the most recent message.
+    - The timestamp of the last message (e.g., "Now", "Yesterday").
+    - A badge indicating the number of unread messages.
+- **Default Selection:**
+    - On page load, if no specific conversation is selected, the application automatically opens the most recent conversation.
+- **Data Transformation:** The raw conversation data from the API is processed by `transformConversations` to format it for display.
+
+### 2. Message Viewing & Interaction
+
+- **Fetch Messages:** When a user selects a conversation, the application fetches its message history using the `useMessages` hook.
+- **Real-time Updates:** The active conversation polls for new messages every 10 seconds, providing near real-time updates without a websocket connection.
+- **Mark as Read:** When a conversation is opened, if the last message is unread and was not sent by the current user, it is automatically marked as read using the `useMarkMessagesAsRead` mutation.
+- **Display Property Details:** The header of the chat window displays detailed information about the property being discussed, including its image, name, type, location, and price.
+
+### 3. Draft Conversations & Sending New Messages
+
+- **Draft Initiation:** Users can start composing a message from a property listing page. This creates a temporary "draft" conversation that appears at the top of their conversation list.
+- **Draft Persistence:** The draft is stored locally (likely in `localStorage` via `getDraftConversation`) so the user can navigate away and return to it later.
+- **Draft to Conversation Transition:**
+    - If the user sends the first message in a draft, a new conversation is officially created.
+    - If a conversation with the property owner already exists, the draft is discarded, and the existing conversation is loaded, preventing duplicate threads.
+- **Optimistic UI for New Conversations:** When a message is sent from a draft conversation for the first time, the UI is updated instantly (`handleConversationCreated`). The new conversation and message appear active while the request is being processed by the server. This avoids a loading delay.
+
+### 4. User Experience & Edge Cases
+
+- **Loading State:** A full-page loading spinner is displayed while the initial list of conversations is being fetched.
+- **Empty State:** If a user has no conversations, a message is displayed prompting them to "Browse Properties" with a link back to the main page.
+- **User Identification:** The system uses `useGetProfile` to fetch the current user's profile, which is essential for distinguishing between sent and received messages to style them correctly in the chat view.

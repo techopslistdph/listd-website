@@ -92,8 +92,10 @@ export interface BarangayCityResponse {
 export interface PropertyDetail {
   id: string;
   buildingSize: number;
+  buildingName: string;
   lotSize: number | null;
   floorArea: number | null;
+  floorNumber: number | null;
   ceilingHeight: number | null;
   loadingDocks: number | null;
   numberOfBedrooms: number | null;
@@ -111,6 +113,7 @@ export interface PropertyDetail {
   numberOfKitchens: number | null;
   numberOfMaidRooms: number | null;
   yearBuilt: number | null;
+  facingWest: boolean | null;
   furnishingStatus: string | null;
   property: PropertyDetails;
   isLiked: boolean;
@@ -122,13 +125,17 @@ export interface PropertyDetails {
   listingPrice: number;
   listingPriceFormatted: string;
   address: string;
+  streetAddress: string;
   cityName: string;
+  region: string;
   isDraft: boolean;
   isPublished: boolean;
   barangayName: string;
   longitude: number;
   latitude: number;
   propertyTypeName: string;
+  propertyTypeId: string;
+  listingTypeId: string;
   listingTypeName: string;
   scrapeContactInfo: ScrapeContactInfo;
   images: PropertyImage[];
@@ -188,6 +195,7 @@ export interface AmenitiesAndFeatures {
 }
 
 export interface CreateListingRequest {
+  id?: string;
   listingTypeId?: string;
   propertyTypeId?: string;
   streetAddress?: string;
@@ -210,7 +218,7 @@ export interface CreateListingRequest {
   listingTitle?: string;
   listingDescription?: string;
   listingPrice?: number;
-  listingPriceFormatted?: string;
+  listingPriceFormatted?: string | number;
   pricePerSqm?: number;
   longitude?: number;
   latitude?: number;

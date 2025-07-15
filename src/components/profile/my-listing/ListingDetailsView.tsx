@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import 'swiper/css';
 
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ArrowLeft } from 'lucide-react';
-import { PropertyImages } from '../listing/PropertyImages';
-import PropertyDetailsDisplay from '../listing/PropertyDetailsDisplay';
+
+import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
+import { PropertyImages } from '@/components/listing/PropertyImages';
+import { Button } from '@/components/ui/button';
 
 interface ListingDetailsViewProps {
   listing: PropertyDetail;
@@ -156,7 +156,7 @@ export default function ListingDetailsView({
       </div>
 
       {/* Update Status Button */}
-      {/* <div className='flex justify-end mt-5'>
+      <div className='flex justify-end mt-5'>
         <Button
           variant='default'
           className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
@@ -169,8 +169,7 @@ export default function ListingDetailsView({
         >
           Update Status
         </Button>
-     
-      </div> */}
+      </div>
     </div>
   );
 }

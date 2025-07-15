@@ -40,7 +40,6 @@ export async function POST(request: NextRequest) {
         } catch {
           // No body provided, continue without body
         }
-
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: {
@@ -70,7 +69,6 @@ export async function POST(request: NextRequest) {
         } catch {
           // No body provided, continue without body
         }
-
         const response = await fetch(backendUrl, {
           method: 'POST',
           headers: {

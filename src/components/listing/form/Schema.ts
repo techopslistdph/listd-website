@@ -27,13 +27,16 @@ const baseSchema = {
   street: z.string().min(1, 'Street is required'),
   images: z.array(z.instanceof(File)).min(3, 'At least 3 images are required'),
   // Step 2
-  title: z.string().min(1, 'Title is required'),
+  title: z
+    .string()
+    .min(1, 'Title is required')
+    .max(255, 'Title cannot exceed 255 characters'),
   description: z.string().min(1, 'Description is required'),
   forSale: z.boolean(),
   // Step 3
   package: packageEnum,
   period: z.string(),
-  grossAskingPrice: z.string().min(1, 'Gross asking price is required'),
+  grossAskingPrice: z.coerce.number().min(1, 'Must be 1 or greater'),
   downPaymentPercent: z.string().optional(),
   downPaymentPHP: z.string().optional(),
   commissionPercent: z.string().optional(),
@@ -81,8 +84,8 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
     ...baseSchema,
     propertyType: z.literal('Condominium'),
     buildingName: z.string().min(1, 'Building name is required'),
-    floorNo: z.string().min(1, 'Floor number is required'),
-    floorArea: z.string().min(1, 'Floor area is required'),
+    floorNo: z.coerce.number().min(1, 'Must be 1 or greater'),
+    floorArea: z.coerce.number().min(1, 'Must be 1 or greater'),
     bedrooms: z.coerce.number().min(0, 'Must be 0 or greater'),
     bathrooms: z.coerce.number().min(0, 'Must be 0 or greater'),
     parking: z.coerce.number().min(0, 'Must be 0 or greater'),
@@ -105,8 +108,8 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
   z.object({
     ...baseSchema,
     propertyType: z.literal('Warehouse'),
-    lotSize: z.string().min(1, 'Lot size is required'),
-    floorArea: z.string().min(1, 'Floor area is required'),
+    lotSize: z.coerce.number().min(0, 'Must be 0 or greater'),
+    floorArea: z.coerce.number().min(0, 'Must be 0 or greater'),
     ceilingHeight: z
       .string()
       .min(1, 'Ceiling height is required')
@@ -118,7 +121,10 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
         label: z.string(),
       })
     ),
-    loadingDocks: z.coerce.number().min(0, 'Must be 0 or greater'),
+    loadingDocks: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(50, 'Number of loading docks cannot exceed 50'),
     buildingSize: z.coerce.number().min(0, 'Must be 0 or greater'),
   }),
   // House and Lot specific schema
@@ -129,7 +135,7 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
       .number()
       .min(1, 'Number of floors must be 1 or greater')
       .max(10, 'Number of floors cannot exceed 10'),
-    floorArea: z.string().min(1, 'Floor area is required'),
+    floorArea: z.coerce.number().min(0, 'Must be 0 or greater'),
     lotSize: z.string().min(1, 'Lot size is required'),
     bedrooms: z.coerce.number().min(0, 'Must be 0 or greater'),
     bathrooms: z.coerce.number().min(0, 'Must be 0 or greater'),
@@ -148,12 +154,30 @@ export const listingFormSchema = z.discriminatedUnion('propertyType', [
         label: z.string(),
       })
     ),
-    numberOfGarages: z.coerce.number().min(0, 'Must be 0 or greater'),
-    numberOfLivingRooms: z.coerce.number().min(0, 'Must be 0 or greater'),
-    numberOfDiningRooms: z.coerce.number().min(0, 'Must be 0 or greater'),
-    numberOfKitchens: z.coerce.number().min(0, 'Must be 0 or greater'),
-    numberOfMaidRooms: z.coerce.number().min(0, 'Must be 0 or greater'),
-    yearBuilt: z.coerce.number().min(1900, 'Year must be 1900 or later'),
+    numberOfGarages: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(5, 'Number of garages cannot exceed 5'),
+    numberOfLivingRooms: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(10, 'Number of living rooms cannot exceed 10'),
+    numberOfDiningRooms: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(5, 'Number of dining rooms cannot exceed 5'),
+    numberOfKitchens: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(5, 'Number of kitchens cannot exceed 5'),
+    numberOfMaidRooms: z.coerce
+      .number()
+      .min(0, 'Must be 0 or greater')
+      .max(5, 'Number of maid rooms cannot exceed 5'),
+    yearBuilt: z.coerce
+      .number()
+      .min(1900, 'Year must be 1900 or later')
+      .max(new Date().getFullYear(), 'Year must be current year or earlier'),
   }),
   // Vacant Lot specific schema
   z.object({

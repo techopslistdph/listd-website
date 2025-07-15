@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import uploadIcon from '@/../public/images/icons/upload.svg';
-import Image from 'next/image';
-// import { TagInput } from '../listing/form/TagInput';
 import { Button } from '../ui/button';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
+import { PropertySpecificFields } from '../listing/form/PropertySpecificFields';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ListingFormData, listingFormSchema } from '../listing/form/Schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FeatureAndAmenity } from './my-listing';
+import { TitleDescriptionStep } from '../listing/form/TitleDescriptionStep';
+import { PaymentStep } from '../listing/form/PaymentStep';
+import { ImageUpload } from '../listing/form/ImageUpload';
+import { transformPropertyData } from '@/lib/utils/transformPropertyData';
+import { useListingSubmission } from '@/hooks/useListingSubmission';
 
 interface UpdateStatusDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   property: PropertyDetail | null;
   isValuation?: boolean;
+  features: FeatureAndAmenity;
+  amenities: FeatureAndAmenity;
 }
 
 const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
@@ -23,300 +32,113 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
   onOpenChange,
   property,
   isValuation = false,
+  features,
+  amenities,
 }) => {
-  const [formData, setFormData] = useState({
-    // use listing title for now
-    buildingName: property?.property.listingTitle || '',
-    streetAddress: 'Manila',
-    barangay: 'Manila',
-    city: 'Manila',
-    state: 'Manila',
-    floorNo: '2',
-    floorArea: '60',
-    furnishing: 'Fully Furnished',
-    bedrooms: '2',
-    bathrooms: '2',
-    parking: '1',
-    amenities: ['Lounge', 'Spa Room'],
-    features: ['Lounge', 'Spa Room'],
+  const form = useForm<ListingFormData>({
+    resolver: zodResolver(listingFormSchema),
+    defaultValues: {} as ListingFormData,
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
   });
 
-  const [unlistReason, setUnlistReason] = useState('');
+  React.useEffect(() => {
+    if (property) {
+      const transformedData = transformPropertyData(property);
+      form.reset(transformedData);
+    }
+  }, [property, form]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleChange = (field: string, value: unknown) => {
+    if (
+      typeof value === 'string' ||
+      typeof value === 'boolean' ||
+      Array.isArray(value)
+    ) {
+      form.setValue(field as keyof ListingFormData, value, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
   };
 
+  const handleNext = () => {
+    onOpenChange(false);
+  };
+
+  const { handleSubmit, isSubmitting } = useListingSubmission(
+    form.getValues(),
+    handleNext
+  );
+
   if (!property) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[90vw] lg:min-w-3xl w-full p-4 lg:p-8 overflow-y-auto max-h-[90vh]'>
+      <DialogContent className='min-w-[90vw] lg:min-w-5xl w-full p-4 lg:p-8 overflow-y-auto max-h-[90vh]'>
         <DialogHeader>
-          <DialogTitle className='text-lg lg:text-xl'>
+          <DialogTitle className='text-lg lg:text-xl border-b border-neutral-mid/40 pb-4'>
             {isValuation
               ? 'Update Valuation Details'
-              : 'Confirm and complete your Property Address'}
+              : property.property?.listingTitle || 'Update Property Details'}
           </DialogTitle>
         </DialogHeader>
-        <div className='mb-3 lg:mb-4'>
-          <label className='block font-medium text-sm lg:text-base mb-1'>
-            Building Name
-          </label>
-          <input
-            type='text'
-            name='buildingName'
-            className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 mb-2 outline-none text-sm lg:text-base'
-            value={formData.buildingName}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 mb-3 lg:mb-4'>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Street Address
-            </label>
-            <input
-              type='text'
-              name='streetAddress'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.streetAddress}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Barangay
-            </label>
-            <input
-              type='text'
-              name='barangay'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.barangay}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              City
-            </label>
-            <input
-              type='text'
-              name='city'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.city}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              State/Region
-            </label>
-            <input
-              type='text'
-              name='state'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.state}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-        <h3 className='font-semibold text-sm lg:text-base mb-2'>
-          Details about your place
-        </h3>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 mb-3 lg:mb-4'>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Floor no.
-            </label>
-            <input
-              type='text'
-              name='floorNo'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.floorNo}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Floor area
-            </label>
-            <input
-              type='text'
-              name='floorArea'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.floorArea}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Furnishing
-            </label>
-            <select
-              name='furnishing'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.furnishing}
-              onChange={handleInputChange}
-            >
-              <option>Fully Furnished</option>
-              <option>Semi-Furnished</option>
-              <option>Unfurnished</option>
-            </select>
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Bedrooms
-            </label>
-            <input
-              type='text'
-              name='bedrooms'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.bedrooms}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Bathrooms
-            </label>
-            <input
-              type='text'
-              name='bathrooms'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.bathrooms}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label className='block font-medium text-sm lg:text-base mb-1'>
-              Parking
-            </label>
-            <input
-              type='text'
-              name='parking'
-              className='w-full bg-gray-100 rounded-lg lg:rounded-xl px-3 lg:px-4 py-2 lg:py-3 outline-none text-sm lg:text-base'
-              value={formData.parking}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-        <h3 className='font-semibold text-sm lg:text-base mb-2'>
-          Features & Amenities
-        </h3>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 mb-3 lg:mb-4'>
-          {/* <div>
-            <TagInput
-              label='Amenities'
-              value={formData.amenities}
-              onChange={value =>
-                setFormData(prev => ({ ...prev, amenities: value }))
-              }
-              placeholder='Type and press Enter'
-            />
-          </div>
-          <div>
-            <TagInput
-              label='Features'
-              value={formData.features}
-              onChange={value =>
-                setFormData(prev => ({ ...prev, features: value }))
-              }
-              placeholder='Type and press Enter'
-            />
-          </div> */}
-        </div>
-
-        {!isValuation && (
-          <>
-            <h3 className='font-semibold text-sm lg:text-base mb-2'>
-              Property Photo
-            </h3>
-            <div className='mb-4 lg:mb-6'>
-              <label className='block font-medium text-sm lg:text-base mb-1'>
-                Image
-              </label>
-              <div className='border-2 border-dashed border-primary-main rounded-lg lg:rounded-xl p-4 lg:p-8 flex flex-col items-center justify-center bg-[#fafaff]'>
-                <Image
-                  src={uploadIcon}
-                  alt='upload Icon'
-                  className='mb-2 w-8 h-8 lg:w-auto lg:h-auto'
+        <div>
+          <FormProvider {...form}>
+            <div className='flex flex-col gap-4'>
+              <PropertySpecificFields
+                form={form}
+                onChange={handleChange}
+                features={features}
+                amenities={amenities}
+                nearbyLocations={[]}
+              />
+              <>
+                <h2 className='heading-5 mb-5'>Property Photo</h2>
+                <ImageUpload
+                  onChange={files => handleChange('images', files)}
+                  value={form.getValues('images')}
+                  error={form.formState.errors.images?.message}
                 />
-                <span className='text-gray-500 text-sm lg:text-base'>
-                  Drag your file(s) or{' '}
-                  <span className='text-primary-main cursor-pointer'>
-                    browse
-                  </span>
-                </span>
-                <span className='text-gray-400 text-xs lg:text-sm mt-1'>
-                  Max 10 MB files are allowed
-                </span>
-              </div>
+              </>
+              <TitleDescriptionStep
+                form={form}
+                onChange={handleChange}
+                onNext={() => {}}
+                onDraft={() => {}}
+                isSubmitting={false}
+                isEditing={true}
+              />
+              <PaymentStep
+                form={form}
+                onChange={handleChange}
+                onNext={() => {}}
+                onDraft={() => {}}
+                isSubmitting={false}
+                onBack={() => {}}
+                handleSubmit={() => {}}
+                isEditing={true}
+              />
             </div>
-
-            {/* Unlist Property Section */}
-            <div className=''>
-              <div className='mb-2'>
-                <h3 className='font-semibold text-sm lg:text-base mb-2'>
-                  Unlist Property
-                </h3>
-                <div className='text-gray-400 text-sm lg:text-base font-normal mt-1'>
-                  Manage your property listing settings
-                </div>
-              </div>
-              <div className='mb-4 mt-4 lg:mt-6'>
-                <label className='block font-medium text-sm lg:text-base mb-2'>
-                  Reason for unlisting
-                </label>
-                <div className='space-y-2 lg:space-y-4'>
-                  {[
-                    'Property Sold',
-                    'Property Rented',
-                    'No Interest',
-                    'Property under Remodeling',
-                    'Other Reason',
-                  ].map(reason => (
-                    <label
-                      key={reason}
-                      className={`flex items-center border rounded-lg lg:rounded-xl px-4 lg:px-6 py-3 lg:py-5 cursor-pointer transition ${
-                        unlistReason === reason
-                          ? 'border-primary-main'
-                          : 'border-gray-300'
-                      }`}
-                    >
-                      <input
-                        type='radio'
-                        className='form-radio w-4 h-4 lg:w-6 lg:h-6 mr-3 lg:mr-4 accent-primary-main'
-                        checked={unlistReason === reason}
-                        onChange={() => setUnlistReason(reason)}
-                      />
-                      <span className='text-xs lg:text-sm'>{reason}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+          </FormProvider>
+        </div>
 
         <div className='flex flex-col lg:flex-row justify-end gap-2 lg:gap-4 mt-6 lg:mt-8'>
           <Button
             variant='outline'
             className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 border-primary-main text-primary-main hover:bg-white cursor-pointer text-sm lg:text-base'
             type='button'
+            onClick={() => onOpenChange(false)}
           >
             Discard
           </Button>
           <Button
             type='button'
             className='rounded-full py-3 lg:py-5 px-4 lg:px-8 w-full lg:w-44 bg-primary-main text-white hover:bg-primary-main border border-primary-main cursor-pointer text-sm lg:text-base'
+            onClick={() => handleSubmit(false, true, property.id)}
+            disabled={isSubmitting}
           >
-            Save
+            {isSubmitting ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </DialogContent>

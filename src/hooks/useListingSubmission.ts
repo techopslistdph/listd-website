@@ -7,13 +7,17 @@ import { CreateListingRequest } from '@/lib/queries/server/propety/type';
 
 export const useListingSubmission = (
   data: ListingFormData,
-  onNext: () => void
+  onNext?: () => void
 ) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useUser();
   const { mutate: listMyProperty } = useListMyProperty();
 
-  const handleSubmit = async (isDraft: boolean = false) => {
+  const handleSubmit = async (
+    isDraft: boolean = false,
+    isEditing: boolean = false,
+    propertyId?: string
+  ) => {
     try {
       setIsSubmitting(true);
       if (!user) {
@@ -27,16 +31,19 @@ export const useListingSubmission = (
         ...(data?.street && { streetAddress: data?.street }),
         ...(data?.barangay && { barangayId: data?.barangay }),
         ...(data?.city && { cityId: data?.city }),
+        ...(data?.street && { streetAddress: data?.street }),
         ...(data?.city &&
-          data?.barangay && {
-            streetAddress: `${data?.city}, ${data?.barangay}`,
+          data?.barangay &&
+          data?.street &&
+          data?.state && {
+            address: `${data?.city}, ${data?.barangay}, ${data?.street}, ${data?.state}`,
           }),
         ...(data?.state && { region: data?.state }),
         ...(data?.images && { photos: data?.images }),
         ...(data?.title && { listingTitle: data?.title }),
         ...(data?.description && { listingDescription: data?.description }),
         ...(data?.grossAskingPrice && {
-          listingPrice: Math.max(parseInt(data?.grossAskingPrice), 1),
+          listingPrice: Math.max(Number(data?.grossAskingPrice), 1),
           listingPriceFormatted: data?.grossAskingPrice,
         }),
         ...(data?.longitude && { longitude: Number(data?.longitude) }),
@@ -50,8 +57,8 @@ export const useListingSubmission = (
         ...baseListingData,
         ...(data.propertyType === 'Condominium' && {
           buildingName: data?.buildingName || '',
-          ...(data?.floorNo && { floorNumber: parseInt(data?.floorNo) }),
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorNo && { floorNumber: Number(data?.floorNo) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.fullyFurnished && {
             furnishingStatus: data?.fullyFurnished,
           }),
@@ -66,10 +73,11 @@ export const useListingSubmission = (
           featureIds: data?.features.map(item => item.value) || [],
         }),
         ...(data?.propertyType === 'Warehouse' && {
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.ceilingHeight && {
-            ceilingHeight: parseInt(data?.ceilingHeight),
+            ceilingHeight: Number(data?.ceilingHeight),
           }),
+          ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.parking && {
             numberOfParkingSpaces: Number(data?.parking),
           }),
@@ -85,7 +93,7 @@ export const useListingSubmission = (
           }),
         }),
         ...(data.propertyType === 'House and lot' && {
-          ...(data?.floorArea && { floorArea: parseInt(data?.floorArea) }),
+          ...(data?.floorArea && { floorArea: Number(data?.floorArea) }),
           ...(data?.lotSize && { lotSize: Number(data?.lotSize) }),
           ...(data?.fullyFurnished && {
             furnishingStatus: data?.fullyFurnished,
@@ -130,10 +138,10 @@ export const useListingSubmission = (
         }),
         ...(data?.grossAskingPrice && {
           pricePerSqm: Math.max(
-            parseInt(data.grossAskingPrice) /
+            Number(data.grossAskingPrice) /
               (data.propertyType === 'Vacant lot'
                 ? Number(data.lotSize)
-                : parseInt(data.floorArea) || 1),
+                : Number(data.floorArea) || 1),
             0
           ),
         }),
@@ -144,6 +152,8 @@ export const useListingSubmission = (
         {
           data: listingData,
           propertyType: data.propertyType,
+          isEditing,
+          propertyId,
         },
         {
           onSuccess: result => {
@@ -151,24 +161,37 @@ export const useListingSubmission = (
               toast.success(
                 isDraft
                   ? 'Listing saved as draft'
-                  : 'Listing created successfully'
+                  : isEditing
+                    ? 'Listing updated successfully'
+                    : 'Listing created successfully'
               );
-              onNext(); // This will show the ResultsStep
+              onNext?.(); // This will show the ResultsStep
             } else {
-              toast.error(result.message || 'Failed to create listing');
+              toast.error(
+                result.message ||
+                  (isEditing
+                    ? 'Failed to update listing'
+                    : 'Failed to create listing')
+              );
             }
             setIsSubmitting(false);
           },
           onError: error => {
             console.error('Error creating listing:', error);
-            toast.error('Failed to create listing');
+            toast.error(
+              isEditing
+                ? 'Failed to update listing'
+                : 'Failed to create listing'
+            );
             setIsSubmitting(false);
           },
         }
       );
     } catch (error) {
       console.error('Error creating listing:', error);
-      toast.error('Failed to create listing');
+      toast.error(
+        isEditing ? 'Failed to update listing' : 'Failed to create listing'
+      );
       setIsSubmitting(false);
     }
   };
