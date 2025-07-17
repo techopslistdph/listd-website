@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -10,6 +9,7 @@ import Link from 'next/link';
 import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
 import PropertySliderSkeleton from './PropertySliderSkeleton';
+import CardsFallback from './CardFallback';
 
 export interface PropertySliderCard {
   image: string;
@@ -116,11 +116,10 @@ export default function PropertySlider() {
                 className='bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col h-full mb-10 cursor-grab'
               >
                 <div className='relative w-full min-w-[250px] min-h-[250px] md:min-w-[350px] md:min-h-[350px]'>
-                  <Image
-                    src={card?.images[0]?.imageUrl || ''}
+                  <CardsFallback
+                    src={card?.images[0]?.imageUrl || '/images/icons/empty.svg'}
                     alt={card?.listingTitle}
-                    fill
-                    className='object-cover'
+    
                   />
                 </div>
                 <div className='p-6 flex flex-col flex-1'>
