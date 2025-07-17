@@ -6,7 +6,7 @@ import { useDeleteProperty } from '@/lib/queries/hooks/use-property';
 import { toast } from 'sonner';
 import ListingDetailsView from './ListingDetailsView';
 import ConfirmationDialog from '../ConfirmationDialog';
-import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
+import PropertyDetailsDisplay from '@/components/property/PropertyDetailsDisplay';
 
 interface ListingAnalyticsViewProps {
   listing: PropertyDetail;

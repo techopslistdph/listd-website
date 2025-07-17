@@ -4,8 +4,8 @@ import 'swiper/css';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { ArrowLeft } from 'lucide-react';
 
-import PropertyDetailsDisplay from '@/components/listing/PropertyDetailsDisplay';
-import { PropertyImages } from '@/components/listing/PropertyImages';
+import PropertyDetailsDisplay from '@/components/property/PropertyDetailsDisplay';
+import { PropertyImages } from '@/components/property/PropertyImages';
 import { Button } from '@/components/ui/button';
 
 interface ListingDetailsViewProps {

@@ -74,3 +74,102 @@ export function processPropertyDetails(
 
   return { features, details };
 }
+
+interface ParsedDescriptionSection {
+  title?: string;
+  content: string[];
+  type: 'keyValue' | 'bulletList' | 'paragraph' | 'source';
+}
+
+export function parsePropertyDescription(
+  description: string
+): ParsedDescriptionSection[] {
+  if (!description) return [];
+
+  const lines = description
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line);
+  const sections: ParsedDescriptionSection[] = [];
+  let currentSection: ParsedDescriptionSection | null = null;
+
+  for (const line of lines) {
+    // Check for source section - stop parsing here and exclude it
+    if (line.toLowerCase().includes('--- listing source ---')) {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      // Don't create a source section, just break out of the loop
+      break;
+    }
+
+    // Check for section headers (ends with colon)
+    if (
+      line.endsWith(':') &&
+      !line.includes(' : ') &&
+      !line.includes(': ') &&
+      !line.includes(' :') &&
+      !line.includes(' : ')
+    ) {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      const title = line.slice(0, -1).trim();
+      currentSection = { title, type: 'bulletList', content: [] };
+      continue;
+    }
+
+    // Check for key-value pairs (contains ' : ')
+    if (line.includes(' : ')) {
+      if (!currentSection || currentSection.type !== 'keyValue') {
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+        currentSection = { type: 'keyValue', content: [] };
+      }
+      currentSection.content.push(line);
+      continue;
+    }
+
+    // Check for bullet points
+    if (line.startsWith('•') || line.startsWith('-')) {
+      if (!currentSection || currentSection.type !== 'bulletList') {
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+        currentSection = { type: 'bulletList', content: [] };
+      }
+      currentSection.content.push(line);
+      continue;
+    }
+
+    // Check for amenities section
+    if (
+      line.toLowerCase().includes('amenities:') ||
+      line.toLowerCase().includes('village amenities:')
+    ) {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      const title = line.trim();
+      currentSection = { title, type: 'bulletList', content: [] };
+      continue;
+    }
+
+    // Regular paragraph content
+    if (!currentSection || currentSection.type !== 'paragraph') {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      currentSection = { type: 'paragraph', content: [] };
+    }
+    currentSection.content.push(line);
+  }
+
+  // Add the last section (but not if it's a source section)
+  if (currentSection && currentSection.type !== 'source') {
+    sections.push(currentSection);
+  }
+
+  return sections;
+}

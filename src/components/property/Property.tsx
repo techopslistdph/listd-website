@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PropertyImages } from '../listing/PropertyImages';
-import { PropertyHeader } from '../listing/PropertyHeader';
-import { PropertyMap } from '../listing/PropertyMap';
-import { AgentCard } from '../listing/AgentCard';
+import { PropertyImages } from './PropertyImages';
+import { PropertyHeader } from './PropertyHeader';
+import { PropertyMap } from './PropertyMap';
+import { AgentCard } from './AgentCard';
 import {
   PropertyDetail,
   PropertyImage,
 } from '@/lib/queries/server/propety/type';
-import PropertyDescription from '../listing/PropertyDescription';
-import PropertyFeatures from '../listing/PropertyFeatures';
+import PropertyDescription from './PropertyDescription';
+import PropertyFeatures from './PropertyFeatures';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 
 export default function Property({
