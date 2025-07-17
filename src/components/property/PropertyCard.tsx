@@ -5,7 +5,7 @@ import pinIcon from '../../../public/images/icons/pin.svg';
 import bedIcon from '../../../public/images/icons/bedroom.svg';
 import bathIcon from '../../../public/images/icons/bath.svg';
 import areaIcon from '../../../public/images/icons/squaremeter.svg';
-import { PropertyImages } from './PropertyImages';
+import { PropertyImages } from '../property/PropertyImages';
 import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';

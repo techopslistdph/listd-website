@@ -1,5 +1,5 @@
 'use client';
-import PropertyCard from '@/components/listing/PropertyCard';
+import PropertyCard from '@/components/property/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
 import Image from 'next/image';
