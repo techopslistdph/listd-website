@@ -62,7 +62,7 @@ export function PaymentStep({
                 : (data.data?.valuation?.rentalPrice?.estimated ?? null)
             );
           } else {
-            toast.error(data.message || 'Failed to generate title');
+            toast.error(data.message || 'Failed to generate price');
           }
         },
         onError: error => {
