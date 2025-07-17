@@ -6,6 +6,15 @@ import { ActionButtons } from './ActionButtons';
 import { UseFormReturn } from 'react-hook-form';
 import { ListingFormData } from './Schema';
 import { FormInput } from '@/components/ui/form-input';
+import GenerateButton from './GenerateButton';
+import {
+  buildPropertyPrompt,
+  validateRequiredFields,
+} from '@/lib/utils/propertyPrompBuilder';
+import { toast } from 'sonner';
+import { useAiGenerate } from '@/lib/queries/hooks/use-ai-generate';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
 
 interface PaymentStepProps {
   onNext: () => void;
@@ -27,6 +36,44 @@ export function PaymentStep({
   isSubmitting,
   isEditing = false,
 }: PaymentStepProps) {
+  const { mutate: generateContent, isPending } = useAiGenerate();
+  const [priceRecommendation, setPriceRecommendation] = useState<number | null>(
+    null
+  );
+
+  const generateAiContent = () => {
+    const formData = form.getValues();
+
+    const validation = validateRequiredFields(formData);
+    if (!validation.isValid) {
+      return toast.error(validation.message);
+    }
+
+    const prompt = buildPropertyPrompt(formData, 'valuate');
+
+    generateContent(
+      { ...prompt },
+      {
+        onSuccess: data => {
+          if (data.success) {
+            setPriceRecommendation(
+              formData.listingType === 'Buy'
+                ? (data.data?.valuation?.salePrice?.estimated ?? null)
+                : (data.data?.valuation?.rentalPrice?.estimated ?? null)
+            );
+          } else {
+            toast.error(data.message || 'Failed to generate title');
+          }
+        },
+        onError: error => {
+          toast.error(
+            error.message || 'Failed to generate content. Please try again.'
+          );
+        },
+      }
+    );
+  };
+
   return (
     <div className='bg-white'>
       <h2 className='heading-5 mb-4'>Payment Packages</h2>
@@ -100,13 +147,38 @@ export function PaymentStep({
         </>
       )}
       <h2 className='heading-5 mb-5'>Terms</h2>
-      <div className='mb-4'>
-        <div className='space-y-4'>
-          <FormInput
-            name='grossAskingPrice'
-            label='Gross Asking Price'
-            type='number'
-            placeholder='PHP'
+      <div className='grid grid-cols-5 gap-4'>
+        <div className='mb-4 col-span-2'>
+          <div className='space-y-4'>
+            <FormInput
+              name='grossAskingPrice'
+              label='Gross Asking Price'
+              type='number'
+              placeholder='PHP'
+            />
+          </div>
+        </div>
+
+        <div className='mb-4 col-span-2'>
+          <div className='space-y-4'>
+            <div>
+              <label className='text-sm font-medium text-gray-700 mb-2 block'>
+                Price Recommendation Gauge
+              </label>
+              <Input
+                type='number'
+                placeholder='PHP'
+                value={priceRecommendation || ''}
+                readOnly
+                className='mb-2 px-6 py-5'
+              />
+            </div>
+          </div>
+        </div>
+        <div className='flex items-center'>
+          <GenerateButton
+            isLoading={isPending}
+            onClick={() => generateAiContent()}
           />
         </div>
       </div>
