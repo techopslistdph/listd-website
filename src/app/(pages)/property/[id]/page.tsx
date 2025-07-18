@@ -74,7 +74,7 @@ export default async function PropertyPage({
         listingDescription={listingDescription}
         isPropertyLiked={initialIsLiked}
         listingTitle={listingTitle}
-        address={address ? address : `${cityName}, ${barangayName}`}
+        address={address ? address : (cityName && barangayName ? `${cityName}, ${barangayName}` : '')}
         latitude={latitude}
         longitude={longitude}
         images={images}
