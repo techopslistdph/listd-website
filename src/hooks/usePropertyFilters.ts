@@ -22,6 +22,8 @@ export interface PropertyFilters {
   maxLongitude?: string
   amenityIds?: string[]
   featureIds?: string[]
+  minLotSize?: string
+  maxLotSize?: string
 }
 
 const DEFAULT_FILTERS: PropertyFilters = {
@@ -56,6 +58,8 @@ export const usePropertyFilters = () => {
       maxLongitude: getParam('maxLongitude') || undefined,
       amenityIds: getParam('amenityIds')?.split(',') || undefined,
       featureIds: getParam('featureIds')?.split(',') || undefined,
+      minLotSize: getParam('minLotSize') || undefined,
+      maxLotSize: getParam('maxLotSize') || undefined,
     }
     
     setLocalFilters(urlFilters)

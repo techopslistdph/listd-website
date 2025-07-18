@@ -302,6 +302,8 @@ export const getProperties = async (
     }
   });
 
+  console.log(queryParams.toString());
+
 
   try {
     const response = (await fetchProperties(

@@ -53,6 +53,7 @@ const PropertySidebar = () => {
   const [isApplying, setIsApplying] = useState(false);
 
   const propertyType = getParam('property');
+  const isLotProperty = propertyType === 'vacant-lot';
 
   const showBedroomBathroomFilters =
     PROPERTY_TYPES_WITH_BEDROOM_FILTER.includes(propertyType || '');
@@ -217,16 +218,28 @@ const PropertySidebar = () => {
         }}
       />
 
-      <InputFilter
-        minFloorArea={filters.minFloorArea || ''}
-        maxFloorArea={filters.maxFloorArea || ''}
-        onFloorAreaChange={(min, max) => {
+      {isLotProperty ? (
+        <InputFilter
+          minFloorArea={filters.minLotSize || ''}
+          maxFloorArea={filters.maxLotSize || ''}
+          onFloorAreaChange={(min, max) => {
           updateMultipleFilters({
-            minFloorArea: min || undefined,
-            maxFloorArea: max || undefined,
+            minLotSize: min || undefined,
+            maxLotSize: max || undefined,
           });
-        }}
-      />
+          }}
+        />
+      ):  <InputFilter
+      minFloorArea={filters.minFloorArea || ''}
+      maxFloorArea={filters.maxFloorArea || ''}
+      onFloorAreaChange={(min, max) => {
+        updateMultipleFilters({
+          minFloorArea: min || undefined,
+          maxFloorArea: max || undefined,
+        });
+      }}
+    />}
+
 
       <SelectFilter
         placeholder='Amenities'
