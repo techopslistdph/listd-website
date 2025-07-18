@@ -79,7 +79,7 @@ export default function MyFavorites() {
         {isLoading && <PropertySkeleton />}
         {filteredProperties?.length === 0 ? (
           <div className='flex flex-col items-center justify-center mt-12 lg:mt-24'>
-            <img
+            <Image
               src={'/images/icons/empty.svg'}
               alt='No favorites'
               width={150}
@@ -105,7 +105,7 @@ export default function MyFavorites() {
               >
                 {/* Image */}
                 <div className='flex-shrink-0 flex items-center mb-4 lg:mb-0 col-span-1'>
-                  <Image
+                  <img
                     src={property?.property?.images[0]?.imageUrl}
                     alt={property?.property?.listingTitle}
                     width={240}
