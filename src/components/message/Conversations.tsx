@@ -241,10 +241,9 @@ export default function Conversations({
     const optimisticData = {
       id: conversationId,
       user: {
-        name:
-          draftConversation?.property.property?.scrapeContactInfo?.agentName ||
-          'Property Owner',
-        avatar: '/images/profile.png',
+        name: draftConversation?.propertyOwnerName || 'Property Owner',
+        avatar:
+          draftConversation?.propertyOwnerProfile || '/images/profile.png',
         verified: true,
       },
       propertyDetails: {
