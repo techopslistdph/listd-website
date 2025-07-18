@@ -129,11 +129,17 @@ export function PropertyDetailsStep({
         </div>
       </div>
 
-      {!propertyType.includes('Condominium') && (
+      {!propertyType.includes('Condominium') ? (
         <>
           <h2 className='heading-5 mb-4'>Confirm your address</h2>
           <AddressFields />
           <h2 className='heading-5 mb-6'>Details about your place</h2>
+        </>
+      ) : (
+        <>
+          <h2 className='heading-5 mb-4'>
+            Confirm and complete your Property Address
+          </h2>
         </>
       )}
       <PropertySpecificFields

@@ -1,16 +1,18 @@
 import { Container } from '@/components/common/Container';
 import Tab from '@/components/profile/Tab';
 import TabSkeleton from '@/components/profile/TabSkeleton';
+import { getListingTypes } from '@/lib/queries/server/home';
 import { getAmenities, getFeatures } from '@/lib/queries/server/propety';
 import { getUser } from '@/lib/queries/server/user';
 
 export const dynamic = 'force-dynamic';
 
 export default async function UserProfilePage() {
-  const [userProfile, features, amenities] = await Promise.all([
+  const [userProfile, features, amenities, listingTypes] = await Promise.all([
     getUser(),
     getFeatures(),
     getAmenities(),
+    getListingTypes(),
   ]);
 
   if (!userProfile.success) {
@@ -35,6 +37,7 @@ export default async function UserProfilePage() {
         userProfile={userProfile.data}
         features={features?.data?.uniqueFeatures || []}
         amenities={amenities?.data?.uniqueAmenities || []}
+        listingTypes={listingTypes || []}
       />
     </Container>
   );
