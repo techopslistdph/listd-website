@@ -163,10 +163,8 @@ export function useMessaging() {
     const optimisticData = {
       id: conversationId,
       user: {
-        name:
-          draft?.property.property?.scrapeContactInfo?.agentName ||
-          'Property Owner',
-        avatar: '/images/profile.png',
+        name: draft?.propertyOwnerName || 'Property Owner',
+        avatar: draft?.propertyOwnerProfile || '/images/profile.png',
         verified: true,
       },
       propertyDetails: {

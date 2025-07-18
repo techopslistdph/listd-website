@@ -84,10 +84,8 @@ export const getSelectedData = (
   if (selectedId === 'draft' && draftConversation) {
     return {
       user: {
-        name:
-          draftConversation.property.property?.scrapeContactInfo?.agentName ||
-          'Property Owner',
-        avatar: '/images/profile.png',
+        name: draftConversation.propertyOwnerName || 'Property Owner',
+        avatar: draftConversation.propertyOwnerProfile || '/images/profile.png',
         verified: true,
       },
       propertyDetails: {
