@@ -13,15 +13,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
 import { UserProfile } from '@/lib/queries/hooks/types/user';
 import { FeatureAndAmenity } from './my-listing';
+import { ListingType } from '@/lib/queries/server/home/type';
 
 export default function Tab({
   userProfile,
   features,
   amenities,
+  listingTypes,
 }: {
   userProfile: UserProfile;
   features: FeatureAndAmenity;
   amenities: FeatureAndAmenity;
+  listingTypes: ListingType[];
 }) {
   return (
     <div className='w-full'>
@@ -92,10 +95,10 @@ export default function Tab({
           <ProfileInformation userProfile={userProfile} />
         </TabsContent>
         <TabsContent value='edit-profile'>
-          <EditProfile userProfile={userProfile} />
+          <EditProfile userProfile={userProfile}  />
         </TabsContent>
         <TabsContent value='my-listing'>
-          <MyListing features={features} amenities={amenities} />
+          <MyListing features={features} amenities={amenities} listingTypes={listingTypes} />
         </TabsContent>
         <TabsContent value='my-valuation'>
           <ValuationListing />

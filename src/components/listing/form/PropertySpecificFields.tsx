@@ -58,9 +58,6 @@ export function PropertySpecificFields({
     case 'Condominium':
       return (
         <>
-          <h2 className='heading-5 mb-4'>
-            Confirm and complete your Property Address
-          </h2>
           <div className='grid grid-cols-1 gap-4 mb-6'>
             {/* Building Name full width */}
             <BuildingAutocomplete
@@ -484,4 +481,6 @@ export function PropertySpecificFields({
     default:
       return null;
   }
+
+  
 }

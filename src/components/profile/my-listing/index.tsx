@@ -11,7 +11,8 @@ import PropertySkeleton from '../PropertySkeleton';
 import ConfirmationDialog from '../ConfirmationDialog';
 import { useDeleteProperty } from '@/lib/queries/hooks/use-property';
 import { toast } from 'sonner';
-import UpdateStatusDialog from '../UpdateStatusDialog';
+import UpdateStatusDialog from './UpdateStatusDialog';
+import { ListingType } from '@/lib/queries/server/home/type';
 
 export type FeatureAndAmenity = Array<{
   id: string;
@@ -21,10 +22,12 @@ export type FeatureAndAmenity = Array<{
 export default function MyListing({
   features,
   amenities,
+  listingTypes,
 }: {
   features: FeatureAndAmenity;
   amenities: FeatureAndAmenity;
-}) {
+  listingTypes: ListingType[];
+  }) {
   const [activeTab, setActiveTab] = useState<'published' | 'draft' | 'closed'>(
     'published'
   );
@@ -76,7 +79,8 @@ export default function MyListing({
           onOpenChange={setUpdateDialogOpen}
           property={selectedListing}
           features={features}
-          amenities={amenities}
+          amenities={amenities} 
+          listingTypes={listingTypes}
         />
       </div>
     );

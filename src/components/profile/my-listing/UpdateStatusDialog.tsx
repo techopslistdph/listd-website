@@ -5,18 +5,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
-import { PropertySpecificFields } from '../listing/form/PropertySpecificFields';
+import { PropertySpecificFields } from '../../listing/form/PropertySpecificFields';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ListingFormData, listingFormSchema } from '../listing/form/Schema';
+import { ListingFormData, listingFormSchema } from '../../listing/form/Schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FeatureAndAmenity } from './my-listing';
-import { TitleDescriptionStep } from '../listing/form/TitleDescriptionStep';
-import { PaymentStep } from '../listing/form/PaymentStep';
-import { ImageUpload } from '../listing/form/ImageUpload';
+import { FeatureAndAmenity } from '.';
+import { TitleDescriptionStep } from '../../listing/form/TitleDescriptionStep';
+import { PaymentStep } from '../../listing/form/PaymentStep';
+import { ImageUpload } from '../../listing/form/ImageUpload';
 import { transformPropertyData } from '@/lib/utils/transformPropertyData';
 import { useListingSubmission } from '@/hooks/useListingSubmission';
+import { ListingType } from '@/lib/queries/server/home/type';
 
 interface UpdateStatusDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ interface UpdateStatusDialogProps {
   isValuation?: boolean;
   features: FeatureAndAmenity;
   amenities: FeatureAndAmenity;
+  listingTypes: ListingType[];
 }
 
 const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
@@ -34,6 +36,7 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
   isValuation = false,
   features,
   amenities,
+  listingTypes,
 }) => {
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingFormSchema),
@@ -73,6 +76,8 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
 
   if (!property) return null;
 
+  const currentListingTypeId = form.watch('listingTypeId');
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='min-w-[90vw] lg:min-w-5xl w-full p-4 lg:p-8 overflow-y-auto max-h-[90vh]'>
@@ -86,13 +91,39 @@ const UpdateStatusDialog: React.FC<UpdateStatusDialogProps> = ({
         <div>
           <FormProvider {...form}>
             <div className='flex flex-col gap-4'>
-              <PropertySpecificFields
-                form={form}
-                onChange={handleChange}
-                features={features}
-                amenities={amenities}
-                nearbyLocations={[]}
-              />
+              <div>
+                <div className='flex justify-between'>
+                  <h2 className='heading-5 mb-4'>
+                    Confirm and complete your Property Address
+                  </h2>
+                  <div className='flex gap-2 bg-gray-100 rounded-lg p-1 mb-2 sm:mb-5'>
+                    {listingTypes.map(listingType => (
+                      <button
+                        key={listingType.id}
+                        className={`cursor-pointer px-3 sm:px-4 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
+                          currentListingTypeId === listingType.id
+                            ? 'bg-primary-main text-white'
+                            : 'text-gray-700'
+                        }`}
+                        onClick={() => {
+                          handleChange('listingTypeId', listingType.id);
+                          handleChange('listingType', listingType.name);
+                        }}
+                        type='button'
+                      >
+                        {listingType.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <PropertySpecificFields
+                  form={form}
+                  onChange={handleChange}
+                  features={features}
+                  amenities={amenities}
+                  nearbyLocations={[]}
+                />
+              </div>
               <>
                 <h2 className='heading-5 mb-5'>Property Photo</h2>
                 <ImageUpload
