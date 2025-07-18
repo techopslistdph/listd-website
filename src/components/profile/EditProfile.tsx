@@ -126,7 +126,12 @@ export default function EditProfile({
                   <FormItem>
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
-                      <Input {...field} className='text-sm lg:text-base' />
+                      <Input
+                        readOnly
+                        disabled
+                        {...field}
+                        className='text-sm lg:text-base'
+                      />
                     </FormControl>
                     {form.formState.errors.email && (
                       <span className='text-xs text-red-500'>
