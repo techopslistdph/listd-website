@@ -22,7 +22,6 @@ export const draftConversation = (
   property: PropertyDetail
 ) => {
   const propertyId = property.property?.id;
-  console.log(propertyOwner);
   if (!propertyId) {
     console.error('Property ID not found in property detail');
     return;
