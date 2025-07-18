@@ -3,6 +3,7 @@ import PostListingForm from '@/components/listing/form/PostListingForm';
 import { getListingTypes, getPropertyTypes } from '@/lib/queries/server/home';
 import { getAmenities, getFeatures } from '@/lib/queries/server/propety';
 import { getUserListings } from '@/lib/queries/server/listing';
+import LoadingSpinner from '@/components/ui/loading-spinner';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,7 @@ export default async function PostListingPage() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <PostListingForm
         features={features?.data?.uniqueFeatures || []}
         propertyTypes={propertyTypes}

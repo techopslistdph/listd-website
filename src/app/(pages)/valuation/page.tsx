@@ -9,10 +9,11 @@ import { useSearchParams } from 'next/navigation';
 import { backgroundImage } from '@/lib/getBackgroundImage';
 import Advantages from '@/components/common/Advantages';
 import ValuationHero from '@/components/valuation/ValuationHero';
+import LoadingSpinner from '@/components/ui/loading-spinner';
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <ValuationContent />
     </Suspense>
   );
