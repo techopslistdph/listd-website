@@ -61,7 +61,7 @@ export default function NavigationBar({
       </div>
 
       {/* Clerk Authentication */}
-      <div className='flex items-center gap-4'>
+      <div className=' flex items-center gap-4'>
         <SignedOut>
           <SignInButton>
             <Button

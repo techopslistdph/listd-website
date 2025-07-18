@@ -50,7 +50,7 @@ export default function UserProfileCard({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild className='cursor-pointer'>
           <Link href='/profile' className='flex items-center gap-2 w-full'>
             <User className='mr-2 h-4 w-4' />
             <span>Profile</span>
