@@ -144,6 +144,8 @@ const PropertySidebar = () => {
         'featureIds',
         'page',
         'search',
+        'minLotSize',
+        'maxLotSize',
       ]);
       router.push(`/property?${params}`);
     } finally {
