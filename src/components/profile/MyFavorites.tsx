@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
@@ -78,7 +79,7 @@ export default function MyFavorites() {
         {isLoading && <PropertySkeleton />}
         {filteredProperties?.length === 0 ? (
           <div className='flex flex-col items-center justify-center mt-12 lg:mt-24'>
-            <Image
+            <img
               src={'/images/icons/empty.svg'}
               alt='No favorites'
               width={150}
