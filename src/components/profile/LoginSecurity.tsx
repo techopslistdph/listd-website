@@ -33,7 +33,7 @@ export default function LoginSecurity() {
           onClick={handlePasswordClick}
         >
           <div>
-            <p className='font-semibold text-sm lg:text-base mb-1'>Password</p>
+            <p className='font-semibold text-sm lg:text-base mb-1'>Change password</p>
           </div>
           <ChevronRight className='h-5 w-5 lg:h-6 lg:w-6 text-neutral-mid' />
         </div>
