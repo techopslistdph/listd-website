@@ -27,8 +27,7 @@ export interface PropertyFilters {
 }
 
 const DEFAULT_FILTERS: PropertyFilters = {
-  minPrice: '0',
-  maxPrice: '10000000',
+
 }
 
 export const usePropertyFilters = () => {
@@ -45,8 +44,8 @@ export const usePropertyFilters = () => {
       maxBathrooms: getParam('maxBathrooms') || undefined,
       minParking: getParam('minParking') || undefined,
       maxParking: getParam('maxParking') || undefined,
-      minPrice: getParam('minPrice') || DEFAULT_FILTERS.minPrice,
-      maxPrice: getParam('maxPrice') || DEFAULT_FILTERS.maxPrice,
+      minPrice: getParam('minPrice') || undefined,
+      maxPrice: getParam('maxPrice') || undefined,
       minFloorArea: getParam('minFloorArea') || undefined,
       maxFloorArea: getParam('maxFloorArea') || undefined,
       latitude: getParam('latitude') || undefined,
