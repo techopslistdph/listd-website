@@ -30,7 +30,7 @@ export function BuildingAutocomplete({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const form = useFormContext();
-  const debouncedInput = useDebounce(inputValue, 10);
+  const debouncedInput = useDebounce(inputValue, 300);
 
   const { data: buildingSuggestions, isLoading } =
     useBuildingSuggestions(debouncedInput);
@@ -59,7 +59,7 @@ export function BuildingAutocomplete({
     };
 
     fetchSuggestions();
-  }, [debouncedInput, buildingSuggestions]);
+  }, [buildingSuggestions]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -142,20 +142,26 @@ export function BuildingAutocomplete({
                   ref={suggestionsRef}
                   className='absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto'
                 >
-                  {suggestions.map(suggestion => (
-                    <div
-                      key={suggestion.placeId}
-                      className='px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm'
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      <div className='font-medium'>
-                        {suggestion.buildingName}
+                  {suggestions
+                    .filter(
+                      suggestion =>
+                        suggestion.buildingName &&
+                        suggestion.buildingName.trim()
+                    )
+                    .map(suggestion => (
+                      <div
+                        key={suggestion.placeId}
+                        className='px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm'
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        <div className='font-medium'>
+                          {suggestion.buildingName}
+                        </div>
+                        <div className='text-gray-500 text-xs'>
+                          {suggestion.formattedAddress}
+                        </div>
                       </div>
-                      <div className='text-gray-500 text-xs'>
-                        {suggestion.address}
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </div>
