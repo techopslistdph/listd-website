@@ -25,6 +25,7 @@ interface TitleDescriptionStepProps {
 export function TitleDescriptionStep({
   onNext,
   onDraft,
+  onChange,
   form,
   isSubmitting,
   isEditing = false,
@@ -108,7 +109,7 @@ export function TitleDescriptionStep({
                 <p className='text-neutral-mid '>Suggestion:</p>
                 <div
                   onClick={() => {
-                    form.setValue('title', titleGenerated);
+                    onChange('title', titleGenerated);
                     setTitleGenerated('');
                   }}
                   className='text-neutral-mid flex gap-1 items-center border border-primary-main rounded-md p-2 cursor-pointer'
@@ -141,7 +142,7 @@ export function TitleDescriptionStep({
                 <div
                   onClick={() => {
                     if (descriptionGenerated) {
-                      form.setValue('description', descriptionGenerated);
+                      onChange('description', descriptionGenerated);
                       setDescriptionGenerated(null);
                     }
                   }}
