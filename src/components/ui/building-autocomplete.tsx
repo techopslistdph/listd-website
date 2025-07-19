@@ -44,11 +44,6 @@ export function BuildingAutocomplete({
         return;
       }
       try {
-        console.log('Building suggestions response:', buildingSuggestions);
-        console.log(
-          'Number of suggestions:',
-          buildingSuggestions?.data?.length
-        );
         setSuggestions(
           (buildingSuggestions?.data as unknown as BuildingSuggestion[]) || []
         );
