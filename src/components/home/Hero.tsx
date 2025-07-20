@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
 import { Container } from '@/components/common/Container';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,15 @@ export default function Hero({
   const { createParamsString } = useUrlParams();
   const [propertyAction, setPropertyAction] = useState(listingTypes[0].id);
   const [property, setProperty] = useState(propertyTypes[0].name);
+  const [propertyTypeId, setPropertyTypeId] = useState(propertyTypes[0].id);
   const [location, setLocation] = useState('');
+
+  useEffect(() => {
+    const propertyType = propertyTypes.find(type => type.name === property);
+    if (propertyType) {
+      setPropertyTypeId(propertyType.id);
+    }
+  }, [property]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +44,7 @@ export default function Hero({
     const paramsString = createParamsString({
       search: location.trim(),
       property,
+      propertyTypeId: propertyTypeId,
       listingTypeId: propertyAction,
     });
 
@@ -98,7 +107,7 @@ export default function Hero({
                   ? 'border-b-2 border-primary-main text-primary-main'
                   : 'text-neutral-text border-b-2 border-transparent'
               }`}
-              onClick={() => setPropertyAction(tab.id)}
+              onClick={() => setPropertyAction(tab.id) }
             >
               {tab.name}
             </button>

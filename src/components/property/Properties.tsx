@@ -4,7 +4,7 @@ import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { PropertyListResponse } from '@/lib/queries/server/propety/type';
+import { PriceRangeResponse, PropertyListResponse } from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from './propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
@@ -22,10 +22,12 @@ export function Properties({
   properties,
   listingTypes,
   propertyType,
+  priceRanges,
 }: {
   properties: PropertyListResponse;
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
+  priceRanges: PriceRangeResponse;
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -55,7 +57,7 @@ export function Properties({
           currentView={view}
         />
       </div>
-      {sidebarOpen && <PropertySidebar />}
+      {sidebarOpen && <PropertySidebar priceRanges={priceRanges} />}
       {/* Main Content */}
       <main className='flex-1 lg:min-w-140'>
         <div className='hidden sm:hidden lg:block mb-5'>

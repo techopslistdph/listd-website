@@ -2,44 +2,48 @@
 
 import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
-import { useDebounce } from '@/hooks/useDebounce';
+import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
 
 interface RangeSliderProps {
-  minPrice: number;
-  maxPrice: number;
+  priceRanges: PriceRangeResponse;
+  minPrice?: number;
+  maxPrice?: number;
   onPriceRangeChange: (min: number, max: number) => void;
 }
 
-function formatPrice(value: string) {
+function formatPrice(value: string | number): string {
   const num = Number(value);
-  if (num >= 1000000) return `${num / 1000000}M`;
-  if (num >= 1000) return `${num / 1000}K`;
-  return num;
+  if (isNaN(num)) return '0';
+
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(2)}M`;
+  if (num >= 1_000) return `${(num / 1_000).toFixed(2)}K`;
+  return num.toFixed(2);
 }
 
-export const RangeSlider = ({ minPrice, maxPrice, onPriceRangeChange }: RangeSliderProps) => {
-  const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
-  const debouncedPriceRange = useDebounce(priceRange, 300);
+export const RangeSlider = ({
+  priceRanges,
+  minPrice = priceRanges.data?.minPrice,
+  maxPrice = priceRanges.data?.maxPrice,
+  onPriceRangeChange,
+}: RangeSliderProps) => {
+  const minPriceRange = priceRanges.data?.minPrice || 0;
+  const maxPriceRange = priceRanges.data?.maxPrice || 0;
 
-  /**
-   * Update local state when props change
-   */
-  useEffect(() => {
-    setPriceRange([minPrice, maxPrice]);
-  }, [minPrice, maxPrice]);
+  const [priceRange, setPriceRange] = useState([
+    minPrice || minPriceRange,
+    maxPrice || maxPriceRange,
+  ]);
 
-  /**
-   * Call parent callback when debounced values change
-   */
+
   useEffect(() => {
-    const [min, max] = debouncedPriceRange;
-    if (min !== minPrice || max !== maxPrice) {
-      onPriceRangeChange(min, max);
-    }
-  }, [debouncedPriceRange, minPrice, maxPrice, onPriceRangeChange]);
+    setPriceRange([minPrice || minPriceRange, maxPrice || maxPriceRange]);
+  }, [minPrice, maxPrice, minPriceRange, maxPriceRange]);
+
+  
 
   const handlePriceRangeSliderChange = (values: number[]) => {
     setPriceRange(values);
+    onPriceRangeChange(values[0], values[1]);
   };
 
   return (
@@ -47,8 +51,8 @@ export const RangeSlider = ({ minPrice, maxPrice, onPriceRangeChange }: RangeSli
       <div className='font-bold text-xl mb-3'>Price Range</div>
       <div className='flex flex-col gap-4'>
         <Slider
-          min={0}
-          max={10000000}
+          min={minPriceRange}
+          max={maxPriceRange}
           step={500000}
           value={priceRange}
           onValueChange={handlePriceRangeSliderChange}

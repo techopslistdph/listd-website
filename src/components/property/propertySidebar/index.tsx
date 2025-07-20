@@ -18,8 +18,9 @@ import Button from '@/components/common/Button';
 import { usePropertyFilters } from '@/hooks/usePropertyFilters';
 import { MultiSelectOption } from '@/components/ui/multi-select';
 import { useAmenitiesAndFeatures } from '@/lib/queries/hooks/use-amenities';
+import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
 
-const PropertySidebar = () => {
+const PropertySidebar = ({ priceRanges }: { priceRanges: PriceRangeResponse  }) => {
   const router = useRouter();
   const { getParam, updateParams, deleteParams } = useUrlParams();
   const {
@@ -53,6 +54,7 @@ const PropertySidebar = () => {
   const [isApplying, setIsApplying] = useState(false);
 
   const propertyType = getParam('property');
+  
   const isLotProperty = propertyType === 'vacant-lot';
 
   const showBedroomBathroomFilters =
@@ -210,8 +212,9 @@ const PropertySidebar = () => {
       )}
 
       <RangeSlider
-        minPrice={Number(filters.minPrice) || 0}
-        maxPrice={Number(filters.maxPrice) || 10000000}
+        priceRanges={priceRanges}
+        minPrice={Number(filters.minPrice)}
+        maxPrice={Number(filters.maxPrice)}
         onPriceRangeChange={(min, max) => {
           updateMultipleFilters({
             minPrice: min.toString(),
