@@ -34,12 +34,9 @@ export const RangeSlider = ({
     maxPrice || maxPriceRange,
   ]);
 
-
   useEffect(() => {
     setPriceRange([minPrice || minPriceRange, maxPrice || maxPriceRange]);
   }, [minPrice, maxPrice, minPriceRange, maxPriceRange]);
-
-  
 
   const handlePriceRangeSliderChange = (values: number[]) => {
     setPriceRange(values);
@@ -48,7 +45,7 @@ export const RangeSlider = ({
 
   return (
     <div>
-      <div className='font-bold text-xl mb-3'>Price Range</div>
+      <div className='font-bold text-lg mb-3'>Price Range</div>
       <div className='flex flex-col gap-4'>
         <Slider
           min={minPriceRange}
