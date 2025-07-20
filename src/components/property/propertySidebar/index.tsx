@@ -181,7 +181,7 @@ const PropertySidebar = () => {
   };
 
   return (
-    <aside className='pt-5 flex flex-col lg:max-w-74 xl:max-w-85 gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5'>
+    <aside className='overflow-y-auto pt-5 flex flex-col lg:max-w-74 lg:max-h-[calc(100vh-2.5rem)] xl:max-w-85 gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-neutral-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-thumb]:bg-neutral-400 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-neutral-500'>
       {showBedroomBathroomFilters && (
         <>
           <NumberFilter
@@ -225,23 +225,24 @@ const PropertySidebar = () => {
           minFloorArea={filters.minLotSize || ''}
           maxFloorArea={filters.maxLotSize || ''}
           onFloorAreaChange={(min, max) => {
-          updateMultipleFilters({
-            minLotSize: min || undefined,
-            maxLotSize: max || undefined,
-          });
+            updateMultipleFilters({
+              minLotSize: min || undefined,
+              maxLotSize: max || undefined,
+            });
           }}
         />
-      ):  <InputFilter
-      minFloorArea={filters.minFloorArea || ''}
-      maxFloorArea={filters.maxFloorArea || ''}
-      onFloorAreaChange={(min, max) => {
-        updateMultipleFilters({
-          minFloorArea: min || undefined,
-          maxFloorArea: max || undefined,
-        });
-      }}
-    />}
-
+      ) : (
+        <InputFilter
+          minFloorArea={filters.minFloorArea || ''}
+          maxFloorArea={filters.maxFloorArea || ''}
+          onFloorAreaChange={(min, max) => {
+            updateMultipleFilters({
+              minFloorArea: min || undefined,
+              maxFloorArea: max || undefined,
+            });
+          }}
+        />
+      )}
 
       <SelectFilter
         placeholder='Amenities'

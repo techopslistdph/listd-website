@@ -66,7 +66,7 @@ export function MultiSelect({
             className='w-full justify-between rounded-full bg-neutral-light px-4 py-6 text-base hover:bg-neutral-light focus:outline-none'
             disabled={disabled}
           >
-            <span className='truncate text-xs text-gray-500'>{displayText}</span>
+            <span className='truncate text-sm text-gray-500'>{displayText}</span>
             <ChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
           </Button>
         </PopoverTrigger>

@@ -17,7 +17,11 @@ function formatPrice(value: string) {
   return num;
 }
 
-export const RangeSlider = ({ minPrice, maxPrice, onPriceRangeChange }: RangeSliderProps) => {
+export const RangeSlider = ({
+  minPrice,
+  maxPrice,
+  onPriceRangeChange,
+}: RangeSliderProps) => {
   const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
   const debouncedPriceRange = useDebounce(priceRange, 300);
 
@@ -44,7 +48,7 @@ export const RangeSlider = ({ minPrice, maxPrice, onPriceRangeChange }: RangeSli
 
   return (
     <div>
-      <div className='font-bold text-xl mb-3'>Price Range</div>
+      <div className='font-bold text-lg mb-3'>Price Range</div>
       <div className='flex flex-col gap-4'>
         <Slider
           min={0}
