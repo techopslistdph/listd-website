@@ -99,6 +99,10 @@ export const API_ENDPOINTS = {
     list: `${API_BASE_URL}/features`,
   },
 
+  priceRange: {
+    list: `${API_BASE_URL}/price-range`,
+  },
+  
   building: {
     autoComplete: `${API_BASE_URL}/buildings/autocomplete`,
     details: (placeId: string) =>

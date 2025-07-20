@@ -2,6 +2,7 @@ import { api, ApiError } from '@/lib/fetch-wrapper';
 import { ErrorResponse } from '../type';
 import {
   AmenitiesAndFeaturesResponse,
+  PriceRangeResponse,
   PropertyDetailResponse,
   PropertyListResponse,
 } from './type';
@@ -287,6 +288,8 @@ export type SearchParams = {
   maxFloorArea?: string;
   amenityIds?: string;
   featureIds?: string;
+  propertyTypeId?: string;
+  listingTypeId?: string;
 };
 
 export const getProperties = async (
@@ -302,7 +305,7 @@ export const getProperties = async (
     }
   });
 
-  console.log(queryParams.toString());
+
 
 
   try {
@@ -427,3 +430,34 @@ export const getAmenities = async () => {
     };
   }
 };
+
+
+export const getPriceRanges = async (propertyTypeId: string, listingTypeId: string) => {
+  try {
+    const response = await api.get<PriceRangeResponse | ErrorResponse>(
+      `${API_ENDPOINTS.priceRange.list}?propertyTypeId=${propertyTypeId}&listingTypeId=${listingTypeId}`
+    );
+
+    if ('error' in response) {
+      return {
+        success: false,
+        data: null,
+        message: response?.error?.message || 'An unexpected error occurred',
+      };
+    }
+    return {
+      success: true,
+      data: response.data,
+      message: 'Price ranges fetched successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      message:
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+    };
+  }
+};
+
+

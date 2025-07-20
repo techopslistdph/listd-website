@@ -250,3 +250,16 @@ export interface CreateListingRequest {
       }[]
     | string[];
 }
+
+export interface PriceRangeResponse {
+  success: boolean;
+  data: {
+      minPrice: number;
+      maxPrice: number;
+      totalProperties: string;
+  } | null;
+  message?: string;
+  error?: {
+    message: string;
+  };
+}
