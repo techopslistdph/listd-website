@@ -181,7 +181,8 @@ const PropertySidebar = () => {
   };
 
   return (
-    <aside className='overflow-y-auto pt-5 flex flex-col lg:max-w-74 lg:max-h-[calc(100vh-2.5rem)] xl:max-w-85 gap-6 lg:sticky top-5 bottom-10 h-fit border border-neutral-mid rounded-2xl p-5 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-neutral-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:my-2 [&::-webkit-scrollbar-thumb]:bg-neutral-400 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-neutral-500'>
+    <div className='py-3 lg:max-h-[calc(100vh-2.5rem)] lg:sticky top-5 border border-neutral-mid rounded-2xl h-fit'>
+    <aside className='overflow-y-auto pt-5 flex flex-col lg:max-w-74 lg:max-h-[calc(100vh-4.1rem)] xl:max-w-85 gap-6  bottom-10 h-fit  p-5'>
       {showBedroomBathroomFilters && (
         <>
           <NumberFilter
@@ -285,6 +286,7 @@ const PropertySidebar = () => {
         </Button>
       </div>
     </aside>
+    </div>
   );
 };
 
