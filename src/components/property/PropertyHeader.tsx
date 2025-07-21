@@ -2,11 +2,12 @@ import Image from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
 import { handleShareProperty } from '@/lib/utils/ShareProperty';
 import pinIcon from '../../../public/images/icons/pin.svg';
+import { formatPrice } from './propertySidebar/RangeSlider';
 
 interface PropertyHeaderProps {
   listingPrice: number;
   title: string;
-  isVerified: boolean;
+  isPublished: boolean;
   location: string;
   isLiked: boolean;
   handleLikeProperty: () => void;
@@ -15,7 +16,7 @@ interface PropertyHeaderProps {
 export function PropertyHeader({
   listingPrice,
   title,
-  isVerified,
+  isPublished,
   location,
   isLiked = false,
   handleLikeProperty = () => {},
@@ -26,10 +27,7 @@ export function PropertyHeader({
         <div className='flex items-center gap-2'>
           {listingPrice && (
             <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
-              {listingPrice.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'PHP',
-              })}
+              ₱{formatPrice(listingPrice)}
             </div>
           )}
         </div>
@@ -55,14 +53,14 @@ export function PropertyHeader({
         </div>
       </div>
       <div className='flex flex-wrap items-start gap-2 mt-1'>
-        <p className='flex-1 min-w-0 text-xl lg:text-2xl font-semibold break-words'>
-          {title}
+        <p className='text-xl lg:text-2xl font-semibold break-words'>
+          {title}{' '}
+          {isPublished && (
+            <span className='bg-primary-mid text-white font-normal text-xs px-3 py-1 rounded-full flex-shrink-0'>
+              Verified
+            </span>
+          )}
         </p>
-        {isVerified && (
-          <span className='bg-primary-mid/80 text-white font-normal text-xs px-3 py-1 rounded-full flex-shrink-0'>
-            Verified
-          </span>
-        )}
       </div>
       {location && (
         <div className='flex items-center text-gray-400 gap-2 mt-1'>

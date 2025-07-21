@@ -82,13 +82,13 @@ export default function PropertyCard({
   };
 
   const renderPropertyDetails = () => (
-    <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2 min-h-[24px] mx-3'>
+    <div className='flex flex-wrap text-gray-400 text-xs gap-3 sm:gap-5 mb-2 min-h-[20px] mx-3'>
       {propertyDetails.length > 0 ? (
         propertyDetails.map(detail => (
           <TooltipProvider key={detail.key}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className='flex items-center gap-1 cursor-help'>
+                <div className='flex items-center gap-1 '>
                   <Image src={detail.icon} alt={detail.label.toLowerCase()} />
                   <div>
                     <span>{detail.value}</span>
@@ -163,18 +163,18 @@ export default function PropertyCard({
                 </div>
               )}
               {listingTitle && (
-                <div className='text-lg font-semibold text-black mb-2'>
+                <div className='text-xl font-semibold text-black mb-2'>
                   <p className='break-words'>{listingTitle}</p>
                 </div>
               )}
-              <div className='flex items-center text-gray-400 mb-2 gap-1'>
+              <div className='flex items-center text-gray-400 mb-2 gap-1 mx-3'>
                 <Image src={pinIcon} alt='pin' />
                 <span className='truncate'>
                   {address ? `${address}` : `${barangayName}, ${cityName}`}
                 </span>
               </div>
 
-              <div className='flex items-center text-gray-400 gap-2 mb-4 '>
+              <div className='flex items-center text-gray-400 gap-2 mb-4 mx-3'>
                 <PhoneIcon className='w-4 text-primary-main h-4' />
                 <span className='font-medium line-clamp-1'>
                   {scrapeContactInfo?.agentName}
@@ -260,17 +260,17 @@ export default function PropertyCard({
             className='flex-1 flex flex-col'
           >
             <div className='flex items-center justify-between mb-1'>
-              <div className='w-3/4 text-lg font-semibold text-black truncate capitalize'>
+              <div className='w-3/4 text-xl font-semibold text-black truncate capitalize'>
                 {listingTitle}
               </div>
               {listingPrice && (
-                <div className='font-extrabold text-lg text-primary-main'>
+                <div className='font-extrabold text-xl text-primary-main'>
                   ₱{formatPrice(listingPrice)}
                 </div>
               )}
             </div>
             {(address || barangayName || cityName) && (
-              <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>
+              <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3 text-sm'>
                 <Image src={pinIcon} alt='pin' />
                 <span className='truncate'>
                   {address
@@ -280,7 +280,7 @@ export default function PropertyCard({
               </div>
             )}
             {scrapeContactInfo?.agentName && (
-              <div className='flex items-center text-gray-400 gap-2 mb-4 mx-3'>
+              <div className='flex items-center text-gray-400 gap-2 mb-4 mx-3 text-sm'>
                 <PhoneIcon className='w-4 text-primary-main h-4 min-w-4' />
                 <span className='font-medium line-clamp-1'>
                   {scrapeContactInfo?.agentName}
