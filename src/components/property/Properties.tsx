@@ -4,7 +4,10 @@ import PropertyTopBar from '@/components/property/PropertyTopBar';
 import { useState } from 'react';
 import Image from 'next/image';
 
-import { PriceRangeResponse, PropertyListResponse } from '@/lib/queries/server/propety/type';
+import {
+  PriceRangeResponse,
+  PropertyListResponse,
+} from '@/lib/queries/server/propety/type';
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from './propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
@@ -89,7 +92,7 @@ export function Properties({
           </div>
         )}
         {/* Property Cards Grid */}
-        {filteredProperties?.length === 0 && (
+        {filteredProperties?.length === 0 && properties.success && (
           <>
             <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
               <Image

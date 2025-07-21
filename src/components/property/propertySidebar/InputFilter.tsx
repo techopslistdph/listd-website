@@ -1,6 +1,4 @@
-import { useDebounce } from '@/hooks/useDebounce';
 import { useEffect, useState } from 'react';
-
 interface InputFilterProps {
   minFloorArea: string;
   maxFloorArea: string;
@@ -15,40 +13,18 @@ export const InputFilter = ({
   const [floorAreaMin, setFloorAreaMin] = useState(minFloorArea);
   const [floorAreaMax, setFloorAreaMax] = useState(maxFloorArea);
 
-  const debouncedFloorAreaMin = useDebounce(floorAreaMin, 300);
-  const debouncedFloorAreaMax = useDebounce(floorAreaMax, 300);
-
-  /**
-   * Update local state when props change
-   */
   useEffect(() => {
     setFloorAreaMin(minFloorArea);
     setFloorAreaMax(maxFloorArea);
   }, [minFloorArea, maxFloorArea]);
 
-  /**
-   * Call parent callback when debounced values change
-   */
-  useEffect(() => {
-    if (
-      debouncedFloorAreaMin !== minFloorArea ||
-      debouncedFloorAreaMax !== maxFloorArea
-    ) {
-      onFloorAreaChange(debouncedFloorAreaMin, debouncedFloorAreaMax);
-    }
-  }, [
-    debouncedFloorAreaMin,
-    debouncedFloorAreaMax,
-    minFloorArea,
-    maxFloorArea,
-    onFloorAreaChange,
-  ]);
-
   const handleSquareFeetChange = (type: 'min' | 'max', value: string) => {
     if (type === 'min') {
       setFloorAreaMin(value);
+      onFloorAreaChange(value, floorAreaMax);
     } else {
       setFloorAreaMax(value);
+      onFloorAreaChange(floorAreaMin, value);
     }
   };
 
