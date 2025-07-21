@@ -460,7 +460,7 @@ export default function Chat({
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r gap-3 border-gray-200 max-h-[85vh] overflow-y-scroll'>
+      <aside className='hidden lg:flex md:w-96 bg-white p-4 flex-col border-r gap-3 border-gray-200 max-h-[85vh] overflow-y-auto'>
         {conversations.map(conv => (
           <ConversationItem
             key={conv.id}
