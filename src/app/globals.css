@@ -64,6 +64,7 @@
   --color-neutral-mid: var(--neutral-mid);
   --color-neutral-light: var(--neutral-light);
   --color-neutral-background: var(--neutral-background);
+  --color-icon-map: var(--icon-map);
 }
 
 :root {
@@ -122,6 +123,7 @@
   --neutral-mid: #aaaaaa;
   --neutral-light: #f6f6f6;
   --neutral-background: #ffffff;
+  --icon-map: #6B21A8;
 }
 
 body {

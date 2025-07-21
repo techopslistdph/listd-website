@@ -113,24 +113,23 @@ export default function PropertySlider() {
             <SwiperSlide key={idx} className='max-w-[350px] '>
               <Link
                 href={`/property/${card?.id}?property=${card?.propertyTypeName.toLowerCase().replace(' ', '-')}`}
-                className='bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col h-full mb-10 cursor-grab'
+                className='bg-white rounded-t-3xl rounded-b-2xl shadow-[0_4px_28px_#F7EFFD] overflow-hidden flex flex-col h-full mb-10 cursor-grab'
               >
                 <div className='relative w-full min-w-[250px] min-h-[250px] md:min-w-[350px] md:min-h-[350px]'>
                   <CardsFallback
                     src={card?.images[0]?.imageUrl || '/images/icons/empty.svg'}
                     alt={card?.listingTitle}
-    
                   />
                 </div>
                 <div className='p-6 flex flex-col flex-1'>
-                  <div className='text-primary-main font-extrabold text-xl md:text-2xl mb-2'>
+                  <div className='text-primary-main font-bold text-xl md:text-2xl mb-2'>
                     {card?.listingPriceFormatted}
                   </div>
-                  <div className='font-semibold text-base md:text-lg mb-1 truncate'>
+                  <div className='font-medium text-base mb-1 truncate'>
                     {card?.listingTitle}
                   </div>
-                  <div className='flex items-center text-gray-500 text-sm'>
-                    <FaMapMarkerAlt className='mr-2 text-primary-main' />
+                  <div className='flex items-center text-gray-500 text-base'>
+                    <FaMapMarkerAlt className='mr-2 text-icon-map' />
                     {card?.address ?? card?.barangayName}
                   </div>
                 </div>
