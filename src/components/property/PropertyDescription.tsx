@@ -30,10 +30,10 @@ export default function PropertyDescription({
                   key={lineIndex}
                   className='flex flex-col sm:flex-row sm:items-center mb-2'
                 >
-                  <span className='font-medium text-gray-700 min-w-[120px] sm:min-w-[150px]'>
+                  <span className='font-medium text-neutral-mid min-w-[120px] sm:min-w-[150px] text-sm'>
                     {key}:
                   </span>
-                  <span className='text-gray-900'>{value}</span>
+                  <span className='text-neutral-main'>{value}</span>
                 </div>
               );
             })}
@@ -44,13 +44,13 @@ export default function PropertyDescription({
         return (
           <div key={index} className='mb-4'>
             {section.title && (
-              <h4 className='font-semibold text-gray-800 mb-2'>
+              <h4 className='font-semibold text-neutral-mid mb-2 text-sm'>
                 {section.title}
               </h4>
             )}
             <ul className='list-disc list-inside space-y-1'>
               {section.content.map((item: string, itemIndex: number) => (
-                <li key={itemIndex} className='text-gray-700'>
+                <li key={itemIndex} className='text-neutral-mid text-sm'>
                   {item.replace(/^[•-]\s*/, '')}
                 </li>
               ))}
@@ -62,7 +62,10 @@ export default function PropertyDescription({
         return (
           <div key={index} className='mb-4'>
             {section.content.map((paragraph: string, paraIndex: number) => (
-              <p key={paraIndex} className='text-gray-700 leading-relaxed mb-2'>
+              <p
+                key={paraIndex}
+                className='text-neutral-mid leading-relaxed mb-2 text-sm'
+              >
                 {paragraph}
               </p>
             ))}
@@ -72,11 +75,11 @@ export default function PropertyDescription({
       case 'contact':
         return (
           <div key={index} className='mb-4 p-4 bg-blue-50 rounded-lg'>
-            <h4 className='font-semibold text-blue-800 mb-2'>
+            <h4 className='font-semibold text-neutral-mid mb-2 text-sm'>
               Contact Information
             </h4>
             {section.content.map((contact: string, contactIndex: number) => (
-              <p key={contactIndex} className='text-blue-700'>
+              <p key={contactIndex} className='text-neutral-mid text-sm'>
                 {contact}
               </p>
             ))}
@@ -86,11 +89,11 @@ export default function PropertyDescription({
       case 'source':
         return (
           <div key={index} className='mt-6 pt-4 border-t border-gray-200'>
-            <h4 className='font-semibold text-gray-600 mb-2 text-sm'>
+            <h4 className='font-semibold text-neutral-mid mb-2 text-sm'>
               Listing Source
             </h4>
             {section.content.map((source: string, sourceIndex: number) => (
-              <p key={sourceIndex} className='text-gray-500 text-sm'>
+              <p key={sourceIndex} className='text-neutral-mid text-sm'>
                 {source}
               </p>
             ))}
@@ -109,7 +112,9 @@ export default function PropertyDescription({
         onClick={() => setOpen(prev => !prev)}
         type='button'
       >
-        <span>Description</span>
+        <span className='text-xl lg:text-2xl leading-[30px] font-semibold break-words'>
+          Description
+        </span>
         <ChevronDown
           className={`transition-transform duration-200 ${
             open ? 'rotate-180' : ''
@@ -124,7 +129,9 @@ export default function PropertyDescription({
                 renderSection(section, index)
               )
             ) : (
-              <p className='text-gray-700 leading-relaxed'>{description}</p>
+              <p className='text-neutral-mid leading-relaxed text-sm'>
+                {description}
+              </p>
             )}
           </div>
           <PropertyDetailsDisplay

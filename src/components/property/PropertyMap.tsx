@@ -18,7 +18,9 @@ export function PropertyMap({ latitude, longitude, title }: PropertyMapProps) {
         onClick={() => setOpen(prev => !prev)}
         type='button'
       >
-        <span>Location</span>
+        <span className='text-xl lg:text-2xl leading-[30px] font-semibold break-words'>
+          Location
+        </span>
         <ChevronDown
           className={`transition-transform duration-200 ${
             open ? 'rotate-180' : ''

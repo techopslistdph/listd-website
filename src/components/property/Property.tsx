@@ -88,7 +88,8 @@ export default function Property({
             />
             {/* Features */}
             {propertyDetail.property.features &&
-              propertyDetail.property.features.length > 0 && (
+              (propertyDetail.property.features.length > 0 ||
+                propertyDetail.property.amenities.length > 0) && (
                 <PropertyFeatures
                   features={propertyDetail.property.features}
                   amenities={propertyDetail.property.amenities}
