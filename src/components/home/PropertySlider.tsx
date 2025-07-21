@@ -122,14 +122,14 @@ export default function PropertySlider() {
                   />
                 </div>
                 <div className='p-6 flex flex-col flex-1'>
-                  <div className='text-primary-main font-bold text-xl md:text-2xl mb-2'>
+                  <div className='text-primary-main font-bold text-xl md:text-2xl mb-2 leading-[32px] md:pb-[12px]'>
                     {card?.listingPriceFormatted}
                   </div>
-                  <div className='font-medium text-base mb-1 truncate'>
+                  <div className='font-medium text-base truncate leading-[24px]'>
                     {card?.listingTitle}
                   </div>
-                  <div className='flex items-center text-gray-500 text-base'>
-                    <FaMapMarkerAlt className='mr-2 text-icon-map' />
+                  <div className='flex items-center text-gray-500 text-base leading-[24px] pt-[4px]'>
+                    <FaMapMarkerAlt className='mr-[4px] text-icon-map' />
                     {card?.address ?? card?.barangayName}
                   </div>
                 </div>
