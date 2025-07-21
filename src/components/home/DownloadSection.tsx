@@ -20,20 +20,20 @@ export default function DownloadSection() {
             <br className='hidden md:block' />
             mobile and tablet devices.
           </p>
-          <div className='bg-white p-2 md:p-3 rounded-md md:rounded-xl shadow-md w-fit mb-2 md:mb-0'>
+          <div className='bg-white p-2 md:p-3  shadow-md w-fit mb-2 md:mb-0'>
             <Image
               src={qrCode}
               alt='QR Code'
-              width={80}
-              height={80}
-              className='w-16 h-16 object-contain md:w-48 md:h-48'
+              width={296}
+              height={296}
+              className='w-32 md:w-64 h-32 md:h-64 object-contain'
               priority
             />
           </div>
         </div>
         {/* Right: Phone Image */}
         <div className='md:w-1/2 flex justify-center items-center mt-14'>
-          <div className='hidden md:block relative w-[500px] h-96 mx-auto'>
+          <div className='hidden md:block relative w-[550px] h-96 mx-auto'>
             <Image
               src={phone}
               alt='Phone'
