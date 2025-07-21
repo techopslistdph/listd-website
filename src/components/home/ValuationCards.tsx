@@ -21,11 +21,11 @@ export default function ValuationCards({
       <div className='flex flex-col md:flex-row gap-10 w-full justify-center'>
         {cards.map((card, idx) => (
           <div key={idx} className='flex flex-col md:flex-row w-full gap-5'>
-            <div className='relative w-full  md:w-1/2'>
+            <div className='relative w-full'>
               <Image
                 src={card.image}
                 alt={card.title}
-                className='object-cover min-w-[181px] min-h-[156px] max-h-[156px] md:h-full w-full'
+                className='object-cover min-w-[181px] min-h-[156px] w-full md:h-[267px] md:w-[240px] rounded-lg'
                 priority={idx === 0}
                 height={156}
                 width={181}
