@@ -94,7 +94,7 @@ export function Properties({
         {/* Property Cards Grid */}
         {filteredProperties?.length === 0 && properties.success && (
           <>
-            <div className='flex flex-col items-center justify-center mt-12 lg:mt-42'>
+            <div className='flex flex-col items-center justify-center mt-12 lg:mt-42 pb-10'>
               <Image
                 src={'/images/icons/empty.svg'}
                 alt='Error loading properties'
