@@ -59,9 +59,6 @@ export default function ConversationItem({
           alt='property'
           className='w-14 h-14 rounded-xl object-cover mr-3'
         />
-        {isOptimistic && (
-          <div className='absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse' />
-        )}
       </div>
       <div className='flex-1'>
         <div className={`font-bold text-base line-clamp-2 text-gray-900`}>
