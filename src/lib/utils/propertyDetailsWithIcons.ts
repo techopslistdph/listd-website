@@ -159,3 +159,65 @@ export function getAllPropertyDetails(
     getPropertyDetailsWithIcons(propertyDetail);
   return [...numericDetails, ...amenities];
 }
+
+// Helper function to get property details based on type (max 3)
+export const getPropertyDetailsForType = (
+  propertyDetail: PropertyDetail,
+  propertyType: string
+) => {
+  const details: Array<{
+    key: string;
+    label: string;
+    value: string;
+    icon: StaticImageData;
+  }> = [];
+
+  // Define priority fields for each property type
+  const fieldPriorities: Record<string, string[]> = {
+    Condominium: ['numberOfBedrooms', 'numberOfBathrooms', 'lotSize'],
+    'House and lot': ['numberOfBedrooms', 'numberOfBathrooms', 'lotSize'],
+    Warehouse: ['lotSize'],
+    'Vacant lot': ['lotSize'],
+  };
+
+  const iconMap: Record<string, StaticImageData | LucideIcon | null> = {
+    numberOfBedrooms: bedIcon,
+    numberOfBathrooms: bathIcon,
+    lotSize: areaIcon,
+  };
+
+  const labelMap: Record<string, string> = {
+    numberOfBedrooms: 'Bedroom',
+    numberOfBathrooms: 'Bath',
+    lotSize: 'Lot Size',
+  };
+
+  const unitMap: Record<string, string> = {
+    numberOfBedrooms: ' Bedroom',
+    numberOfBathrooms: ' Bath',
+    lotSize: ' sqm ',
+  };
+
+  const priorityFields = fieldPriorities[propertyType] || [
+    'numberOfBedrooms',
+    'numberOfBathrooms',
+    'lotSize',
+  ];
+
+  // Add fields based on priority, but only if they have values
+  priorityFields.forEach(field => {
+    const value = propertyDetail[field as keyof PropertyDetail];
+    if (value !== null && value !== undefined && value !== 0) {
+      const unit = unitMap[field];
+      const displayValue = unit ? `${value}${unit}` : String(value);
+      details.push({
+        key: field,
+        label: labelMap[field],
+        value: displayValue,
+        icon: iconMap[field] || areaIcon,
+      });
+    }
+  });
+
+  return details.slice(0, 3); // Ensure max 3 items
+};
