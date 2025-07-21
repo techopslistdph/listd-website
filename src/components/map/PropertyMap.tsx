@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Search, X } from 'lucide-react';
+import { Pencil, Search, X } from 'lucide-react';
 import {
   GoogleMap,
   useJsApiLoader,
@@ -19,7 +19,6 @@ import {
 } from '@/utils/mapUtils';
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
-import DrawOnMapIcon from '../../../public/images/icons/draw-on-map-icon';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
 import Image from 'next/image';
@@ -73,9 +72,9 @@ const PropertyMap: React.FC<IMapProps> = ({
   };
 
   const polygonOptions = {
-    fillColor: '#6B21A8',
-    strokeColor: '#6B21A8',
-    fillOpacity: 0.4,
+    fillColor: 'primary-mid',
+    strokeColor: 'primary-main',
+    fillOpacity: 0.3,
     strokeOpacity: 1,
     strokeWeight: 2,
     clickable: true,
@@ -142,7 +141,7 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const onCancelHandle = () => {
     rootStore.propertyListingQuery.resetCoordinates();
-    setEnableDraw(true);
+    setEnableDraw(false);
     setShowControls(false);
     setShowDrawButton(true);
     polygon?.setMap(null);
@@ -187,26 +186,26 @@ const PropertyMap: React.FC<IMapProps> = ({
       {isLoaded ? (
         <div className='relative'>
           {showInstructionNote && (
-            <div className='absolute shadow top-14 z-10 m-auto left-0 right-0 bg-baseWhite text-center p-2 w-56'>
+            <div className='absolute shadow top-3 z-10 m-auto  right-3 bg-white text-center p-2 w-56'>
               Click on the map to define your area of interest.
             </div>
           )}
           {showDrawButton && (
             <Button
               className={cn(
-                'absolute bottom-10 z-10 m-auto left-0 right-0 w-40'
+                'absolute bottom-10 z-10 m-auto left-0 right-0 w-40 bg-primary-main text-white hover:bg-secondary-main cursor-pointer'
               )}
               onClick={handleDrawToSearchBtn}
             >
-              Draw to search
-              <DrawOnMapIcon className='h-5 w-5 ml-2' />
+              <Pencil />
+              Start Drawing
             </Button>
           )}
           {showControls && (
             <div className='absolute flex bottom-8 z-10 m-auto left-0 right-0 gap-2 items-center justify-center text-center p-2'>
               <Button
                 onClick={onSearchHandle}
-                className={cn('px-10 cursor-pointer')}
+                className={cn('px-10 cursor-pointer bg-primary-main text-white hover:bg-secondary-main')}
               >
                 Search
                 <Search size={20} className='ml-2' />
@@ -214,7 +213,7 @@ const PropertyMap: React.FC<IMapProps> = ({
               <Button
                 onClick={onCancelHandle}
                 className={cn(
-                  'border-primary text-primary px-10 cursor-pointer'
+                  'border-primary-main text-primary-main px-10 cursor-pointer'
                 )}
                 variant={'outline'}
               >
@@ -298,7 +297,6 @@ const PropertyMap: React.FC<IMapProps> = ({
               }}
             />
             <MarkerClustererComponent
-              setSelectedLocation={setSelectedLocation}
               data={properties}
             />
             <Polygon path={polygon_path} options={polygonOptions} />
