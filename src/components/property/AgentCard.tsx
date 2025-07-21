@@ -1,13 +1,11 @@
 import Image, { StaticImageData } from 'next/image';
-// import calculateMortgageIcon from '@/../public/images/icons/calculate-mortgage.svg';
-// import shortMortgageCaseIcon from '@/../public/images/icons/short-mortgage.svg';
 import verified from '@/../public/images/icons/verified.png';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import Link from 'next/link';
 import { Button } from '../ui/button';
 import { draftConversation } from '@/lib/utils/draftConversation';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
+import { useRouter } from 'next/navigation';
 
 interface Agent {
   name: string;
@@ -31,6 +29,7 @@ export function AgentCard({
   propertyOwnerId,
 }: AgentCardProps) {
   const { data: currentUser } = useGetProfile();
+  const router = useRouter();
   return (
     <div className='sticky top-5'>
       <div className='rounded-lg border p-4 flex flex-col  gap-2'>
@@ -83,9 +82,10 @@ export function AgentCard({
                     propertyDetail.property.propertyOwner,
                     propertyDetail
                   );
+                  router.push('/message');
                 }}
               >
-                <Link href={`/message`}>Direct Message</Link>
+                Direct Message
               </Button>
             </div>
           )}

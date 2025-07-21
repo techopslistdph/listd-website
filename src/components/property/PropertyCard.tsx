@@ -2,9 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import pinIcon from '../../../public/images/icons/pin.svg';
-import bedIcon from '../../../public/images/icons/bedroom.svg';
-import bathIcon from '../../../public/images/icons/bath.svg';
-import areaIcon from '../../../public/images/icons/squaremeter.svg';
+
 import { PropertyImages } from '../property/PropertyImages';
 import { Heart, PhoneIcon } from 'lucide-react';
 import verified from '../../../public/images/icons/verified.png';
@@ -16,6 +14,14 @@ import { User } from '@clerk/nextjs/server';
 import { draftConversation } from '@/lib/utils/draftConversation';
 import { Button } from '../ui/button';
 import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useRouter } from 'next/navigation';
+import { getPropertyDetailsForType } from '@/lib/utils/propertyDetailsWithIcons';
 
 export default function PropertyCard({
   propertyDetail,
@@ -41,15 +47,19 @@ export default function PropertyCard({
       propertyOwner,
     },
     id,
-    numberOfBathrooms,
-    numberOfBedrooms,
-    floorArea,
     isLiked: initialIsLiked,
   } = propertyDetail;
 
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const { mutate: likeProperty } = useLikeProperty();
   const { data: currentUser } = useGetProfile();
+  const router = useRouter();
+
+  // Get property details based on property type (max 3)
+  const propertyDetails = getPropertyDetailsForType(
+    propertyDetail,
+    propertyType
+  );
 
   const handleLikeProperty = () => {
     if (!user) {
@@ -70,10 +80,40 @@ export default function PropertyCard({
     });
   };
 
+  const renderPropertyDetails = () => (
+    <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2 min-h-[24px]'>
+      {propertyDetails.length > 0 ? (
+        propertyDetails.map(detail => (
+          <TooltipProvider key={detail.key}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className='flex items-center gap-1 cursor-help'>
+                  <Image src={detail.icon} alt={detail.label.toLowerCase()} />
+                  <div>
+                    <span>{detail.value}</span>
+                  </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{detail.label}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ))
+      ) : (
+        // Placeholder to maintain consistent height when no details
+        <div className='flex items-center gap-1 opacity-0'>
+          <div className='w-4 h-4' />
+          <span>No details</span>
+        </div>
+      )}
+    </div>
+  );
+
   if (view === 'map') {
     // Horizontal card for map view
     return (
-      <div className='relative flex flex-col sm:grid sm:grid-cols-3 bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer p-3 gap-4'>
+      <div className='relative flex flex-col sm:grid sm:grid-cols-3 bg-white rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer p-3 gap-4 min-h-[280px]'>
         <div className='rounded-2xl overflow-hidden w-full sm:w-[295px] md:w-full h-[200px] sm:h-[280px]'>
           <Link
             href={`/property/${id}?property=${propertyType}`}
@@ -89,8 +129,8 @@ export default function PropertyCard({
           </Link>
         </div>
 
-        <div className='w-full flex flex-col sm:h-[280px] justify-around col-span-2'>
-          <div className='relative'>
+        <div className='w-full flex flex-col sm:h-[270px] justify-around col-span-2'>
+          <div className='relative flex-1 flex flex-col'>
             <button
               onClick={() => handleLikeProperty()}
               type='button'
@@ -112,8 +152,10 @@ export default function PropertyCard({
               )}
             </button>
 
-            {/* Wrap only the title/content block in the Link */}
-            <Link href={`/property/${id}?property=${propertyType}`}>
+            <Link
+              href={`/property/${id}?property=${propertyType}`}
+              className='flex-1 flex flex-col'
+            >
               {listingPrice && (
                 <div className='text-xl font-extrabold text-primary-main mb-1'>
                   {new Intl.NumberFormat('en-US', {
@@ -123,7 +165,7 @@ export default function PropertyCard({
                 </div>
               )}
               {listingTitle && (
-                <div className='text-lg font-semibold text-black mb-'>
+                <div className='text-lg font-semibold text-black mb-2'>
                   <p className='break-words'>{listingTitle}</p>
                 </div>
               )}
@@ -134,7 +176,7 @@ export default function PropertyCard({
                 </span>
               </div>
 
-              <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
+              <div className='flex items-center text-gray-400 gap-2 mb-4 '>
                 <PhoneIcon className='w-4 text-primary-main h-4' />
                 <span className='font-medium line-clamp-1'>
                   {scrapeContactInfo?.agentName}
@@ -149,26 +191,8 @@ export default function PropertyCard({
                   />
                 )}
               </div>
-              <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2'>
-                {numberOfBedrooms !== null && numberOfBedrooms !== 0 && (
-                  <div className='flex items-center gap-1'>
-                    <Image src={bedIcon} alt='bed' />
-                    <span>{numberOfBedrooms} Bedroom</span>
-                  </div>
-                )}
-                {numberOfBathrooms !== null && numberOfBathrooms !== 0 && (
-                  <div className='flex items-center gap-1'>
-                    <Image src={bathIcon} alt='bath' />
-                    <span>{numberOfBathrooms} Bath</span>
-                  </div>
-                )}
-                {floorArea !== null && floorArea !== 0 && (
-                  <div className='flex items-center gap-1'>
-                    <Image src={areaIcon} alt='area' />
-                    <span>{floorArea} sqm</span>
-                  </div>
-                )}
-              </div>
+
+              {renderPropertyDetails()}
             </Link>
           </div>
 
@@ -189,7 +213,6 @@ export default function PropertyCard({
                 <button
                   className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold cursor-pointer'
                   onClick={() => {
-                    // Validate IDs before creating draft
                     if (!propertyOwner?.id) {
                       console.error('Property Owner ID not available');
                       return;
@@ -223,7 +246,7 @@ export default function PropertyCard({
   // Default (list) card
   return (
     <div className='block'>
-      <div className='mx-auto rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer bg-white relative'>
+      <div className='mx-auto rounded-2xl shadow-lg shadow-[#F7EFFD] transition-transform duration-300 cursor-pointer bg-white relative h-full flex flex-col'>
         <div className='relative'>
           <PropertyImages
             images={images}
@@ -233,9 +256,11 @@ export default function PropertyCard({
             isLiked={isLiked}
           />
         </div>
-        <div className='p-4'>
-          {/* Only wrap the title and property info in the Link */}
-          <Link href={`/property/${id}?property=${propertyType}`}>
+        <div className='p-4 flex-1 flex flex-col'>
+          <Link
+            href={`/property/${id}?property=${propertyType}`}
+            className='flex-1 flex flex-col'
+          >
             <div className='flex items-center justify-between mb-1'>
               <div className='w-3/4 text-lg font-semibold text-black truncate capitalize'>
                 {listingTitle}
@@ -249,15 +274,19 @@ export default function PropertyCard({
                 </div>
               )}
             </div>
-            {address && (
+            {(address || barangayName || cityName) && (
               <div className='flex items-center text-gray-400 mb-2 gap-3 mx-3'>
                 <Image src={pinIcon} alt='pin' />
-                <span className='truncate'>{address}</span>
+                <span className='truncate'>
+                  {address
+                    ? `${address}`
+                    : `${barangayName ? `${barangayName}, ` : ''}${cityName}`}
+                </span>
               </div>
             )}
             {scrapeContactInfo?.agentName && (
-              <div className='flex items-center text-gray-400  gap-2 mb-4 mx-3'>
-                <PhoneIcon className='w-4 text-primary-main h-4' />
+              <div className='flex items-center text-gray-400 gap-2 mb-4 mx-3'>
+                <PhoneIcon className='w-4 text-primary-main h-4 min-w-4' />
                 <span className='font-medium line-clamp-1'>
                   {scrapeContactInfo?.agentName}
                 </span>
@@ -272,29 +301,10 @@ export default function PropertyCard({
                 )}
               </div>
             )}
-            <div className='flex text-gray-400 text-base gap-5 mb-2'>
-              {numberOfBedrooms !== null && numberOfBedrooms !== 0 && (
-                <div className='flex flex-col gap-1'>
-                  <Image src={bedIcon} alt='bed' />
-                  <span>{numberOfBedrooms} Bedroom</span>
-                </div>
-              )}
-              {numberOfBathrooms !== null && numberOfBathrooms !== 0 && (
-                <div className='flex flex-col gap-1'>
-                  <Image src={bathIcon} alt='bath' />
-                  <span>{numberOfBathrooms} Bath</span>
-                </div>
-              )}
-              {floorArea !== null && floorArea !== 0 && (
-                <div className='flex flex-col gap-1'>
-                  <Image src={areaIcon} alt='area' />
-                  <span>{floorArea} sqm</span>
-                </div>
-              )}
-            </div>
+
+            {renderPropertyDetails()}
           </Link>
 
-          {/* Contact buttons should be outside the Link */}
           <div className='flex gap-3 mt-3'>
             {scrapeContactInfo?.phoneNumber && (
               <a
@@ -309,9 +319,8 @@ export default function PropertyCard({
               currentUser?.data?.id !== propertyOwner?.id && (
                 <>
                   <Button
-                    className='bg-primary-main flex-1 text-white rounded-full hover:bg-primary-main'
+                    className='bg-primary-main flex-1 text-white rounded-full hover:bg-primary-main cursor-pointer'
                     onClick={() => {
-                      // Validate IDs before creating draft
                       if (!propertyOwner?.id) {
                         console.error('Property Owner ID not available');
                         return;
@@ -326,14 +335,10 @@ export default function PropertyCard({
                         propertyDetail.property.propertyOwner,
                         propertyDetail
                       );
+                      router.push('/message');
                     }}
                   >
-                    <Link
-                      href='/message'
-                      className='flex-1 py-2 rounded-full bg-primary-main text-sm text-white text-center font-semibold'
-                    >
-                      Direct Message
-                    </Link>
+                    Direct Message
                   </Button>
                 </>
               )}
