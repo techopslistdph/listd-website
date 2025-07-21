@@ -115,26 +115,26 @@ export function PropertyImages({
         </button>
         {/* Left Arrow */}
         {images.length > 1 && (
-          <button
-            className='absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary-main rounded-full p-2 z-10 shadow-md'
-            onClick={handlePrevious}
-            aria-label='Previous image'
-          >
-            <ChevronLeft className='w-7 h-7' />
-          </button>
+          <div>
+            <button
+              className='absolute left-0 top-1/2 -translate-y-1/2 bg-transparent  text-primary-main rounded-full p-2 z-10 cursor-pointer'
+              onClick={handlePrevious}
+              aria-label='Previous image'
+            >
+              <ChevronLeft className='w-8 h-10 text-white' />
+            </button>
+            <button
+              className='absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-primary-main rounded-full p-2 z-10 cursor-pointer'
+              onClick={handleNext}
+              aria-label='Next image'
+            >
+              <ChevronRight className='w-8 h-10 text-white' />
+            </button>
+          </div>
         )}
-        {/* Right Arrow */}
-        {images.length > 1 && (
-          <button
-            className='absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary-main rounded-full p-2 z-10 shadow-md'
-            onClick={handleNext}
-            aria-label='Next image'
-          >
-            <ChevronRight className='w-7 h-7' />
-          </button>
-        )}
+
         {/* Image count */}
-        <div className='absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/80 border border-white rounded-xl px-4 py-1 text-base font-semibold text-black flex items-center justify-center shadow-md'>
+        <div className='absolute bottom-4 left-1/2 -translate-x-1/2 bg-transparent border-2 border-white rounded-[10px] px-4 py-1.5 text-sm font-bold text-white flex items-center justify-center'>
           {currentIndex + 1} / {images.length}
         </div>
       </div>
