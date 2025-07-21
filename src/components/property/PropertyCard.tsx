@@ -82,7 +82,7 @@ export default function PropertyCard({
   };
 
   const renderPropertyDetails = () => (
-    <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2 min-h-[24px]'>
+    <div className='flex flex-wrap text-gray-400 text-base gap-3 sm:gap-5 mb-2 min-h-[24px] mx-3'>
       {propertyDetails.length > 0 ? (
         propertyDetails.map(detail => (
           <TooltipProvider key={detail.key}>
