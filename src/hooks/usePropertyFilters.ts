@@ -1,39 +1,38 @@
-import { useState, useCallback, useEffect } from 'react'
-import { useUrlParams } from './useUrlParams'
+import { useState, useCallback, useEffect } from 'react';
+import { useUrlParams } from './useUrlParams';
 
 export interface PropertyFilters {
-  minBedrooms?: string
-  maxBedrooms?: string
-  minBathrooms?: string
-  maxBathrooms?: string
-  minParking?: string
-  maxParking?: string
-  minPrice?: string
-  maxPrice?: string
-  minFloorArea?: string
-  maxFloorArea?: string
-  features?: string[]
-  latitude?: string
-  longitude?: string
-  radius?: string
-  minLatitude?: string
-  maxLatitude?: string
-  minLongitude?: string
-  maxLongitude?: string
-  amenityIds?: string[]
-  featureIds?: string[]
-  minLotSize?: string
-  maxLotSize?: string
+  minBedrooms?: string;
+  maxBedrooms?: string;
+  minBathrooms?: string;
+  maxBathrooms?: string;
+  minParking?: string;
+  maxParking?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  minFloorArea?: string;
+  maxFloorArea?: string;
+  features?: string[];
+  latitude?: string;
+  longitude?: string;
+  radius?: string;
+  minLatitude?: string;
+  maxLatitude?: string;
+  minLongitude?: string;
+  maxLongitude?: string;
+  amenityIds?: string[];
+  featureIds?: string[];
+  minLotSize?: string;
+  maxLotSize?: string;
 }
 
-const DEFAULT_FILTERS: PropertyFilters = {
-
-}
+const DEFAULT_FILTERS: PropertyFilters = {};
 
 export const usePropertyFilters = () => {
-  const { getParam, getAllParams } = useUrlParams()
-  const [localFilters, setLocalFilters] = useState<PropertyFilters>(DEFAULT_FILTERS)
-  const [hasChanges, setHasChanges] = useState(false)
+  const { getParam, getAllParams } = useUrlParams();
+  const [localFilters, setLocalFilters] =
+    useState<PropertyFilters>(DEFAULT_FILTERS);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Initialize filters from URL params on mount
   useEffect(() => {
@@ -59,63 +58,74 @@ export const usePropertyFilters = () => {
       featureIds: getParam('featureIds')?.split(',') || undefined,
       minLotSize: getParam('minLotSize') || undefined,
       maxLotSize: getParam('maxLotSize') || undefined,
-    }
-    
-    setLocalFilters(urlFilters)
-  }, [getParam])
+    };
+
+    setLocalFilters(urlFilters);
+  }, [getParam]);
 
   /**
    * Check if current local filters differ from URL params
    */
   useEffect(() => {
-    const currentUrlParams = getAllParams()
-    const hasLocalChanges = Object.entries(localFilters).some(([key, value]) => {
-      const urlValue = currentUrlParams[key]
-      // Handle undefined/null values
-      if (!value && !urlValue) return false
-      return String(value || '') !== String(urlValue || '')
-    })
-    setHasChanges(hasLocalChanges)
-  }, [localFilters, getAllParams])
+    const currentUrlParams = getAllParams();
+    const hasLocalChanges = Object.entries(localFilters).some(
+      ([key, value]) => {
+        const urlValue = currentUrlParams[key];
+        // Handle undefined/null values
+        if (!value && !urlValue) return false;
+        return String(value || '') !== String(urlValue || '');
+      }
+    );
+    setHasChanges(hasLocalChanges);
+  }, [localFilters, getAllParams]);
 
-  const updateFilter = useCallback((key: keyof PropertyFilters, value: string | string[] | null | undefined) => {
-    setLocalFilters(prev => ({
-      ...prev,
-      [key]: value,
-    }))
-  }, [])
+  const updateFilter = useCallback(
+    (
+      key: keyof PropertyFilters,
+      value: string | string[] | null | undefined
+    ) => {
+      setLocalFilters(prev => ({
+        ...prev,
+        [key]: value,
+      }));
+    },
+    []
+  );
 
-  const updateMultipleFilters = useCallback((filters: Partial<PropertyFilters>) => {
-    setLocalFilters(prev => ({
-      ...prev,
-      ...filters,
-    }))
-  }, [])
+  const updateMultipleFilters = useCallback(
+    (filters: Partial<PropertyFilters>) => {
+      setLocalFilters(prev => ({
+        ...prev,
+        ...filters,
+      }));
+    },
+    []
+  );
 
   const resetFilters = useCallback(() => {
-    setLocalFilters(DEFAULT_FILTERS)
-  }, [])
+    setLocalFilters(DEFAULT_FILTERS);
+  }, []);
 
   const getApplicableFilters = useCallback(() => {
     /**
      * Return only filters that have values (not null/undefined/empty)
      */
-    const applicableFilters: Record<string, string> = {}
-    
+    const applicableFilters: Record<string, string> = {};
+
     Object.entries(localFilters).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         if (Array.isArray(value)) {
           if (value.length > 0) {
-            applicableFilters[key] = value.join(',')
+            applicableFilters[key] = value.join(',');
           }
         } else {
-          applicableFilters[key] = String(value)
+          applicableFilters[key] = String(value);
         }
       }
-    })
-    
-    return applicableFilters
-  }, [localFilters])
+    });
+
+    return applicableFilters;
+  }, [localFilters]);
 
   return {
     filters: localFilters,
@@ -124,5 +134,5 @@ export const usePropertyFilters = () => {
     updateMultipleFilters,
     resetFilters,
     getApplicableFilters,
-  }
-} 
+  };
+};
