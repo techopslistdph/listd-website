@@ -11,7 +11,7 @@ interface RangeSliderProps {
   onPriceRangeChange: (min: number, max: number) => void;
 }
 
-function formatPrice(value: string | number): string {
+export function formatPrice(value: string | number): string {
   const num = Number(value);
   if (isNaN(num)) return '0';
 

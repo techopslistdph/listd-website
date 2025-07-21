@@ -27,6 +27,7 @@ export default function Property({
   userId,
   propertyDetail,
   propertyOwnerId,
+  isPublished,
 }: {
   isPropertyLiked: boolean;
   propertyId: string;
@@ -48,6 +49,7 @@ export default function Property({
   userId: string;
   propertyDetail: PropertyDetail;
   propertyOwnerId: string;
+  isPublished: boolean;
 }) {
   const [isLiked, setIsLiked] = useState(isPropertyLiked);
   const { mutate: likeProperty } = useLikeProperty();
@@ -81,7 +83,7 @@ export default function Property({
               handleLikeProperty={handleLikeProperty}
               listingPrice={listingPrice}
               title={listingTitle}
-              isVerified={!!agent?.name}
+              isPublished={isPublished}
               location={address}
             />
             {/* Features */}

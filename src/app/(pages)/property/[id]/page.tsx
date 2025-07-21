@@ -74,12 +74,19 @@ export default async function PropertyPage({
         listingDescription={listingDescription}
         isPropertyLiked={initialIsLiked}
         listingTitle={listingTitle}
-        address={address ? address : (cityName && barangayName ? `${cityName}, ${barangayName}` : '')}
+        address={
+          address
+            ? address
+            : cityName && barangayName
+              ? `${cityName}, ${barangayName}`
+              : ''
+        }
         latitude={latitude}
         longitude={longitude}
         images={images}
         propertyDetail={propertyDetail.data}
         propertyOwnerId={propertyOwner?.id}
+        isPublished={propertyDetail.data.property.isPublished}
       />
     </div>
   );

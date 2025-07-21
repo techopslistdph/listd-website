@@ -10,6 +10,7 @@ import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
 import PropertySliderSkeleton from './PropertySliderSkeleton';
 import CardsFallback from './CardFallback';
+import { formatPrice } from '../property/propertySidebar/RangeSlider';
 
 export interface PropertySliderCard {
   image: string;
@@ -123,7 +124,7 @@ export default function PropertySlider() {
                 </div>
                 <div className='p-6 flex flex-col flex-1'>
                   <div className='text-primary-main font-bold text-xl md:text-2xl mb-2 leading-[32px] md:pb-[12px]'>
-                    {card?.listingPriceFormatted}
+                    ₱{formatPrice(card?.listingPrice)}
                   </div>
                   <div className='font-medium text-base truncate leading-[24px]'>
                     {card?.listingTitle}
