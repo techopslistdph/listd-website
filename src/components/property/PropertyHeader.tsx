@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
 import { handleShareProperty } from '@/lib/utils/ShareProperty';
@@ -26,7 +27,7 @@ export function PropertyHeader({
       <div className='flex items-center justify-between gap-2'>
         <div className='flex items-center gap-2'>
           {listingPrice && (
-            <div className='text-xl md:text-3xl font-extrabold text-primary-main'>
+            <div className='text-xl md:text-4xl font-bold text-primary-main'>
               ₱{formatPrice(listingPrice)}
             </div>
           )}
@@ -55,17 +56,17 @@ export function PropertyHeader({
       <div className='flex flex-wrap items-start gap-2 mt-1'>
         <p className='text-xl lg:text-2xl font-semibold break-words'>
           {title}{' '}
-          {isPublished && (
-            <span className='bg-primary-mid text-white font-normal text-xs px-3 py-1 rounded-full flex-shrink-0'>
-              Verified
-            </span>
-          )}
         </p>
+        {/* {isPublished && (
+          <span className='bg-primary-mid text-white font-normal text-xs px-3 py-1 rounded-full flex-shrink-0'>
+            Verified
+          </span>
+        )} */}
       </div>
       {location && (
-        <div className='flex items-center text-gray-400 gap-2 mt-1'>
+        <div className='flex items-center text-neutral-mid gap-2 '>
           <Image src={pinIcon} alt='pin' width={15} height={15} />{' '}
-          <p className='text-sm md:text-base'>{location}</p>
+          <p className='text-sm md:text-base font-medium'>{location}</p>
         </div>
       )}
     </div>

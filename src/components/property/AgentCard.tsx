@@ -45,11 +45,9 @@ export function AgentCard({
           <div className='font-semibold flex flex-col items-start gap-1'>
             <div className='flex items-center gap-1'>
               {agent?.name}{' '}
-              {agent?.isVerified && (
-                <Image src={verified} alt='verified' width={16} height={16} />
-              )}
+              <Image src={verified} alt='verified' width={16} height={16} />
             </div>
-            <div className='text-xs text-gray-500'>{agent.position}</div>
+            <div className='text-xs text-neutral-mid'>{agent.position}</div>
           </div>
         </div>
         {agent?.whatsapp && (

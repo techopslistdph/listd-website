@@ -20,7 +20,9 @@ export default function PropertyFeatures({
         onClick={() => setOpen(prev => !prev)}
         type='button'
       >
-        <span>Features & Amenities</span>
+        <span className='text-xl lg:text-2xl leading-[30px] font-semibold break-words'>
+          Features & Amenities
+        </span>
         <ChevronDown
           className={`transition-transform duration-200 ${
             open ? 'rotate-180' : ''
@@ -32,7 +34,7 @@ export default function PropertyFeatures({
           {featuresList.map((f, i) => (
             <span
               key={i}
-              className='bg-primary-mid text-white px-3 py-1 rounded-full text-sm'
+              className='bg-primary-mid text-white px-3 py-2 rounded-full text-xs'
             >
               {f}
             </span>
@@ -40,7 +42,7 @@ export default function PropertyFeatures({
           {amenitiesList.map((a, i) => (
             <span
               key={i}
-              className='bg-primary-mid text-white px-3 py-1 rounded-full text-sm'
+              className='bg-primary-mid text-white px-3 py-2 rounded-full text-xs'
             >
               {a}
             </span>
