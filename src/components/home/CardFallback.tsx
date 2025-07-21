@@ -28,7 +28,7 @@ export default function CardsFallback({
       src={src}
       alt={alt}
       fill
-      className='object-cover'
+      className='object-cover rounded-3xl'
       onError={() => setImgError(true)}
     />
   );
