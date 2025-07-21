@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
 import { getPropertyDetailsForType } from '@/lib/utils/propertyDetailsWithIcons';
+import { formatPrice } from './propertySidebar/RangeSlider';
 
 export default function PropertyCard({
   propertyDetail,
@@ -158,10 +159,7 @@ export default function PropertyCard({
             >
               {listingPrice && (
                 <div className='text-xl font-extrabold text-primary-main mb-1'>
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(Number(listingPrice)) || 'Price not available'}
+                  ₱{formatPrice(listingPrice)}
                 </div>
               )}
               {listingTitle && (
@@ -267,10 +265,7 @@ export default function PropertyCard({
               </div>
               {listingPrice && (
                 <div className='font-extrabold text-lg text-primary-main'>
-                  {new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'PHP',
-                  }).format(Number(listingPrice)) || 'Price not available'}
+                  ₱{formatPrice(listingPrice)}
                 </div>
               )}
             </div>
