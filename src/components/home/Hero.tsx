@@ -58,24 +58,28 @@ export default function Hero({
       backgroundImage={background.src}
     >
       <div className='bg-white rounded-3xl shadow-lg w-full max-w-[1300px] p-8 md:p-12 flex flex-col gap-8'>
-        <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-6'>
+        <div className='flex flex-col md:flex-row md:justify-between md:items-center '>
           <div>
-            <h1 className='font-bold heading-2 md:heading-1 text-neutral-text mb-2'>
-              Buy, rent, sell your property easily
+            <h1 className='font-bold text-3xl md:text-4xl text-neutral-text mb-2'>
+              Buy, rent, or list your property easily
             </h1>
-            <p className='text-body text-neutral-mid'>
-              A great platform to buy, sell, or even rent your properties
+            <p className='text-base lg:text-lg text-neutral-main'>
+              A trusted platform to buy, sell, or even rent your properties
               without any commissions.
             </p>
           </div>
-          <div className='flex gap-10 justify-center md:justify-start'>
+          <div className='flex gap-10 justify-center md:justify-start mt-5 md:mt-0'>
             <div className='text-center'>
-              <div className='font-bold text-3xl text-primary-main'>50k+</div>
-              <div className='text-body text-neutral-mid'>Renters</div>
+              <div className='font-bold heading-2 text-primary-main'>50k+</div>
+              <div className='text-body text-neutral-main font-medium'>
+                Renters
+              </div>
             </div>
             <div className='text-center'>
-              <div className='font-bold text-3xl text-primary-main'>10k+</div>
-              <div className='text-body text-neutral-mid'>Properties</div>
+              <div className='font-bold heading-2 text-primary-main'>10k+</div>
+              <div className='text-body text-neutral-main font-medium'>
+                Properties
+              </div>
             </div>
           </div>
         </div>
@@ -90,7 +94,7 @@ export default function Hero({
                 <SelectItem
                   key={option.id}
                   value={option.id}
-                  className='text-body py-3 text-neutral-text text-vase'
+                  className='text-body py-3 text-neutral-text text-base'
                 >
                   {option.name}
                 </SelectItem>
@@ -98,16 +102,16 @@ export default function Hero({
             </SelectContent>
           </Select>
         </div>
-        <div className='hidden md:flex gap-8 border-b border-[var(--neutral-light)] mb-4 '>
+        <div className='hidden md:flex  border-b border-[var(--neutral-light)]'>
           {listingTypes?.map(tab => (
             <button
               key={tab.id}
-              className={`pb-2 cursor-pointer ${
+              className={`pb-2 cursor-pointer text-body-lg px-5  ${
                 propertyAction === tab.id
-                  ? 'border-b-2 border-primary-main text-primary-main'
-                  : 'text-neutral-text border-b-2 border-transparent'
+                  ? 'border-b-2 border-primary-main text-primary-main font-semibold'
+                  : 'text-neutral-text border-b-2 border-transparent font-medium'
               }`}
-              onClick={() => setPropertyAction(tab.id) }
+              onClick={() => setPropertyAction(tab.id)}
             >
               {tab.name}
             </button>
@@ -124,7 +128,7 @@ export default function Hero({
               <Input
                 type='text'
                 placeholder='Search for Location'
-                className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black  text-neutral-text outline-none border-0 shadow-none'
+                className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black text-neutral-text outline-none border-0 shadow-none text-sm lg:text-base'
                 value={location}
                 onChange={e => setLocation(e.target.value)}
               />
@@ -146,7 +150,7 @@ export default function Hero({
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Property</label>
             <Select value={property} onValueChange={setProperty}>
-              <SelectTrigger className='w-full rounded-full text-base bg-neutral-light px-6 py-6 text-left text-body text-neutral-text flex items-center justify-between border-0 shadow-none'>
+              <SelectTrigger className='w-full rounded-full bg-neutral-light px-6 py-6 text-left text-sm lg:text-base text-neutral-text flex items-center justify-between border-0 shadow-none'>
                 <SelectValue placeholder='Select property' />
               </SelectTrigger>
               <SelectContent className='rounded-2xl shadow-lg'>
@@ -154,7 +158,7 @@ export default function Hero({
                   <SelectItem
                     key={option.id}
                     value={option.name}
-                    className='text-body text-base py-3 text-neutral-text'
+                    className='text-body text-sm lg:text-base py-3 text-neutral-text'
                   >
                     {option.name}
                   </SelectItem>
@@ -164,7 +168,7 @@ export default function Hero({
           </div>
           <Button
             variant='primary'
-            className='rounded-full px-8 py-3 font-medium w-full md:w-auto mt-2 md:mt-0'
+            className='rounded-full px-8 py-3 font-medium w-full md:w-auto mt-2 md:mt-0 text-center flex items-center justify-center'
             type='submit'
           >
             Browse Properties
