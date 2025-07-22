@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
 import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
+import { formatPrice } from '@/utils/formatPriceUtils';
 
 interface RangeSliderProps {
   priceRanges: PriceRangeResponse;
@@ -11,14 +12,7 @@ interface RangeSliderProps {
   onPriceRangeChange: (min: number, max: number) => void;
 }
 
-export function formatPrice(value: string | number): string {
-  const num = Number(value);
-  if (isNaN(num)) return '0';
 
-  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(2)}M`;
-  if (num >= 1_000) return `${(num / 1_000).toFixed(2)}K`;
-  return num.toFixed(2);
-}
 
 export const RangeSlider = ({
   priceRanges,

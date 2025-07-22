@@ -4,7 +4,8 @@ import { useEffect, useRef } from 'react';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { Marker } from '@react-google-maps/api';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
-import { formatPrice } from '../property/propertySidebar/RangeSlider';
+import { formatPrice } from '@/utils/formatPriceUtils';
+
 
 interface MarkerClustererProps {
   data: PropertyDetail[];
