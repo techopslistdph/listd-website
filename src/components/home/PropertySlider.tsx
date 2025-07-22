@@ -10,7 +10,8 @@ import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
 import PropertySliderSkeleton from './PropertySliderSkeleton';
 import CardsFallback from './CardFallback';
-import { formatPrice } from '../property/propertySidebar/RangeSlider';
+import { formatPrice } from '@/utils/formatPriceUtils';
+
 
 export interface PropertySliderCard {
   image: string;

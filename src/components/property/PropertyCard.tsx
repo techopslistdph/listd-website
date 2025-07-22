@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
 import { getPropertyDetailsForType } from '@/lib/utils/propertyDetailsWithIcons';
-import { formatPrice } from './propertySidebar/RangeSlider';
+import { formatPrice } from '@/utils/formatPriceUtils';
 
 export default function PropertyCard({
   propertyDetail,

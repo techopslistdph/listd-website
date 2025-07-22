@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
 import { handleShareProperty } from '@/lib/utils/ShareProperty';
 import pinIcon from '../../../public/images/icons/pin.svg';
-import { formatPrice } from './propertySidebar/RangeSlider';
+import { formatPrice } from '@/utils/formatPriceUtils';
 
 interface PropertyHeaderProps {
   listingPrice: number;
