@@ -9,19 +9,19 @@ export function formatPrice(value: string | number): string {
 
   if (num >= 1_000_000_000) {
     const formatted = truncate(num / 1_000_000_000, 2);
-    return `${formatted.toString().replace(/\.?0+$/, '')}B`;
+    return `${formatted.toString().replace(/\.0+$/, '')}B`;
   }
 
   if (num >= 1_000_000) {
     const formatted = truncate(num / 1_000_000, 2);
-    return `${formatted.toString().replace(/\.?0+$/, '')}M`;
+    return `${formatted.toString().replace(/\.0+$/, '')}M`;
   }
 
   if (num >= 1_000) {
     const formatted = truncate(num / 1_000, 2);
-    return `${formatted.toString().replace(/\.?0+$/, '')}K`;
+    return `${formatted.toString().replace(/\.0+$/, '')}K`;
   }
 
   const formatted = truncate(num, 2);
-  return formatted.toString().replace(/\.?0+$/, '');
+  return formatted.toString().replace(/\.0+$/, '');
 }
