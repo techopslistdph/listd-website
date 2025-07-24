@@ -9,9 +9,9 @@ import Link from 'next/link';
 import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
 import PropertySliderSkeleton from './PropertySliderSkeleton';
+import PropertySliderFallback from './PropertySliderFallback';
 import CardsFallback from './CardFallback';
 import { formatPrice } from '@/utils/formatPriceUtils';
-
 
 export interface PropertySliderCard {
   image: string;
@@ -26,8 +26,13 @@ export default function PropertySlider() {
     lng: number | null;
   }>({ lat: null, lng: null });
   const [error, setError] = useState<string | null>(null);
+  const [permission, setPermission] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
+  const [hasRequestedPermission, setHasRequestedPermission] = useState(false);
 
-  useEffect(() => {
+  const requestLocation = () => {
+    setError(null);
+    setHasRequestedPermission(true);
+    
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by your browser.');
       return;
@@ -40,19 +45,79 @@ export default function PropertySlider() {
           lng: position.coords.longitude,
         });
         setError(null);
+        setPermission('granted');
       },
       err => {
-        setError('Failed to retrieve location: ' + err.message);
+        // Check for specific permission denial
+        if (err.code === 1) {
+          // Check if this is a temporary denial (dismissed prompt) or permanent denial
+          if (hasRequestedPermission && !navigator.permissions) {
+            // For browsers without Permissions API, assume it's a dismissed prompt
+            setPermission('prompt');
+            setError('Location access needed. Please allow location permissions to see nearby properties.');
+          } else {
+            // Check if it's actually permanently denied
+            navigator.permissions?.query({ name: 'geolocation' }).then(result => {
+              if (result.state === 'denied') {
+                setPermission('denied');
+                setError('Location access denied. Please enable location permissions to see nearby properties.');
+              } else {
+                // It's a dismissed prompt, not permanently denied
+                setPermission('prompt');
+                setError('Location access needed. Please allow location permissions to see nearby properties.');
+              }
+            }).catch(() => {
+              // Fallback: assume it's a dismissed prompt
+              setPermission('prompt');
+              setError('Location access needed. Please allow location permissions to see nearby properties.');
+            });
+          }
+        } else if (err.code === 2) {
+          setPermission('prompt');
+          setError('Unable to determine your location. Please try again.');
+        } else if (err.code === 3) {
+          setPermission('prompt');
+          setError('Location request timed out. Please try again.');
+        } else {
+          setPermission('prompt');
+          setError('Failed to retrieve location: ' + err.message);
+        }
         setLocation({ lat: null, lng: null });
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 15000,
+        maximumAge: 300000
       }
     );
+  };
+
+
+  const handleRequestLocation = () => {
+    requestLocation();
+  };
+
+  useEffect(() => {
+    // Check if we already have permission status
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then(result => {
+        if (result.state === 'granted') {
+          setPermission('granted');
+          requestLocation();
+        } else if (result.state === 'denied') {
+          setPermission('denied');
+        } else {
+          setPermission('prompt');
+          requestLocation();
+        }
+      });
+    } else {
+      // Fallback for browsers that don't support permissions API
+      requestLocation();
+    }
   }, []);
 
   const { data: nearbyProperties, isPending } = useNearbyProperties(location);
-
-  if (location === null) {
-    return null;
-  }
 
   const nearbyPropertiesData =
     nearbyProperties?.data as unknown as PropertyDetails[];
@@ -78,7 +143,7 @@ export default function PropertySlider() {
   );
 
   return (
-    <section className='container max-w-[1300px] mx-auto px-8 md:px-5 py-10 lg:py-20 '>
+    <section className='containe max-w-[1300px] mx-auto px-8 md:px-5 py-10 lg:py-20 '>
       <div className='flex flex-col md:flex-row gap-3 justify-between items-start md:items-center  mb-10 md:mb-4'>
         <div>
           <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-neutral-text md:mb-2'>
@@ -94,10 +159,17 @@ export default function PropertySlider() {
           </Button>
         </Link>
       </div>
-      {error && <p className='text-red-500'>{error}</p>}
+
+      {(!location.lat && !location.lng) && (
+        <PropertySliderFallback
+        permission={permission}
+        error={error}
+        onRequestLocation={handleRequestLocation}
+      />
+      )}
 
       {/* Show skeleton when loading */}
-      {isPending && !error && <PropertySliderSkeleton />}
+      {isPending && location.lat && location.lng && <PropertySliderSkeleton />}
 
       {/* Show actual content when data is loaded */}
       {!isPending && location && filteredProperties && (
