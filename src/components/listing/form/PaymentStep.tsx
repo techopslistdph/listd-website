@@ -49,7 +49,7 @@ export function PaymentStep({
       return toast.error(validation.message);
     }
 
-    const prompt = buildPropertyPrompt(formData, 'valuate');
+    const prompt = buildPropertyPrompt(formData, 'valuation_generation');
 
     generateContent(
       { ...prompt },

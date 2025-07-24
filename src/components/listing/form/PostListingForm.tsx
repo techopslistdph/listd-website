@@ -148,7 +148,7 @@ export default function PostListingForm({
       return toast.error(validation.message);
     }
 
-    const prompt = buildPropertyPrompt(formData, 'valuate');
+    const prompt = buildPropertyPrompt(formData, 'valuation_generation');
 
     valuate(
       { prompt, userId: user?.id || '' },
@@ -171,7 +171,6 @@ export default function PostListingForm({
       }
     );
   };
-
 
   return (
     <FormProvider {...form}>
