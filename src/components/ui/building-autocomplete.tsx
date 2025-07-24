@@ -127,7 +127,7 @@ export function BuildingAutocomplete({
                   field.onChange(e.target.value);
                 }}
                 placeholder={placeholder}
-                className='mb-2 px-6 py-5'
+                className='mb-2 px-6 py-5 text-sm lg:text-base'
               />
               {isLoading && (
                 <div className='absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto'>

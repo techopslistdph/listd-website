@@ -124,7 +124,7 @@ export function TagInput({
             ))}
           </div>
           <input
-            className='flex-1 bg-transparent placeholder:text-sm text-sm outline-none border-none px-2'
+            className='flex-1 bg-transparent placeholder:text-sm lg:placeholder:text-base text-sm lg:text-base outline-none border-none px-2'
             placeholder={placeholder}
             onKeyDown={handleTagInput}
             onChange={handleInputChange}

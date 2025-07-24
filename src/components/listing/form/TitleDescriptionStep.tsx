@@ -105,7 +105,7 @@ export function TitleDescriptionStep({
             }`}
           >
             {titleGenerated && (
-              <div className='mx-2 flex flex-col gap-2 text-sm w-full'>
+              <div className='mx-2 flex flex-col gap-2 text-sm  w-full'>
                 <p className='text-neutral-mid '>Suggestion:</p>
                 <div
                   onClick={() => {
@@ -129,7 +129,7 @@ export function TitleDescriptionStep({
           <Textarea
             placeholder='Tell us what makes your place special!'
             {...form.register('description')}
-            className='min-h-[200px]'
+            className='min-h-[200px] text-sm lg:text-base'
           />
           <div
             className={`flex items-end gap-2 w-full ${

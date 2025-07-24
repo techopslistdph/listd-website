@@ -46,7 +46,7 @@ export const FormInput = <T extends FieldValues>({
           <FormControl>
             <Input
               type={type}
-              className='mb-2 px-6 py-5'
+              className='mb-2 px-6 py-5 text-sm lg:text-base'
               placeholder={placeholder}
               disabled={disabled}
               {...field}
