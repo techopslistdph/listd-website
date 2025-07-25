@@ -148,7 +148,7 @@ export default function PostListingForm({
       return toast.error(validation.message);
     }
 
-    const prompt = buildPropertyPrompt(formData, 'valuate');
+    const prompt = buildPropertyPrompt(formData, 'valuation_generation');
 
     valuate(
       { prompt, userId: user?.id || '' },
@@ -172,7 +172,6 @@ export default function PostListingForm({
     );
   };
 
-
   return (
     <FormProvider {...form}>
       <div className='container mx-auto relative mb-10 px-5 lg:px-0 max-w-[1300px]'>
@@ -183,7 +182,7 @@ export default function PostListingForm({
           height={700}
           className='w-full h-[700px] rounded-3xl object-cover z-10'
         />
-        <div className='max-w-[1000px] shadow-lg rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white  relative z-20'>
+        <div className='max-w-[1000px] shadow-lg rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white relative z-20'>
           <Stepper
             form={form}
             step={step}

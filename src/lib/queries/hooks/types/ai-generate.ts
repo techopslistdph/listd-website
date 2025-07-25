@@ -56,6 +56,7 @@ export interface AiGeneratePrompt {
   request: string;
   propertyType: string;
   location?: string;
+  request_type?: string;
   context?: {
     // Common fields
     floorArea?: number;
@@ -73,6 +74,8 @@ export interface AiGeneratePrompt {
     downPaymentPHP?: string;
     commissionPercent?: string;
     commissionPHP?: string;
+    latitude?: number;
+    longitude?: number;
     nearbyLocations?: [value: string, label: string][] | string[];
     amenities?: [value: string, label: string][] | string[];
     features?: [value: string, label: string][] | string[];

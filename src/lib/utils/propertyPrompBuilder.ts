@@ -131,7 +131,7 @@ export function validateRequiredFields(formData: ListingFormData) {
  */
 export function buildPropertyPrompt(
   formData: ListingFormData,
-  type: 'title' | 'description' | 'valuate',
+  type: 'title' | 'description' | 'valuation_generation',
   request?: string
 ): AiGeneratePrompt {
   const fields = extractFormFields(formData);
@@ -221,7 +221,7 @@ export function buildPropertyPrompt(
       baseInstruction =
         'Craft a detailed, engaging, and informative property description based on the given context.';
       break;
-    case 'valuate':
+    case 'valuation_generation':
       baseInstruction = `Estimate the market value of this ${listingType.toLowerCase()?.includes('buy') ? 'for sale' : 'for rent'} ${propertyType.replaceAll('-', ' ')} located in ${location}. Include a brief analysis of its rental potential if applicable. Do not return a value of 0 PHP.`;
       break;
     default:
@@ -240,6 +240,7 @@ export function buildPropertyPrompt(
   return {
     request: requestTitle,
     propertyType: propertyType.toLowerCase().split(' ').join('-'),
+    request_type: type,
     ...(location && { location }),
     context,
   };

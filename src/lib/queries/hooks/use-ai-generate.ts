@@ -1,6 +1,7 @@
 import { api } from '@/lib/fetch-wrapper';
 import { useMutation } from '@tanstack/react-query';
 import { AiGeneratePrompt, AiGenerateResponse } from './types/ai-generate';
+import { LocationCoordinatesResponse } from '../server/propety/type';
 
 interface ValuationResponse {
   data: Record<string, unknown>;
@@ -39,7 +40,30 @@ const ai = {
 
   valuate: async (prompt: AiGeneratePrompt, userId: string) => {
     try {
-      // First, generate the AI valuation
+      const locationCoordinates = await api.post<LocationCoordinatesResponse>(
+        `/api/google-maps/address-autocomplete`,
+        {
+          query: prompt.location,
+        }
+      );
+
+      if ('error' in locationCoordinates) {
+        return {
+          success: false,
+          data: null,
+          message:
+            locationCoordinates.error?.message || 'Location coordinates failed',
+        };
+      }
+
+      // get the long lat from the location coordinates
+      const longLat = locationCoordinates.data.predictions[0].coordinates;
+
+      // pass it inside the context as lat and lng
+      prompt.context!.latitude = longLat.latitude;
+      prompt.context!.longitude = longLat.longitude;
+
+      // Generate the AI valuation
       const aiResponse = await ai.generate(prompt);
 
       if (!aiResponse.success || !aiResponse.data) {
