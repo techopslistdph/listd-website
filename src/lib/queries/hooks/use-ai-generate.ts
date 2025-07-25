@@ -40,7 +40,6 @@ const ai = {
 
   valuate: async (prompt: AiGeneratePrompt, userId: string) => {
     try {
-      console.log(prompt);
       const locationCoordinates = await api.post<LocationCoordinatesResponse>(
         `/api/google-maps/address-autocomplete`,
         {
@@ -64,7 +63,6 @@ const ai = {
       prompt.context!.latitude = longLat.latitude;
       prompt.context!.longitude = longLat.longitude;
 
-      console.log(prompt);
       // Generate the AI valuation
       const aiResponse = await ai.generate(prompt);
 
