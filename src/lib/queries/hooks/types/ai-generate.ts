@@ -56,7 +56,7 @@ export interface AiGeneratePrompt {
   request: string;
   propertyType: string;
   location?: string;
-  requestType?: string;
+  request_type?: string;
   context?: {
     // Common fields
     floorArea?: number;

@@ -240,7 +240,7 @@ export function buildPropertyPrompt(
   return {
     request: requestTitle,
     propertyType: propertyType.toLowerCase().split(' ').join('-'),
-    requestType: type,
+    request_type: type,
     ...(location && { location }),
     context,
   };

@@ -182,7 +182,7 @@ export default function PostListingForm({
           height={700}
           className='w-full h-[700px] rounded-3xl object-cover z-10'
         />
-        <div className='max-w-[1000px] shadow-lg rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white  relative z-20'>
+        <div className='max-w-[1000px] shadow-lg rounded-3xl border mx-auto p-5 lg:p-10 -mt-96 bg-white relative z-20'>
           <Stepper
             form={form}
             step={step}

@@ -64,7 +64,7 @@ const ai = {
       prompt.context!.latitude = longLat.latitude;
       prompt.context!.longitude = longLat.longitude;
 
-      console.log(prompt.context);
+      console.log(prompt);
       // Generate the AI valuation
       const aiResponse = await ai.generate(prompt);
 
