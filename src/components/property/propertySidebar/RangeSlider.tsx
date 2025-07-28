@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
 import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
-// import { formatPrice } from '@/utils/formatPriceUtils';
+import { formatPrice } from '@/utils/formatPriceUtils';
 
 interface RangeSliderProps {
   priceRanges: PriceRangeResponse;
@@ -25,6 +25,8 @@ export const RangeSlider = ({
     minPrice || minPriceRange,
     maxPrice || maxPriceRange,
   ]);
+  const [isMinFocused, setIsMinFocused] = useState(false);
+  const [isMaxFocused, setIsMaxFocused] = useState(false);
 
   useEffect(() => {
     setPriceRange([minPrice || minPriceRange, maxPrice || maxPriceRange]);
@@ -74,6 +76,7 @@ export const RangeSlider = ({
     const newRange = [validatedValue, Math.max(validatedValue, priceRange[1])];
     setPriceRange(newRange);
     onPriceRangeChange(newRange[0], newRange[1]);
+    setIsMinFocused(false);
   };
 
   const handleMaxPriceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -85,6 +88,7 @@ export const RangeSlider = ({
     const newRange = [Math.min(validatedValue, priceRange[0]), validatedValue];
     setPriceRange(newRange);
     onPriceRangeChange(newRange[0], newRange[1]);
+    setIsMaxFocused(false);
   };
 
   return (
@@ -101,17 +105,19 @@ export const RangeSlider = ({
         <div className='flex xl:flex-nowrap justify-center mt-2 gap-2'>
           <input
             type='text'
-            value={priceRange[0].toString()}
+            value={isMinFocused ? priceRange[0].toString() : formatPrice(priceRange[0].toString())}
             onChange={handleMinPriceChange}
             onBlur={handleMinPriceBlur}
+            onFocus={() => setIsMinFocused(true)}
             className='lg:w-full bg-neutral-light rounded-full px-4 py-2 text-sm font-medium w-1/4 flex items-center justify-center text-center border border-transparent focus:border-primary focus:outline-none'
           />
           <span className='mx-1 text-2xl font-bold'>-</span>
           <input
             type='text'
-            value={priceRange[1].toString()}
+            value={isMaxFocused ? priceRange[1].toString() : formatPrice(priceRange[1].toString())}
             onChange={handleMaxPriceChange}
             onBlur={handleMaxPriceBlur}
+            onFocus={() => setIsMaxFocused(true)}
             className='lg:w-full bg-neutral-light rounded-full px-4 py-2 text-sm font-medium w-1/4 flex items-center justify-center text-center border border-transparent focus:border-primary focus:outline-none'
           />
         </div>
