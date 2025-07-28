@@ -41,14 +41,9 @@ export const RangeSlider = ({
     const rawValue = e.target.value.replace(/[^0-9]/g, '');
     const numValue = rawValue ? parseInt(rawValue, 10) : minPriceRange;
 
-    // Allow typing without immediate validation
+    // Allow typing without validation - just update the field being typed
     if (!isNaN(numValue)) {
-      const newRange = [
-        Math.max(minPriceRange, Math.min(numValue, maxPriceRange)),
-        priceRange[1],
-      ];
-      setPriceRange(newRange);
-      onPriceRangeChange(newRange[0], priceRange[1]);
+      setPriceRange([numValue, priceRange[1]]);
     }
   };
 
@@ -56,23 +51,15 @@ export const RangeSlider = ({
     const rawValue = e.target.value.replace(/[^0-9]/g, '');
     const numValue = rawValue ? parseInt(rawValue, 10) : maxPriceRange;
 
-    // Allow typing without immediate validation
+    // Allow typing without validation - just update the field being typed
     if (!isNaN(numValue)) {
-      const newRange = [
-        priceRange[0],
-        Math.min(maxPriceRange, Math.max(numValue, minPriceRange)),
-      ];
-      setPriceRange(newRange);
-      onPriceRangeChange(priceRange[0], newRange[1]);
+      setPriceRange([priceRange[0], numValue]);
     }
   };
 
   const handleMinPriceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
-    const validatedValue = Math.max(
-      minPriceRange,
-      Math.min(value || minPriceRange, Math.min(priceRange[1], maxPriceRange))
-    );
+    const validatedValue = Math.max(minPriceRange, Math.min(value || minPriceRange, maxPriceRange));
     const newRange = [validatedValue, Math.max(validatedValue, priceRange[1])];
     setPriceRange(newRange);
     onPriceRangeChange(newRange[0], newRange[1]);
@@ -81,10 +68,7 @@ export const RangeSlider = ({
 
   const handleMaxPriceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
-    const validatedValue = Math.min(
-      maxPriceRange,
-      Math.max(value || maxPriceRange, Math.max(priceRange[0], minPriceRange))
-    );
+    const validatedValue = Math.min(value || maxPriceRange, maxPriceRange);
     const newRange = [Math.min(validatedValue, priceRange[0]), validatedValue];
     setPriceRange(newRange);
     onPriceRangeChange(newRange[0], newRange[1]);
