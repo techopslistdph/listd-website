@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Slider } from '../../ui/slider';
 import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
-import { formatPrice } from '@/utils/formatPriceUtils';
+// import { formatPrice } from '@/utils/formatPriceUtils';
 
 interface RangeSliderProps {
   priceRanges: PriceRangeResponse;
@@ -11,8 +11,6 @@ interface RangeSliderProps {
   maxPrice?: number;
   onPriceRangeChange: (min: number, max: number) => void;
 }
-
-
 
 export const RangeSlider = ({
   priceRanges,
@@ -37,6 +35,58 @@ export const RangeSlider = ({
     onPriceRangeChange(values[0], values[1]);
   };
 
+  const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+    const numValue = rawValue ? parseInt(rawValue, 10) : minPriceRange;
+
+    // Allow typing without immediate validation
+    if (!isNaN(numValue)) {
+      const newRange = [
+        Math.max(minPriceRange, Math.min(numValue, maxPriceRange)),
+        priceRange[1],
+      ];
+      setPriceRange(newRange);
+      onPriceRangeChange(newRange[0], priceRange[1]);
+    }
+  };
+
+  const handleMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+    const numValue = rawValue ? parseInt(rawValue, 10) : maxPriceRange;
+
+    // Allow typing without immediate validation
+    if (!isNaN(numValue)) {
+      const newRange = [
+        priceRange[0],
+        Math.min(maxPriceRange, Math.max(numValue, minPriceRange)),
+      ];
+      setPriceRange(newRange);
+      onPriceRangeChange(priceRange[0], newRange[1]);
+    }
+  };
+
+  const handleMinPriceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
+    const validatedValue = Math.max(
+      minPriceRange,
+      Math.min(value || minPriceRange, Math.min(priceRange[1], maxPriceRange))
+    );
+    const newRange = [validatedValue, Math.max(validatedValue, priceRange[1])];
+    setPriceRange(newRange);
+    onPriceRangeChange(newRange[0], newRange[1]);
+  };
+
+  const handleMaxPriceBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
+    const validatedValue = Math.min(
+      maxPriceRange,
+      Math.max(value || maxPriceRange, Math.max(priceRange[0], minPriceRange))
+    );
+    const newRange = [Math.min(validatedValue, priceRange[0]), validatedValue];
+    setPriceRange(newRange);
+    onPriceRangeChange(newRange[0], newRange[1]);
+  };
+
   return (
     <div>
       <div className='font-bold text-lg mb-3'>Price Range</div>
@@ -48,14 +98,22 @@ export const RangeSlider = ({
           value={priceRange}
           onValueChange={handlePriceRangeSliderChange}
         />
-        <div className='flex xl:flex-nowrap justify-center mt-2'>
-          <div className='lg:w-full bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-1/4 flex items-center justify-center'>
-            {formatPrice(priceRange[0].toString())}
-          </div>
-          <span className='mx-2 text-2xl font-bold'>-</span>
-          <div className='lg:w-full bg-neutral-light rounded-full px-8 py-2 text-sm font-medium w-1/4 flex items-center justify-center'>
-            {formatPrice(priceRange[1].toString())}
-          </div>
+        <div className='flex xl:flex-nowrap justify-center mt-2 gap-2'>
+          <input
+            type='text'
+            value={priceRange[0].toString()}
+            onChange={handleMinPriceChange}
+            onBlur={handleMinPriceBlur}
+            className='lg:w-full bg-neutral-light rounded-full px-4 py-2 text-sm font-medium w-1/4 flex items-center justify-center text-center border border-transparent focus:border-primary focus:outline-none'
+          />
+          <span className='mx-1 text-2xl font-bold'>-</span>
+          <input
+            type='text'
+            value={priceRange[1].toString()}
+            onChange={handleMaxPriceChange}
+            onBlur={handleMaxPriceBlur}
+            className='lg:w-full bg-neutral-light rounded-full px-4 py-2 text-sm font-medium w-1/4 flex items-center justify-center text-center border border-transparent focus:border-primary focus:outline-none'
+          />
         </div>
       </div>
     </div>
