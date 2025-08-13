@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   '/property/:path*',
   '/valuation',
   '/valuation/:path*',
+  '/api/nearby-properties',
 ]);
 
 const isAuthRoute = createRouteMatcher([
