@@ -30,8 +30,6 @@ const getCondominiums = async (
       };
     }
 
-
-
     return {
       success: true,
       data: {
@@ -60,12 +58,9 @@ const getHouseAndLots = async (
       api.setAuthToken(token);
     }
 
-
     const response = await api.get<PropertyListResponse | ErrorResponse>(
       `${API_ENDPOINTS.houseAndLot.list}?${queryParams}`
     );
-
-   
 
     if ('error' in response) {
       return {
@@ -305,16 +300,13 @@ export const getProperties = async (
     }
   });
 
-
-
-
   try {
     const response = (await fetchProperties(
       queryParams.toString(),
       sessionId
     )) as unknown as PropertyListResponse;
-    
-    return response
+
+    return response;
   } catch (error) {
     return {
       success: false,
@@ -431,11 +423,14 @@ export const getAmenities = async () => {
   }
 };
 
-
-export const getPriceRanges = async (propertyTypeId: string, listingTypeId: string) => {
+export const getPriceRanges = async (
+  propertyTypeId: string,
+  listingTypeId: string,
+  search?: string
+) => {
   try {
     const response = await api.get<PriceRangeResponse | ErrorResponse>(
-      `${API_ENDPOINTS.priceRange.list}?propertyTypeId=${propertyTypeId}&listingTypeId=${listingTypeId}`
+      `${API_ENDPOINTS.priceRange.list}?propertyTypeId=${propertyTypeId}&listingTypeId=${listingTypeId}&search=${search}`
     );
 
     if ('error' in response) {
@@ -459,5 +454,3 @@ export const getPriceRanges = async (propertyTypeId: string, listingTypeId: stri
     };
   }
 };
-
-
