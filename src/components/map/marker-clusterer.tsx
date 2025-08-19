@@ -140,7 +140,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
         >
           {/* Card */}
           <div
-            className='bg-white shadow-lg  w-86 h-full overflow-hidden overflow-y-auto border border-gray-200 relative'
+            className='bg-white shadow-lg w-64 md:w-86 md:h-full overflow-hidden overflow-y-auto border border-gray-200 relative'
             onWheel={e => {
               e.stopPropagation();
             }}
@@ -186,7 +186,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
                     </div>
                     <PropertyDetailsDisplay
                       propertyDetail={selectedProperty}
-                      className='grid-cols-3 gap-2 grid'
+                      className='hidden grid-cols-2 lg:grid-cols-3 gap-2 md:grid'
                     />
                   </Link>
                 </div>
