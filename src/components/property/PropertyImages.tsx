@@ -30,6 +30,7 @@ interface PropertyImagesProps {
   images: PropertyImage[];
   title: string;
   cardMode?: boolean;
+  mapMode?: boolean;
 }
 
 export function PropertyImages({
@@ -38,6 +39,7 @@ export function PropertyImages({
   cardMode = false,
   isLiked = false,
   handleLikeProperty = () => {},
+  mapMode = false,
 }: PropertyImagesProps) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -113,6 +115,50 @@ export function PropertyImages({
             />
           )}
         </button>
+        {/* Left Arrow */}
+        {images.length > 1 && (
+          <div>
+            <button
+              className='absolute left-0 top-1/2 -translate-y-1/2 bg-transparent  text-primary-main rounded-full p-2 z-10 cursor-pointer'
+              onClick={handlePrevious}
+              aria-label='Previous image'
+            >
+              <ChevronLeft className='w-8 h-10 text-white' />
+            </button>
+            <button
+              className='absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-primary-main rounded-full p-2 z-10 cursor-pointer'
+              onClick={handleNext}
+              aria-label='Next image'
+            >
+              <ChevronRight className='w-8 h-10 text-white' />
+            </button>
+          </div>
+        )}
+
+        {/* Image count */}
+        <div className='absolute bottom-4 left-1/2 -translate-x-1/2 bg-transparent border-2 border-white rounded-[10px] px-4 py-1.5 text-sm font-bold text-white flex items-center justify-center'>
+          {currentIndex + 1} / {images.length}
+        </div>
+      </div>
+    );
+  }
+
+  if (mapMode) {
+    return (
+      <div className='relative w-full h-[200px] rounded-2xl overflow-hidden'>
+        {images.length > 1 ? (
+          <img
+            src={images[currentIndex]?.imageUrl}
+            alt={title}
+            className='object-cover w-full h-full'
+            sizes='100vw'
+          />
+        ) : (
+          <div className='w-full h-full bg-neutral-light flex items-center justify-center'>
+            <p className='text-neutral-mid text-sm'>No images</p>
+          </div>
+        )}
+
         {/* Left Arrow */}
         {images.length > 1 && (
           <div>

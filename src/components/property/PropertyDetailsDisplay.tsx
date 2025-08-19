@@ -20,7 +20,7 @@ interface PropertyDetailsDisplayProps {
 export default function PropertyDetailsDisplay({
   propertyDetail,
   className = 'flex flex-wrap gap-4',
-  itemClassName = 'flex flex-col items-center justify-center gap-1 text-neutral-main text-sm',
+  itemClassName = 'flex flex-col items-center justify-center gap-0.5 text-neutral-main text-sm',
 }: PropertyDetailsDisplayProps) {
   let details: PropertyDetailItem[] = [];
 

@@ -94,7 +94,7 @@ export function useStore() {
       propertyListingQuery: {
         search_latitude: 14.5,
         search_longitude: 120.9,
-        zoom: 6,
+        zoom: 8,
         bounding_box: '',
         polygon_path: [],
         polygon_center: { latitude: 14.5, longitude: 120.9 },

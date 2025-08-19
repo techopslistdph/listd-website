@@ -21,7 +21,6 @@ import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
-import Image from 'next/image';
 import { useUrlParams } from '@/hooks/useUrlParams';
 
 interface IMapProps {
@@ -29,7 +28,7 @@ interface IMapProps {
   properties?: PropertyDetail[];
 }
 
-type Location = {
+export type Location = {
   latitude: number;
   longitude: number;
 } | null;
@@ -59,10 +58,13 @@ const PropertyMap: React.FC<IMapProps> = ({
     lng: rootStore.propertyListingQuery.search_longitude || 120.9,
   });
   const [zoom, setZoom] = useState<number>(
-    rootStore.propertyListingQuery.zoom || 6
+    rootStore.propertyListingQuery.zoom || 8
   );
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location>(null);
+  const [originalZoom, setOriginalZoom] = useState<number>(
+    rootStore.propertyListingQuery.zoom || 8
+  );
 
   const containerStyle = {
     width: '100%',
@@ -89,10 +91,31 @@ const PropertyMap: React.FC<IMapProps> = ({
     setShowDrawButton(false);
   };
 
-  const onPolygonComplete = () => {
+  const onPolygonComplete = (drawnPolygon: google.maps.Polygon) => {
     setEnableDraw(false);
     setShowControls(true);
     setShowInstructionNote(false);
+
+    // Zoom to the drawn polygon
+    if (mapInstance) {
+      const bounds = new google.maps.LatLngBounds();
+      const path = drawnPolygon.getPath();
+      const points = path.getArray();
+
+      // Extend bounds to include all polygon points
+      points.forEach(point => {
+        bounds.extend(point);
+      });
+
+      // Add some padding around the polygon
+      mapInstance.fitBounds(bounds, 50);
+
+      // Limit the zoom level if it's too high
+      const currentZoom = mapInstance.getZoom();
+      if (currentZoom && currentZoom > 9) {
+        mapInstance.setZoom(11.5);
+      }
+    }
   };
 
   const onSearchHandle = () => {
@@ -165,8 +188,25 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const handleZoomChange = () => {
     if (mapInstance) {
-      const newZoom = mapInstance.getZoom() || 6;
+      const newZoom = mapInstance.getZoom() || 8;
       setZoom(newZoom);
+    }
+  };
+
+  const handleMarkerClick = (lat: number, lng: number) => {
+    if (mapInstance) {
+      // Save current zoom level before zooming in
+      setOriginalZoom(mapInstance.getZoom() || 8);
+      // Zoom to level 13 (close-up view) and center on the marker
+      mapInstance.setZoom(13);
+      mapInstance.panTo({ lat: lat - 0.025, lng });
+    }
+  };
+
+  const handleCloseCard = () => {
+    if (mapInstance) {
+      // Restore original zoom level
+      mapInstance.setZoom(originalZoom);
     }
   };
 
@@ -205,7 +245,9 @@ const PropertyMap: React.FC<IMapProps> = ({
             <div className='absolute flex bottom-8 z-10 m-auto left-0 right-0 gap-2 items-center justify-center text-center p-2'>
               <Button
                 onClick={onSearchHandle}
-                className={cn('px-10 cursor-pointer bg-primary-main text-white hover:bg-secondary-main')}
+                className={cn(
+                  'px-10 cursor-pointer bg-primary-main text-white hover:bg-secondary-main'
+                )}
               >
                 Search
                 <Search size={20} className='ml-2' />
@@ -220,43 +262,6 @@ const PropertyMap: React.FC<IMapProps> = ({
                 Cancel
                 <X size={20} className='ml-2' />
               </Button>
-            </div>
-          )}
-
-          {selectedLocation && (
-            <div className='absolute bottom-20 z-10 m-auto left-0 right-0 bg-white shadow rounded-lg max-h-[500px] overflow-hidden overflow-y-auto'>
-              <X
-                size={24}
-                className='shadow cursor-pointer sticky float-end mr-2 top-2 w-8 h-8 bg-white text-primary rounded-full'
-                onClick={() => setSelectedLocation(null)}
-              />
-              {properties
-                .filter(
-                  item =>
-                    Number(item.property.latitude) ===
-                      selectedLocation?.latitude &&
-                    Number(item.property.longitude) ===
-                      selectedLocation?.longitude
-                )
-                .map((item, index) => (
-                  <div
-                    key={`previewCard${index}`}
-                    className='p-4 cursor-pointer mb-1'
-                    onClick={() => router.push(`listings/${item.id}`)}
-                  >
-                    <Image
-                      src={item.property.images[0].imageUrl}
-                      alt={`Preview image`}
-                      className='w-full h-56 object-cover rounded-lg z-10'
-                      width={100}
-                      height={100}
-                    />
-                    <p className='font-bold text-primary text-xl my-2'>
-                      {item.property.listingPriceFormatted}
-                    </p>
-                    <p>{item.property.listingTitle}</p>
-                  </div>
-                ))}
             </div>
           )}
 
@@ -293,11 +298,16 @@ const PropertyMap: React.FC<IMapProps> = ({
               }}
               onPolygonComplete={polygon => {
                 setPoligon(polygon);
-                onPolygonComplete();
+                onPolygonComplete(polygon);
               }}
             />
             <MarkerClustererComponent
               data={properties}
+              setSelectedLocation={setSelectedLocation}
+              selectedLocation={selectedLocation}
+              onMarkerClick={handleMarkerClick}
+              properties={properties}
+              onCloseCard={handleCloseCard}
             />
             <Polygon path={polygon_path} options={polygonOptions} />
           </GoogleMap>
