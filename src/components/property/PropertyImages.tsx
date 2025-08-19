@@ -145,7 +145,7 @@ export function PropertyImages({
 
   if (mapMode) {
     return (
-      <div className='relative w-full h-[200px] rounded-2xl overflow-hidden'>
+      <div className='relative w-full h-[200px] overflow-hidden'>
         {images.length > 1 ? (
           <img
             src={images[currentIndex]?.imageUrl}

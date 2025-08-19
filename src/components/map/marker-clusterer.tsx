@@ -2,12 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { Marker, OverlayView } from '@react-google-maps/api';
+import { Marker } from '@react-google-maps/api';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { formatPrice } from '@/utils/formatPriceUtils';
 import { Location } from './PropertyMap';
 import Image from 'next/image';
-import { X } from 'lucide-react';
 import { PropertyImages } from '../property/PropertyImages';
 import pinIcon from '../../../public/images/icons/pin.svg';
 import Link from 'next/link';
@@ -20,6 +19,7 @@ interface MarkerClustererProps {
   onMarkerClick?: (lat: number, lng: number) => void;
   properties: PropertyDetail[];
   onCloseCard?: () => void;
+  clickedMarkers: Set<string>;
 }
 
 const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
@@ -29,8 +29,10 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
   onMarkerClick,
   properties,
   onCloseCard,
+  clickedMarkers,
 }) => {
   const clustererRef = useRef<MarkerClusterer | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (clustererRef.current) {
@@ -38,15 +40,35 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
     }
   }, [data]);
 
+  // Handle click outside to close card
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+        setSelectedLocation(null);
+        if (onCloseCard) {
+          onCloseCard();
+        }
+      }
+    };
+
+    if (selectedLocation) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectedLocation, setSelectedLocation, onCloseCard]);
+
   return (
-    <div>
+    <>
       {data.map((property, index) => {
         const formatted = formatPrice(property.property.listingPrice);
         const content = '₱' + formatted;
-        const baseWidth = 40;
-        const charWidth = 14;
+        const baseWidth = 30;
+        const charWidth = 12;
         const width = Math.max(baseWidth, content.length * charWidth);
-        const height = 40;
+        const height = 30;
 
         // Get colors based on selection state
         const primaryMain =
@@ -57,18 +79,30 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
           getComputedStyle(document.documentElement)
             .getPropertyValue('--icon-map')
             .trim() || '#6B21A8';
+
+        const lat = Number(property.property.latitude);
+        const lng = Number(property.property.longitude);
+        const markerKey = `${lat},${lng}`;
+
         const isSelected =
           selectedLocation &&
-          Number(property.property.latitude) === selectedLocation.latitude &&
-          Number(property.property.longitude) === selectedLocation.longitude;
-        const fillColor = isSelected ? neutralMain : primaryMain; // Orange when selected, primary color when not
+          lat === selectedLocation.latitude &&
+          lng === selectedLocation.longitude;
+        const isClicked = clickedMarkers.has(markerKey);
+
+        // Use clicked color if marker has been clicked, selected color if currently selected, default otherwise
+        const fillColor = isSelected
+          ? neutralMain
+          : isClicked
+            ? neutralMain
+            : primaryMain;
         const encodedColor = `%23${fillColor.replace('#', '')}`;
 
         const svgMarker = {
           url: `data:image/svg+xml;utf-8,
             <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
               <rect x="0" y="0" width="${width}" height="${height}" rx="10" fill="${encodedColor}"/>
-              <text x="${width / 2}" y="${height / 2 + 6}" font-size="16" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">${content}</text>
+              <text x="${width / 2}" y="${height / 2 + 6}" font-size="14" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold">${content}</text>
             </svg>`,
           scaledSize: new window.google.maps.Size(width, height),
         };
@@ -98,91 +132,70 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
         );
       })}
 
-      {/* Preview Card Overlay */}
+      {/* Preview Card - Absolute positioned in upper right corner */}
       {selectedLocation && (
-        <OverlayView
-          position={{
-            lat: selectedLocation.latitude - 0.0015,
-            lng: selectedLocation.longitude - 0.0285,
-          }}
-          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        <div
+          className='absolute top-5 right-5 z-20 max-w-sm h-[90%]'
+          ref={cardRef}
         >
-          <div className='relative'>
-            {/* Card */}
-            <div
-              className='bg-white shadow-lg rounded-xl w-86 max-h-[300px] overflow-hidden overflow-y-auto border border-gray-200 relative'
-              onWheel={e => {
-                e.stopPropagation();
-              }}
-              onTouchMove={e => {
-                e.stopPropagation();
-              }}
-            >
-              {/* Close button */}
-              <div className='absolute top-2 right-2 z-10'>
-                <button
-                  onClick={() => {
-                    setSelectedLocation(null);
-                    if (onCloseCard) {
-                      onCloseCard();
-                    }
-                  }}
-                  className='w-7 h-7 bg-icon-map text-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100'
-                >
-                  <X size={15} />
-                </button>
-              </div>
+          {/* Card */}
+          <div
+            className='bg-white shadow-lg  w-86 h-full overflow-hidden overflow-y-auto border border-gray-200 relative'
+            onWheel={e => {
+              e.stopPropagation();
+            }}
+            onTouchMove={e => {
+              e.stopPropagation();
+            }}
+          >
+            {/* Property content */}
+            {(() => {
+              const selectedProperty = properties.find(
+                item =>
+                  Number(item.property.latitude) ===
+                    selectedLocation.latitude &&
+                  Number(item.property.longitude) === selectedLocation.longitude
+              );
 
-              {/* Property content */}
-              {(() => {
-                const selectedProperty = properties.find(
-                  item =>
-                    Number(item.property.latitude) ===
-                      selectedLocation.latitude &&
-                    Number(item.property.longitude) ===
-                      selectedLocation.longitude
-                );
+              if (!selectedProperty) return null;
 
-                if (!selectedProperty) return null;
+              return (
+                <div className='p-4 cursor-pointer hover:bg-gray-50'>
+                  <PropertyImages
+                    images={selectedProperty.property.images}
+                    title={selectedProperty.property.listingTitle}
+                    mapMode={true}
+                  />
 
-                return (
-                  <div className='p-4 cursor-pointer hover:bg-gray-50'>
-                    <PropertyImages
-                      images={selectedProperty.property.images}
-                      title={selectedProperty.property.listingTitle}
-                      mapMode={true}
+                  <Link
+                    href={`/property/${selectedProperty.id}?property=${selectedProperty.property.propertyTypeName.toLowerCase()}`}
+                  >
+                    <p className='font-bold text-primary text-lg mt-2 '>
+                      ₱{formatPrice(selectedProperty.property.listingPrice)}
+                    </p>
+                    <p className='text-sm text-gray-600 line-clamp-2 mb-1'>
+                      {selectedProperty.property.listingTitle}
+                    </p>
+                    <div className='flex items-center text-gray-400 mb-2 gap-1 text-sm '>
+                      <Image src={pinIcon} alt='pin' />
+                      <span className='truncate'>
+                        {selectedProperty.property.address
+                          ? `${selectedProperty.property.address}`
+                          : `${selectedProperty.property.barangayName}, ${selectedProperty.property.cityName}`}
+                      </span>
+                    </div>
+                    <PropertyDetailsDisplay
+                      propertyDetail={selectedProperty}
+                      className='grid-cols-3 gap-2 grid'
                     />
-
-                    <Link
-                      href={`/property/${selectedProperty.id}?property=${selectedProperty.property.propertyTypeName.toLowerCase()}`}
-                    >
-                      <p className='font-bold text-primary text-lg mt-2 '>
-                        ₱{formatPrice(selectedProperty.property.listingPrice)}
-                      </p>
-                      <p className='text-sm text-gray-600 line-clamp-2 mb-1'>
-                        {selectedProperty.property.listingTitle}
-                      </p>
-                      <div className='flex items-center text-gray-400 mb-2 gap-1 text-sm mb-6'>
-                        <Image src={pinIcon} alt='pin' />
-                        <span className='truncate'>
-                          {selectedProperty.property.address
-                            ? `${selectedProperty.property.address}`
-                            : `${selectedProperty.property.barangayName}, ${selectedProperty.property.cityName}`}
-                        </span>
-                      </div>
-                      <PropertyDetailsDisplay
-                        propertyDetail={selectedProperty}
-                        className='grid-cols-3 gap-2 grid'
-                      />
-                    </Link>
-                  </div>
-                );
-              })()}
-            </div>
+                  </Link>
+                </div>
+              );
+            })()}
           </div>
-        </OverlayView>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

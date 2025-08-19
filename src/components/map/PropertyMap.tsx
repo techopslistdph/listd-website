@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Pencil, Search, X } from 'lucide-react';
@@ -65,6 +65,28 @@ const PropertyMap: React.FC<IMapProps> = ({
   const [originalZoom, setOriginalZoom] = useState<number>(
     rootStore.propertyListingQuery.zoom || 8
   );
+  // Track clicked markers - store as string keys for easy comparison
+  const [clickedMarkers, setClickedMarkers] = useState<Set<string>>(new Set());
+
+  // Auto-fit map to show all properties when they change
+  useEffect(() => {
+    // Only auto-fit if not currently drawing and we have properties
+    if (mapInstance && properties.length > 0 && !enableDraw) {
+      const validProperties = properties.filter(
+        property => property.property?.latitude && property.property?.longitude
+      );
+
+      if (validProperties.length === 0) return;
+
+      // Always center on the first property
+      const firstProperty = validProperties[0];
+      mapInstance.setCenter({
+        lat: firstProperty.property!.latitude,
+        lng: firstProperty.property!.longitude,
+      });
+      mapInstance.setZoom(11.5);
+    }
+  }, [mapInstance, properties, enableDraw]);
 
   const containerStyle = {
     width: '100%',
@@ -198,17 +220,24 @@ const PropertyMap: React.FC<IMapProps> = ({
       // Save current zoom level before zooming in
       setOriginalZoom(mapInstance.getZoom() || 8);
       // Zoom to level 13 (close-up view) and center on the marker
-      mapInstance.setZoom(13);
-      mapInstance.panTo({ lat: lat - 0.025, lng });
+      if (originalZoom < 13) {
+        mapInstance.setZoom(13);
+        mapInstance.panTo({ lat: lat - 0.025, lng });
+      }
     }
+
+    // Add marker to clicked markers set
+    const markerKey = `${lat},${lng}`;
+    setClickedMarkers(prev => new Set(prev).add(markerKey));
   };
 
-  const handleCloseCard = () => {
-    if (mapInstance) {
-      // Restore original zoom level
-      mapInstance.setZoom(originalZoom);
-    }
-  };
+  // const handleCloseCard = () => {
+  //   if (mapInstance) {
+  //     // Restore original zoom level
+  //     mapInstance.setZoom(originalZoom);
+  //   }
+  //   // Don't clear selectedLocation here to maintain clicked state
+  // };
 
   let polygon_path: { lat: number; lng: number }[];
 
@@ -307,7 +336,8 @@ const PropertyMap: React.FC<IMapProps> = ({
               selectedLocation={selectedLocation}
               onMarkerClick={handleMarkerClick}
               properties={properties}
-              onCloseCard={handleCloseCard}
+              // onCloseCard={handleCloseCard}
+              clickedMarkers={clickedMarkers}
             />
             <Polygon path={polygon_path} options={polygonOptions} />
           </GoogleMap>
