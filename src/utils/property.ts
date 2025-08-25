@@ -1,4 +1,4 @@
-import { PropertyDetail } from '../queries/server/propety/type';
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 
 interface ProcessedPropertyDetails {
   features: string[];

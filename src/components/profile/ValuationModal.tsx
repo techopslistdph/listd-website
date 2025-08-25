@@ -7,12 +7,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useValuationPDF } from '@/hooks/useValuationPDF';
-import { formatCurrency } from '@/lib/utils/generateValuationPDF';
+import { formatCurrency } from '@/utils/generateValuationPDF';
 import {
   formatPropertyType,
   formatTransactionType,
   mapImage,
-} from '@/lib/utils/Valuation';
+} from '@/utils/Valuation';
 import { ClockIcon } from 'lucide-react';
 import Image from 'next/image';
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AiValuation } from '@/lib/queries/hooks/types/ai-generate';
-import { generateValuationPDF } from '@/lib/utils/generateValuationPDF';
+import { generateValuationPDF } from '@/utils/generateValuationPDF';
 import { PropertyType } from '@/components/listing/types';
 
 interface UseValuationPDFProps {

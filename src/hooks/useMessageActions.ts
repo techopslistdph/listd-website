@@ -4,10 +4,7 @@ import {
   useSendMessage,
   useCreateConversation,
 } from '@/lib/queries/hooks/use-messaging';
-import {
-  createOptimisticMessage,
-  OptimisticMessage,
-} from '@/lib/utils/Message';
+import { createOptimisticMessage, OptimisticMessage } from '@/utils/Message';
 
 interface AttachmentPreview {
   file: File;

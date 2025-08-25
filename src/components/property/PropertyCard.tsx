@@ -11,7 +11,7 @@ import { SearchParams } from '@/lib/queries/server/propety';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 import { useState } from 'react';
 import { User } from '@clerk/nextjs/server';
-import { draftConversation } from '@/lib/utils/draftConversation';
+import { draftConversation } from '@/utils/draftConversation';
 import { Button } from '../ui/button';
 import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 import {
@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
-import { getPropertyDetailsForType } from '@/lib/utils/propertyDetailsWithIcons';
+import { getPropertyDetailsForType } from '@/utils/propertyDetailsWithIcons';
 import { formatPrice } from '@/utils/formatPriceUtils';
 
 export default function PropertyCard({

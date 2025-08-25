@@ -1,4 +1,4 @@
-import { PropertyDetail } from '../queries/server/propety/type';
+import { PropertyDetail } from '../lib/queries/server/propety/type';
 
 export interface DraftConversation {
   propertyId: string;

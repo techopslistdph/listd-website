@@ -14,12 +14,11 @@ import { SearchParams } from '@/lib/queries/server/propety';
 import PropertyMap from '../map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
-import { filterProperties } from '@/lib/utils/filterProperty';
+import { filterProperties } from '@/utils/filterProperty';
 import { PropertyPagination } from './PropertyPagination';
 import { useRouter } from 'next/navigation';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { GeojsonData } from '@/lib/queries/server/geojson';
-
+import { Geojson } from '@/utils/mapUtils';
 export type View = 'list' | 'map';
 
 export function Properties({
@@ -33,7 +32,7 @@ export function Properties({
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
   priceRanges: PriceRangeResponse;
-  geojson: GeojsonData | null;
+  geojson: Geojson[];
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);

@@ -4,8 +4,8 @@ import {
   ConversationListResponse,
   Message,
   MessageListResponse,
-} from '../queries/server/messaging/types';
-import { DraftConversation } from './draftConversation';
+} from '@/lib/queries/server/messaging/types';
+import { DraftConversation } from '@/utils/draftConversation';
 
 export interface Conversations {
   id: string;

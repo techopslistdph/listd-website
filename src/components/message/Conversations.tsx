@@ -17,8 +17,8 @@ import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 import {
   getDraftConversation,
   clearDraftConversation,
-} from '@/lib/utils/draftConversation';
-import { getSelectedData, transformConversations } from '@/lib/utils/Message';
+} from '@/utils/draftConversation';
+import { getSelectedData, transformConversations } from '@/utils/Message';
 import { useOptimisticMessages } from '@/hooks/useOptimisticMessages';
 import Link from 'next/link';
 

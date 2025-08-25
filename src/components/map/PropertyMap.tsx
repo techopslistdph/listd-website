@@ -12,18 +12,27 @@ import {
   Polygon,
 } from '@react-google-maps/api';
 import { useRouter } from 'nextjs-toploader/app';
-import { getBoundingBox } from '@/utils/mapUtils';
+import {
+  Geojson,
+  getGeojsonPolygonPath,
+  handleMarkerClick,
+  onPolygonComplete,
+  handleZoomChange,
+  triggerSearchWithCoordinates,
+  handleDrawToSearchBtn,
+  handleCancelHandle,
+} from '@/utils/mapUtils';
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import MarkerClustererComponent from './marker-clusterer';
 import { useUrlParams } from '@/hooks/useUrlParams';
+import { SearchParams } from 'next/dist/server/request/search-params';
 
 interface IMapProps {
   minHeight?: string;
   properties?: PropertyDetail[];
-  // use any for now
-  geojson?: any;
+  geojson?: Geojson[];
 }
 
 export type Location = {
@@ -44,10 +53,10 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const rootStore = useStore();
   const router = useRouter();
-  const { updateParams, deleteParams } = useUrlParams();
+  const { deleteParams, getAllParams, createParamsString } = useUrlParams();
 
   const [enableDraw, setEnableDraw] = useState<boolean>(false);
-  const [showDrawButton, setShowDrawButton] = useState<boolean>(!geojson);
+  const [showDrawButton, setShowDrawButton] = useState<boolean>(true);
   const [showInstructionNote, setShowInstructionNote] =
     useState<boolean>(false);
   const [showControls, setShowControls] = useState<boolean>(false);
@@ -69,41 +78,14 @@ const PropertyMap: React.FC<IMapProps> = ({
   // Track clicked markers - store as string keys for easy comparison
   const [clickedMarkers, setClickedMarkers] = useState<Set<string>>(new Set());
 
-  // Convert GeoJSON coordinates to polygon path format
-  const getGeojsonPolygonPath = () => {
-    if (!geojson) return null;
+  const triggerSearch = (path: { latitude: number; longitude: number }[]) => {
+    const allParams = getAllParams();
 
-    const coordinates = geojson?.[0]?.coordinates;
-    if (!coordinates || !Array.isArray(coordinates[0])) return null;
-
-    // Handle different GeoJSON polygon structures
-    const coordArray = Array.isArray(coordinates[0][0])
-      ? coordinates[0]
-      : coordinates;
-
-    return coordArray.map((coord: number[]) => ({
-      lat: coord[1],
-      lng: coord[0],
-    }));
-  };
-
-  // Function to trigger search with coordinates
-  const triggerSearchWithCoordinates = (
-    coordinates: { latitude: number; longitude: number }[]
-  ) => {
-    const boundingBox = getBoundingBox(coordinates);
-    const minLatitude = boundingBox.minLat;
-    const maxLatitude = boundingBox.maxLat;
-    const minLongitude = boundingBox.minLng;
-    const maxLongitude = boundingBox.maxLng;
-
-    // Update URL params for all coordinates and radius
-    const paramsString = updateParams({
-      minLatitude,
-      maxLatitude,
-      minLongitude,
-      maxLongitude,
-    });
+    const finalParams = triggerSearchWithCoordinates(
+      path,
+      allParams as SearchParams
+    );
+    const paramsString = createParamsString(finalParams);
     router.push(`/property?${paramsString}`);
   };
 
@@ -144,40 +126,6 @@ const PropertyMap: React.FC<IMapProps> = ({
     editable: false,
   };
 
-  const handleDrawToSearchBtn = () => {
-    onCancelHandle();
-    setEnableDraw(true);
-    setShowInstructionNote(true);
-    setShowDrawButton(false);
-  };
-
-  const onPolygonComplete = (drawnPolygon: google.maps.Polygon) => {
-    setEnableDraw(false);
-    setShowControls(true);
-    setShowInstructionNote(false);
-
-    // Zoom to the drawn polygon
-    if (mapInstance) {
-      const bounds = new google.maps.LatLngBounds();
-      const path = drawnPolygon.getPath();
-      const points = path.getArray();
-
-      // Extend bounds to include all polygon points
-      points.forEach(point => {
-        bounds.extend(point);
-      });
-
-      // Add some padding around the polygon
-      mapInstance.fitBounds(bounds, 50);
-
-      // Limit the zoom level if it's too high
-      const currentZoom = mapInstance.getZoom();
-      if (currentZoom && currentZoom > 9) {
-        mapInstance.setZoom(11.5);
-      }
-    }
-  };
-
   const onSearchHandle = () => {
     if (!polygon) return;
     const path = polygon
@@ -188,14 +136,21 @@ const PropertyMap: React.FC<IMapProps> = ({
         longitude: coord.lng(),
       }));
 
-    triggerSearchWithCoordinates(path);
+    triggerSearch(path);
   };
 
   const onCancelHandle = () => {
-    rootStore.propertyListingQuery.resetCoordinates();
-    setEnableDraw(false);
-    setShowControls(false);
-    setShowDrawButton(!geojson); // Only show draw button if no GeoJSON
+    handleCancelHandle(
+      rootStore,
+      setEnableDraw,
+      setShowControls,
+      setShowDrawButton
+    );
+    // Remove the drawn polygon from the map
+    if (polygon) {
+      polygon.setMap(null);
+      setPoligon(null);
+    }
 
     // Remove bounding box params from URL
     const paramsString = deleteParams([
@@ -212,29 +167,6 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   const onMapLoad = (map: google.maps.Map) => {
     setMapInstance(map);
-  };
-
-  const handleZoomChange = () => {
-    if (mapInstance) {
-      const newZoom = mapInstance.getZoom() || 8;
-      setZoom(newZoom);
-    }
-  };
-
-  const handleMarkerClick = (lat: number, lng: number) => {
-    if (mapInstance) {
-      // Save current zoom level before zooming in
-      setOriginalZoom(mapInstance.getZoom() || 8);
-      // Zoom to level 13 (close-up view) and center on the marker
-      if (originalZoom < 13) {
-        mapInstance.setZoom(13);
-        mapInstance.panTo({ lat: lat - 0.025, lng });
-      }
-    }
-
-    // Add marker to clicked markers set
-    const markerKey = `${lat},${lng}`;
-    setClickedMarkers(prev => new Set(prev).add(markerKey));
   };
 
   // Determine polygon path to display
@@ -255,7 +187,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   useEffect(() => {
     if (!geojson || !mapInstance) return;
 
-    const geojsonPath = getGeojsonPolygonPath();
+    const geojsonPath = getGeojsonPolygonPath(geojson);
     if (!geojsonPath) return;
 
     const polygonInstance = new google.maps.Polygon({
@@ -288,12 +220,36 @@ const PropertyMap: React.FC<IMapProps> = ({
               Click on the map to define your area of interest.
             </div>
           )}
+
+          {/* No properties message */}
+          {properties.length === 0 && (
+            <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-lg shadow-lg p-6 text-center max-w-sm'>
+              <h3 className='text-lg font-semibold text-gray-800 mb-2'>
+                No Properties Found
+              </h3>
+              <p className='text-gray-600 text-sm'>
+                Oops! We couldn&apos;t find any properties matching your search
+                in this area.
+              </p>
+              <p className='text-gray-500 text-xs mt-2'>
+                Try adjusting your search criteria or drawing a larger area.
+              </p>
+            </div>
+          )}
+
           {showDrawButton && (
             <Button
               className={cn(
                 'absolute bottom-10 z-10 m-auto left-0 right-0 w-40 bg-primary-main text-white hover:bg-secondary-main cursor-pointer'
               )}
-              onClick={handleDrawToSearchBtn}
+              onClick={() =>
+                handleDrawToSearchBtn(
+                  onCancelHandle,
+                  setEnableDraw,
+                  setShowInstructionNote,
+                  setShowDrawButton
+                )
+              }
             >
               <Pencil />
               {geojson ? 'Draw New Area' : 'Start Drawing'}
@@ -327,7 +283,9 @@ const PropertyMap: React.FC<IMapProps> = ({
             mapContainerStyle={containerStyle}
             center={center}
             zoom={zoom}
-            onZoomChanged={handleZoomChange}
+            onZoomChanged={() =>
+              handleZoomChange(mapInstance as google.maps.Map, setZoom)
+            }
             onLoad={onMapLoad}
             options={{
               mapTypeControl: false,
@@ -357,14 +315,29 @@ const PropertyMap: React.FC<IMapProps> = ({
               }}
               onPolygonComplete={polygon => {
                 setPoligon(polygon);
-                onPolygonComplete(polygon);
+                onPolygonComplete(
+                  polygon,
+                  setEnableDraw,
+                  setShowControls,
+                  setShowInstructionNote,
+                  mapInstance as google.maps.Map
+                );
               }}
             />
             <MarkerClustererComponent
               data={properties}
               setSelectedLocation={setSelectedLocation}
               selectedLocation={selectedLocation}
-              onMarkerClick={handleMarkerClick}
+              onMarkerClick={(lat: number, lng: number) =>
+                handleMarkerClick(
+                  lat,
+                  lng,
+                  mapInstance as google.maps.Map,
+                  setOriginalZoom,
+                  setClickedMarkers,
+                  originalZoom
+                )
+              }
               properties={properties}
               clickedMarkers={clickedMarkers}
               polygon={polygon}
