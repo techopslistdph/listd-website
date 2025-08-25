@@ -102,12 +102,16 @@ export const API_ENDPOINTS = {
   priceRange: {
     list: `${API_BASE_URL}/price-range`,
   },
-  
+
   building: {
     autoComplete: `${API_BASE_URL}/buildings/autocomplete`,
     details: (placeId: string) =>
       `${API_BASE_URL}/buildings/details/${placeId}`,
     nearby: `${API_BASE_URL}/buildings/nearby`,
+  },
+
+  geojson: {
+    search: `${API_BASE_URL}/geojson/search`,
   },
 } as const;
 

@@ -18,7 +18,6 @@ const getCondominiums = async (
       const { jwt: token } = await getClerkToken();
       api.setAuthToken(token);
     }
-
     const response = await api.get<PropertyListResponse | ErrorResponse>(
       `${API_ENDPOINTS.condominium.list}?${queryParams}`
     );
@@ -285,6 +284,16 @@ export type SearchParams = {
   featureIds?: string;
   propertyTypeId?: string;
   listingTypeId?: string;
+  city?: string;
+  barangay?: string;
+  province?: string;
+  minLatitude?: string;
+  maxLatitude?: string;
+  minLongitude?: string;
+  maxLongitude?: string;
+  latitude?: string;
+  longitude?: string;
+  radius?: string;
 };
 
 export const getProperties = async (
@@ -294,11 +303,14 @@ export const getProperties = async (
   const fetchProperties = PROPERTY_TYPES_MAPPING[property];
 
   const queryParams = new URLSearchParams();
+
   Object.entries(rest).forEach(([key, value]) => {
     if (value !== undefined) {
       queryParams.append(key, value);
     }
   });
+
+  console.log('queryParams', queryParams);
 
   try {
     const response = (await fetchProperties(

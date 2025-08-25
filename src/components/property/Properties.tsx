@@ -18,6 +18,7 @@ import { filterProperties } from '@/lib/utils/filterProperty';
 import { PropertyPagination } from './PropertyPagination';
 import { useRouter } from 'next/navigation';
 import { useUrlParams } from '@/hooks/useUrlParams';
+import { GeojsonData } from '@/lib/queries/server/geojson';
 
 export type View = 'list' | 'map';
 
@@ -26,11 +27,13 @@ export function Properties({
   listingTypes,
   propertyType,
   priceRanges,
+  geojson,
 }: {
   properties: PropertyListResponse;
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
   priceRanges: PriceRangeResponse;
+  geojson: GeojsonData | null;
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -138,7 +141,11 @@ export function Properties({
           <div className='flex flex-col gap-6'>
             {/* Property Cards Column */}
             <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filteredProperties} minHeight='480px' />
+              <PropertyMap
+                properties={filteredProperties}
+                minHeight='480px'
+                geojson={geojson}
+              />
             </div>
             <div className='space-y-6'>
               {filteredProperties?.map((property, idx) => (

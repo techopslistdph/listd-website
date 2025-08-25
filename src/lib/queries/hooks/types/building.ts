@@ -8,6 +8,7 @@ export interface BuildingSuggestion {
   };
   addressComponents: {
     country: string;
+    province: string;
     region: string;
     city: string;
     barangay: string;

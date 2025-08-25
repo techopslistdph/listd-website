@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -11,12 +12,7 @@ import {
   Polygon,
 } from '@react-google-maps/api';
 import { useRouter } from 'nextjs-toploader/app';
-import {
-  getBoundingBox,
-  getBoundingBoxCenter,
-  calculateDistanceStatistics,
-  calculateDistances,
-} from '@/utils/mapUtils';
+import { getBoundingBox } from '@/utils/mapUtils';
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
@@ -26,6 +22,8 @@ import { useUrlParams } from '@/hooks/useUrlParams';
 interface IMapProps {
   minHeight?: string;
   properties?: PropertyDetail[];
+  // use any for now
+  geojson?: any;
 }
 
 export type Location = {
@@ -36,6 +34,7 @@ export type Location = {
 const PropertyMap: React.FC<IMapProps> = ({
   minHeight = '600px',
   properties = [],
+  geojson,
 }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
@@ -48,7 +47,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   const { updateParams, deleteParams } = useUrlParams();
 
   const [enableDraw, setEnableDraw] = useState<boolean>(false);
-  const [showDrawButton, setShowDrawButton] = useState<boolean>(true);
+  const [showDrawButton, setShowDrawButton] = useState<boolean>(!geojson);
   const [showInstructionNote, setShowInstructionNote] =
     useState<boolean>(false);
   const [showControls, setShowControls] = useState<boolean>(false);
@@ -68,7 +67,94 @@ const PropertyMap: React.FC<IMapProps> = ({
   // Track clicked markers - store as string keys for easy comparison
   const [clickedMarkers, setClickedMarkers] = useState<Set<string>>(new Set());
 
-  // Auto-fit map to show all properties when they change
+  // Convert GeoJSON coordinates to polygon path format
+  const getGeojsonPolygonPath = () => {
+    if (!geojson) return null;
+
+    const coordinates = geojson?.[0]?.coordinates;
+    if (!coordinates || !Array.isArray(coordinates[0])) return null;
+
+    // Handle different GeoJSON polygon structures
+    const coordArray = Array.isArray(coordinates[0][0])
+      ? coordinates[0]
+      : coordinates;
+
+    return coordArray.map((coord: number[]) => ({
+      lat: coord[1],
+      lng: coord[0],
+    }));
+  };
+
+  // Auto-trigger search when GeoJSON is provided
+  // useEffect(() => {
+  //   if (geojson && mapInstance) {
+  //     const geojsonPath = getGeojsonPolygonPath();
+  //     if (geojsonPath) {
+  //       // Store GeoJSON coordinates in store
+  //       const polygonCoordinates = geojsonPath.map(coord => ({
+  //         latitude: coord.lat,
+  //         longitude: coord.lng,
+  //       }));
+
+  //       rootStore.propertyListingQuery.updatePropertyListingQuery(
+  //         'polygon_path',
+  //         polygonCoordinates
+  //       );
+
+  //       // Zoom to the GeoJSON polygon
+  //       const bounds = new google.maps.LatLngBounds();
+  //       geojsonPath.forEach(point => {
+  //         bounds.extend(point);
+  //       });
+
+  //       mapInstance.fitBounds(bounds, 50);
+  //       const currentZoom = mapInstance.getZoom();
+  //       if (currentZoom && currentZoom > 9) {
+  //         mapInstance.setZoom(11.5);
+  //       }
+
+  //       // Trigger search automatically
+  //       triggerSearchWithCoordinates(polygonCoordinates);
+  //     }
+  //   }
+  // }, [geojson, mapInstance]);
+
+  // Function to trigger search with coordinates
+  const triggerSearchWithCoordinates = (
+    coordinates: { latitude: number; longitude: number }[]
+  ) => {
+    const boundingBox = getBoundingBox(coordinates);
+    const minLatitude = boundingBox.minLat;
+    const maxLatitude = boundingBox.maxLat;
+    const minLongitude = boundingBox.minLng;
+    const maxLongitude = boundingBox.maxLng;
+
+    // const search_latitude = getBoundingBoxCenter(boundingBox).latitude;
+    // const search_longitude = getBoundingBoxCenter(boundingBox).longitude;
+
+    // const polygon_center = getBoundingBoxCenter(boundingBox);
+
+    // const distancesFromPolylineToPolyCenter = calculateDistances(
+    //   polygon_center,
+    //   coordinates
+    // );
+    // const distanceStatistics = calculateDistanceStatistics(
+    //   distancesFromPolylineToPolyCenter
+    // );
+
+    // Update URL params for all coordinates and radius
+    const paramsString = updateParams({
+      minLatitude,
+      maxLatitude,
+      minLongitude,
+      maxLongitude,
+      // latitude: search_latitude,
+      // longitude: search_longitude,
+      // radius: distanceStatistics.max * 1000, // Convert km to meters for API
+    });
+    router.push(`/property?${paramsString}`);
+  };
+
   useEffect(() => {
     // Only auto-fit if not currently drawing and we have properties
     if (mapInstance && properties.length > 0 && !enableDraw) {
@@ -150,46 +236,14 @@ const PropertyMap: React.FC<IMapProps> = ({
         longitude: coord.lng(),
       }));
 
-    const boundingBox = getBoundingBox(path);
-    const minLatitude = boundingBox.minLat;
-    const maxLatitude = boundingBox.maxLat;
-    const minLongitude = boundingBox.minLng;
-    const maxLongitude = boundingBox.maxLng;
-
-    const search_latitude = getBoundingBoxCenter(getBoundingBox(path)).latitude;
-    const search_longitude = getBoundingBoxCenter(
-      getBoundingBox(path)
-    ).longitude;
-
-    const polygon_center = getBoundingBoxCenter(getBoundingBox(path));
-
-    const distancesFromPolylineToPolyCenter = calculateDistances(
-      polygon_center,
-      path
-    );
-    const distanceStatistics = calculateDistanceStatistics(
-      distancesFromPolylineToPolyCenter
-    );
-
-    // Update URL params for all coordinates and radius
-    const paramsString = updateParams({
-      minLatitude,
-      maxLatitude,
-      minLongitude,
-      maxLongitude,
-      latitude: search_latitude,
-      longitude: search_longitude,
-      radius: distanceStatistics.max * 1000, // Convert km to meters for API
-    });
-    router.push(`/property?${paramsString}`);
+    triggerSearchWithCoordinates(path);
   };
 
   const onCancelHandle = () => {
     rootStore.propertyListingQuery.resetCoordinates();
     setEnableDraw(false);
     setShowControls(false);
-    setShowDrawButton(true);
-    polygon?.setMap(null);
+    setShowDrawButton(!geojson); // Only show draw button if no GeoJSON
 
     // Remove bounding box params from URL
     const paramsString = deleteParams([
@@ -231,24 +285,47 @@ const PropertyMap: React.FC<IMapProps> = ({
     setClickedMarkers(prev => new Set(prev).add(markerKey));
   };
 
-  // const handleCloseCard = () => {
-  //   if (mapInstance) {
-  //     // Restore original zoom level
-  //     mapInstance.setZoom(originalZoom);
-  //   }
-  //   // Don't clear selectedLocation here to maintain clicked state
-  // };
+  // Determine polygon path to display
+  let polygon_path: { lat: number; lng: number }[] = [];
 
-  let polygon_path: { lat: number; lng: number }[];
-
-  if (rootStore.propertyListingQuery.polygon_path) {
+  if (
+    rootStore.propertyListingQuery.polygon_path &&
+    rootStore.propertyListingQuery.polygon_path.length > 0
+  ) {
+    // Use stored polygon path (from drawing or GeoJSON)
     polygon_path = rootStore.propertyListingQuery.polygon_path.map(coord => ({
       lat: coord.latitude,
       lng: coord.longitude,
     }));
-  } else {
-    polygon_path = [];
   }
+
+  // When geojson changes, create the polygon once
+  useEffect(() => {
+    if (!geojson || !mapInstance) return;
+
+    const geojsonPath = getGeojsonPolygonPath();
+    if (!geojsonPath) return;
+
+    const polygonInstance = new google.maps.Polygon({
+      paths: geojsonPath,
+      fillColor: '#6B21A8',
+      strokeColor: '#6B21A8',
+      fillOpacity: 0.4,
+      strokeOpacity: 1,
+      strokeWeight: 2,
+      clickable: true,
+      editable: false,
+      zIndex: 1,
+    });
+
+    polygonInstance.setMap(mapInstance);
+    setPoligon(polygonInstance);
+
+    // cleanup old polygon if geojson changes
+    return () => {
+      polygonInstance.setMap(null);
+    };
+  }, [geojson, mapInstance]); // 👈 only run when geojson or map is different
 
   return (
     <div className='h-92'>
@@ -267,7 +344,7 @@ const PropertyMap: React.FC<IMapProps> = ({
               onClick={handleDrawToSearchBtn}
             >
               <Pencil />
-              Start Drawing
+              {geojson ? 'Draw New Area' : 'Start Drawing'}
             </Button>
           )}
           {showControls && (
@@ -301,6 +378,7 @@ const PropertyMap: React.FC<IMapProps> = ({
             onZoomChanged={handleZoomChange}
             onLoad={onMapLoad}
             options={{
+              mapTypeControl: false,
               fullscreenControl: false,
               streetViewControl: false,
               zoomControlOptions: {
@@ -336,10 +414,12 @@ const PropertyMap: React.FC<IMapProps> = ({
               selectedLocation={selectedLocation}
               onMarkerClick={handleMarkerClick}
               properties={properties}
-              // onCloseCard={handleCloseCard}
               clickedMarkers={clickedMarkers}
+              polygon={polygon}
             />
-            <Polygon path={polygon_path} options={polygonOptions} />
+            {polygon_path.length > 0 && (
+              <Polygon path={polygon_path} options={polygonOptions} />
+            )}
           </GoogleMap>
         </div>
       ) : (

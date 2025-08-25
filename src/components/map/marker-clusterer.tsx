@@ -20,6 +20,22 @@ interface MarkerClustererProps {
   properties: PropertyDetail[];
   onCloseCard?: () => void;
   clickedMarkers: Set<string>;
+  polygon?: google.maps.Polygon | null; // 👈 add this
+}
+
+function filterPropertiesInPolygon(
+  properties: PropertyDetail[],
+  polygon: google.maps.Polygon
+) {
+  return properties.filter(property => {
+    if (!property.property.latitude || !property.property.longitude)
+      return false;
+    const point = new google.maps.LatLng(
+      Number(property.property.latitude),
+      Number(property.property.longitude)
+    );
+    return google.maps.geometry.poly.containsLocation(point, polygon);
+  });
 }
 
 const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
@@ -30,9 +46,15 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
   properties,
   onCloseCard,
   clickedMarkers,
+  polygon,
 }) => {
   const clustererRef = useRef<MarkerClusterer | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // 🔹 Filter properties by polygon
+  const filteredData = polygon
+    ? filterPropertiesInPolygon(data, polygon)
+    : data;
 
   useEffect(() => {
     if (clustererRef.current) {
@@ -52,6 +74,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
     };
 
     if (selectedLocation) {
+      console.log('selectedLocation', selectedLocation);
       document.addEventListener('mousedown', handleClickOutside);
     }
 
@@ -59,10 +82,20 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [selectedLocation, setSelectedLocation, onCloseCard]);
-
+  console.log(
+    'Markers:',
+    data.map(p => ({
+      id: p.id,
+      lat: Number(p.property.latitude),
+      lng: Number(p.property.longitude),
+      valid:
+        !isNaN(Number(p.property.latitude)) &&
+        !isNaN(Number(p.property.longitude)),
+    }))
+  );
   return (
     <>
-      {data.map((property, index) => {
+      {filteredData.map((property, index) => {
         const formatted = formatPrice(property.property.listingPrice);
         const content = '₱' + formatted;
         const baseWidth = 30;
