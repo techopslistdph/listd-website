@@ -60,7 +60,9 @@ const PropertyMap: React.FC<IMapProps> = ({
     rootStore.propertyListingQuery.zoom || 8
   );
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location>(null);
+  const [selectedLocation, setSelectedLocation] = useState<
+    (Location & { id: string }) | null
+  >(null);
   const [originalZoom, setOriginalZoom] = useState<number>(
     rootStore.propertyListingQuery.zoom || 8
   );
@@ -85,40 +87,6 @@ const PropertyMap: React.FC<IMapProps> = ({
     }));
   };
 
-  // Auto-trigger search when GeoJSON is provided
-  // useEffect(() => {
-  //   if (geojson && mapInstance) {
-  //     const geojsonPath = getGeojsonPolygonPath();
-  //     if (geojsonPath) {
-  //       // Store GeoJSON coordinates in store
-  //       const polygonCoordinates = geojsonPath.map(coord => ({
-  //         latitude: coord.lat,
-  //         longitude: coord.lng,
-  //       }));
-
-  //       rootStore.propertyListingQuery.updatePropertyListingQuery(
-  //         'polygon_path',
-  //         polygonCoordinates
-  //       );
-
-  //       // Zoom to the GeoJSON polygon
-  //       const bounds = new google.maps.LatLngBounds();
-  //       geojsonPath.forEach(point => {
-  //         bounds.extend(point);
-  //       });
-
-  //       mapInstance.fitBounds(bounds, 50);
-  //       const currentZoom = mapInstance.getZoom();
-  //       if (currentZoom && currentZoom > 9) {
-  //         mapInstance.setZoom(11.5);
-  //       }
-
-  //       // Trigger search automatically
-  //       triggerSearchWithCoordinates(polygonCoordinates);
-  //     }
-  //   }
-  // }, [geojson, mapInstance]);
-
   // Function to trigger search with coordinates
   const triggerSearchWithCoordinates = (
     coordinates: { latitude: number; longitude: number }[]
@@ -129,28 +97,12 @@ const PropertyMap: React.FC<IMapProps> = ({
     const minLongitude = boundingBox.minLng;
     const maxLongitude = boundingBox.maxLng;
 
-    // const search_latitude = getBoundingBoxCenter(boundingBox).latitude;
-    // const search_longitude = getBoundingBoxCenter(boundingBox).longitude;
-
-    // const polygon_center = getBoundingBoxCenter(boundingBox);
-
-    // const distancesFromPolylineToPolyCenter = calculateDistances(
-    //   polygon_center,
-    //   coordinates
-    // );
-    // const distanceStatistics = calculateDistanceStatistics(
-    //   distancesFromPolylineToPolyCenter
-    // );
-
     // Update URL params for all coordinates and radius
     const paramsString = updateParams({
       minLatitude,
       maxLatitude,
       minLongitude,
       maxLongitude,
-      // latitude: search_latitude,
-      // longitude: search_longitude,
-      // radius: distanceStatistics.max * 1000, // Convert km to meters for API
     });
     router.push(`/property?${paramsString}`);
   };
@@ -325,7 +277,7 @@ const PropertyMap: React.FC<IMapProps> = ({
     return () => {
       polygonInstance.setMap(null);
     };
-  }, [geojson, mapInstance]); // 👈 only run when geojson or map is different
+  }, [geojson, mapInstance]);
 
   return (
     <div className='h-92'>

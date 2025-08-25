@@ -32,8 +32,6 @@ export default function PropertyTopBar({
   const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>(searchQuery || '');
 
-  
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
@@ -42,7 +40,7 @@ export default function PropertyTopBar({
     if (e.key === 'Enter') {
       const paramsString = updateParams({
         search: search,
-        page: 1
+        page: 1,
       });
       push(`/property?${paramsString}`);
     }
@@ -55,7 +53,7 @@ export default function PropertyTopBar({
   const handleBuyOrRentChange = (listingTypeId: ListingType['id']) => {
     const paramsString = updateParams({
       listingTypeId: listingTypeId,
-      page: 1 // Always reset page to 1 on listing type change
+      page: 1, // Always reset page to 1 on listing type change
     });
     push(`/property?${paramsString}`);
   };
@@ -126,7 +124,10 @@ export default function PropertyTopBar({
             'h-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl transition-all cursor-pointer flex-1 lg:flex-none flex items-center justify-center',
             currentView === 'map' ? 'bg-primary-main' : 'bg-transparent'
           )}
-          onClick={() => handleViewChange('map')}
+          onClick={() => {
+            handleViewChange('map');
+            onFilterClick();
+          }}
         >
           {/* Map View SVG */}
           <svg

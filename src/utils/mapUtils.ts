@@ -1,4 +1,6 @@
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import pointInPolygon from 'point-in-polygon';
+import { formatPrice } from './formatPriceUtils';
 
 export interface LatLng {
   latitude: number;
@@ -87,3 +89,81 @@ export const getBoundingBox = (polygon: LatLng[]) => {
 
   return { minLat, maxLat, minLng, maxLng };
 };
+
+export function groupPropertiesByLocation(properties: PropertyDetail[]) {
+  const groups = new Map<string, PropertyDetail[]>();
+
+  properties.forEach(property => {
+    const lat = Number(property.property.latitude);
+    const lng = Number(property.property.longitude);
+    const key = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key)!.push(property);
+  });
+
+  return Array.from(groups.values());
+}
+
+export function createMarkerConfig(
+  property: PropertyDetail,
+  groupProperties: boolean = false,
+  baseLat: number,
+  baseLng: number,
+  selectedLocation: LatLng | null
+) {
+  const formatted = formatPrice(property.property.listingPrice);
+  const content = '₱' + formatted;
+  const baseWidth = 30;
+  const charWidth = 12;
+  const width = Math.max(baseWidth, content.length * charWidth);
+  const height = 30;
+
+  let offsetLat: number | null = null;
+  let offsetLng: number | null = null;
+
+  if (groupProperties) {
+    const offset = 0.0025;
+    // Use property ID as seed for consistent positioning
+    const seed = property.id
+      .toString()
+      .split('')
+      .reduce((a, b) => a + b.charCodeAt(0), 0);
+    const randomAngle = (seed % 360) * (Math.PI / 180); // Convert to radians
+    const randomDistance = ((seed % 100) / 100) * offset; // Use seed for distance too
+    offsetLat = baseLat + randomDistance * Math.cos(randomAngle);
+    offsetLng = baseLng + randomDistance * Math.sin(randomAngle);
+  }
+
+  const lat = Number(property.property.latitude);
+  const lng = Number(property.property.longitude);
+
+  const primaryMain =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--primary-main')
+      .trim() || '#350f9d';
+  const neutralMain =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--icon-map')
+      .trim() || '#6B21A8';
+
+  const isSelected =
+    selectedLocation &&
+    lat === selectedLocation.latitude &&
+    lng === selectedLocation.longitude;
+
+  return {
+    content,
+    width,
+    height,
+    offsetLat,
+    offsetLng,
+    lat,
+    lng,
+    primaryMain,
+    neutralMain,
+    isSelected,
+  };
+}
