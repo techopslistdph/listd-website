@@ -21,6 +21,9 @@ import {
   triggerSearchWithCoordinates,
   handleDrawToSearchBtn,
   handleCancelHandle,
+  savePolygonToStorage,
+  clearPolygonFromStorage,
+  restorePolygonFromStorage,
 } from '@/utils/mapUtils';
 import { useStore } from '@/models/RootStore';
 import { observer } from 'mobx-react-lite';
@@ -108,6 +111,30 @@ const PropertyMap: React.FC<IMapProps> = ({
     }
   }, [mapInstance, properties, enableDraw]);
 
+  // Load saved polygon on component mount (only if no geojson)
+  useEffect(() => {
+    restorePolygonFromStorage(
+      mapInstance,
+      setPoligon,
+      setShowControls,
+      setShowDrawButton,
+      geojson // Pass geojson to prevent localStorage restoration when geojson exists
+    );
+  }, [mapInstance, geojson]); // Add geojson to dependencies
+
+  // Function to handle polygon completion with storage
+  const handlePolygonComplete = (polygon: google.maps.Polygon) => {
+    setPoligon(polygon);
+    savePolygonToStorage(polygon); // Save to localStorage
+    onPolygonComplete(
+      polygon,
+      setEnableDraw,
+      setShowControls,
+      setShowInstructionNote,
+      mapInstance as google.maps.Map
+    );
+  };
+
   const containerStyle = {
     width: '100%',
     height: 'auto',
@@ -139,6 +166,7 @@ const PropertyMap: React.FC<IMapProps> = ({
     triggerSearch(path);
   };
 
+  // Update the onCancelHandle function
   const onCancelHandle = () => {
     handleCancelHandle(
       rootStore,
@@ -146,11 +174,15 @@ const PropertyMap: React.FC<IMapProps> = ({
       setShowControls,
       setShowDrawButton
     );
+
     // Remove the drawn polygon from the map
     if (polygon) {
       polygon.setMap(null);
       setPoligon(null);
     }
+
+    // Clear saved polygon
+    clearPolygonFromStorage();
 
     // Remove bounding box params from URL
     const paramsString = deleteParams([
@@ -169,21 +201,6 @@ const PropertyMap: React.FC<IMapProps> = ({
     setMapInstance(map);
   };
 
-  // // Add this function to reconstruct polygon from bounding box coordinates
-  // const createPolygonFromBoundingBox = (
-  //   minLat: number,
-  //   maxLat: number,
-  //   minLng: number,
-  //   maxLng: number
-  // ): { latitude: number; longitude: number }[] => {
-  //   return [
-  //     { latitude: minLat, longitude: minLng },
-  //     { latitude: minLat, longitude: maxLng },
-  //     { latitude: maxLat, longitude: maxLng },
-  //     { latitude: maxLat, longitude: minLng },
-  //   ];
-  // };
-
   // Determine polygon path to display
   let polygon_path: { lat: number; lng: number }[] = [];
 
@@ -196,27 +213,6 @@ const PropertyMap: React.FC<IMapProps> = ({
       lat: coord.latitude,
       lng: coord.longitude,
     }));
-  } else {
-    // Check URL parameters for bounding box coordinates
-    const urlParams = getAllParams();
-    const minLat = urlParams.minLatitude;
-    const maxLat = urlParams.maxLatitude;
-    const minLng = urlParams.minLongitude;
-    const maxLng = urlParams.maxLongitude;
-
-    if (minLat && maxLat && minLng && maxLng) {
-      // Reconstruct polygon from URL bounding box coordinates (for page refresh)
-      // const reconstructedPath = createPolygonFromBoundingBox(
-      //   parseFloat(minLat as string),
-      //   parseFloat(maxLat as string),
-      //   parseFloat(minLng as string),
-      //   parseFloat(maxLng as string)
-      // );
-      // polygon_path = reconstructedPath.map(coord => ({
-      //   lat: coord.latitude,
-      //   lng: coord.longitude,
-      // }));
-    }
   }
 
   // When geojson changes, create the polygon once
@@ -349,16 +345,7 @@ const PropertyMap: React.FC<IMapProps> = ({
                   zIndex: 1,
                 },
               }}
-              onPolygonComplete={polygon => {
-                setPoligon(polygon);
-                onPolygonComplete(
-                  polygon,
-                  setEnableDraw,
-                  setShowControls,
-                  setShowInstructionNote,
-                  mapInstance as google.maps.Map
-                );
-              }}
+              onPolygonComplete={handlePolygonComplete} // Use the new handler
             />
             <MarkerClustererComponent
               data={properties}

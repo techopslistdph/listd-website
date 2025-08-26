@@ -170,7 +170,7 @@ export function createMarkerConfig(
   let offsetLng: number | null = null;
 
   if (groupProperties) {
-    const offset = 0.0025;
+    const offset = 0.0005;
     // Use property ID as seed for consistent positioning
     const seed = property.id
       .toString()
@@ -351,4 +351,91 @@ export const handleCancelHandle = (
   setEnableDraw(false);
   setShowControls(false);
   setShowDrawButton(true);
+};
+
+const POLYGON_STORAGE_KEY = 'listd_drawn_polygon';
+
+export const savePolygonToStorage = (polygon: google.maps.Polygon) => {
+  try {
+    const path = polygon
+      .getPath()
+      .getArray()
+      .map(coord => ({
+        latitude: coord.lat(),
+        longitude: coord.lng(),
+      }));
+
+    localStorage.setItem(POLYGON_STORAGE_KEY, JSON.stringify(path));
+    return path;
+  } catch (error) {
+    console.warn('Failed to save polygon to localStorage:', error);
+    return null;
+  }
+};
+
+export const loadPolygonFromStorage = () => {
+  try {
+    const savedPolygon = localStorage.getItem(POLYGON_STORAGE_KEY);
+    if (savedPolygon) {
+      return JSON.parse(savedPolygon) as {
+        latitude: number;
+        longitude: number;
+      }[];
+    }
+  } catch (error) {
+    console.warn('Failed to load saved polygon:', error);
+    clearPolygonFromStorage();
+  }
+  return null;
+};
+
+export const clearPolygonFromStorage = () => {
+  try {
+    localStorage.removeItem(POLYGON_STORAGE_KEY);
+  } catch (error) {
+    console.warn('Failed to clear polygon from localStorage:', error);
+  }
+};
+
+export const restorePolygonFromStorage = (
+  mapInstance: google.maps.Map | null,
+  setPolygon: (polygon: google.maps.Polygon | null) => void,
+  setShowControls: (show: boolean) => void,
+  setShowDrawButton: (show: boolean) => void,
+  geojson?: Geojson[] // Add geojson parameter
+) => {
+  // If geojson exists, don't restore from localStorage
+  if (geojson && geojson.length > 0) {
+    return null;
+  }
+
+  const coordinates = loadPolygonFromStorage();
+
+  if (coordinates && mapInstance && coordinates.length > 0) {
+    const polygonInstance = new google.maps.Polygon({
+      paths: coordinates.map(coord => ({
+        lat: coord.latitude,
+        lng: coord.longitude,
+      })),
+      fillColor: '#6B21A8',
+      strokeColor: '#6B21A8',
+      fillOpacity: 0.4,
+      strokeOpacity: 1,
+      strokeWeight: 2,
+      clickable: true,
+      editable: false,
+      zIndex: 1,
+    });
+
+    polygonInstance.setMap(mapInstance);
+    setPolygon(polygonInstance);
+
+    // Show controls since we have a polygon
+    setShowControls(true);
+    setShowDrawButton(false);
+
+    return polygonInstance;
+  }
+
+  return null;
 };

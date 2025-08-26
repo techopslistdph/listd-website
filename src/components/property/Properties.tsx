@@ -19,6 +19,8 @@ import { PropertyPagination } from './PropertyPagination';
 import { useRouter } from 'next/navigation';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { Geojson } from '@/utils/mapUtils';
+import { usePropertyPagination } from '@/hooks/usePropertyPagination';
+
 export type View = 'list' | 'map';
 
 export function Properties({
@@ -42,13 +44,29 @@ export function Properties({
 
   const filteredProperties = filterProperties(properties?.data?.data || []);
 
-  const currentPage = properties?.data?.meta?.page || 1;
-  const totalPages = properties?.data?.meta?.totalPages || 1;
+  const {
+    paginatedProperties,
+    currentPage,
+    totalPages,
+    hasBackendPagination,
+    handlePageChange,
+  } = usePropertyPagination({
+    properties: filteredProperties,
+    backendPagination: properties?.data?.meta || null,
+    itemsPerPage: 12,
+  });
 
-  const handlePageChange = (page: number) => {
-    const params = updateParams({ page: page });
-    router.push(`/property?${params}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handlePageChangeWrapper = (page: number) => {
+    if (hasBackendPagination) {
+      // Backend pagination - update URL and trigger new request
+      const params = updateParams({ page: page });
+      router.push(`/property?${params}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Frontend pagination - just update state
+      handlePageChange(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -120,28 +138,30 @@ export function Properties({
         {view === 'list' ? (
           <div className='flex flex-col gap-8'>
             <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
-              {filteredProperties?.map((property, idx) => (
+              {paginatedProperties?.map((property, idx) => (
                 <PropertyCard
                   user={user as unknown as User}
-                  key={idx}
+                  key={property.id || idx}
                   propertyDetail={property}
                   view='list'
                   propertyType={propertyType}
                 />
               ))}
             </div>
-            {/* Pagination */}
-            <PropertyPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className='mt-8'
-            />
+            {/* Pagination - only show if there are multiple pages */}
+            {totalPages > 1 && (
+              <PropertyPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChangeWrapper}
+                className='mt-8'
+              />
+            )}
           </div>
         ) : (
           <div className='rounded-2xl w-full h-screen overflow-hidden'>
             <PropertyMap
-              properties={filteredProperties}
+              properties={filteredProperties} // Always use all properties for map
               minHeight='700px'
               geojson={geojson}
             />
