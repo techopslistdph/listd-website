@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from '@/components/property/Properties';
 import { ListingType } from '@/lib/queries/server/home/type';
 import { useSearchParams } from 'next/navigation';
@@ -8,6 +9,7 @@ import { useRouter } from 'nextjs-toploader/app';
 
 import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
+import LocationInput from '../common/LocationInput';
 
 interface PropertyTopBarProps {
   onViewChange: (view: View) => void;
@@ -26,22 +28,102 @@ export default function PropertyTopBar({
 }: PropertyTopBarProps) {
   const { push } = useRouter();
   const params = useSearchParams();
-  const { updateParams, getParam } = useUrlParams();
+  const {
+    updateParams,
+    getParam,
+    deleteParams,
+    getAllParams,
+    createParamsString,
+  } = useUrlParams();
   const typeId = params.get('listingTypeId');
   const searchQuery = getParam('search');
+  const cityQuery = getParam('city');
+  const barangayQuery = getParam('barangay');
+  const provinceQuery = getParam('province');
+
   const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>(searchQuery || '');
+  const [location, setLocation] = useState<{
+    city: string;
+    barangay: string;
+    province: string;
+  } | null>(null);
+
+  // Initialize location from URL params
+  useEffect(() => {
+    if (cityQuery || barangayQuery || provinceQuery) {
+      setLocation({
+        city: cityQuery || '',
+        barangay: barangayQuery || '',
+        province: provinceQuery || '',
+      });
+    }
+  }, [cityQuery, barangayQuery, provinceQuery]);
+
+  // Create initial location value string for display
+  const getInitialLocationValue = () => {
+    if (cityQuery || barangayQuery || provinceQuery) {
+      const parts = [];
+      if (barangayQuery) parts.push(barangayQuery.replace('-', ' '));
+      if (cityQuery) parts.push(cityQuery.replace('-', ' '));
+      if (provinceQuery) parts.push(provinceQuery.replace('-', ' '));
+      return parts.join(', ');
+    }
+    return '';
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+    // Clear location when user starts typing in search
+    if (location) {
+      setLocation(null);
+    }
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      const paramsString = updateParams({
-        search: search,
-        page: 1,
-      });
+      if (search.trim()) {
+        const currentParams = getAllParams();
+        const { city, barangay, province, ...paramsWithoutLocation } =
+          currentParams;
+
+        // Property search - add search term to params and remove location params
+        const finalParams = {
+          ...paramsWithoutLocation,
+          search: search.trim(),
+        };
+
+        push(`/property?${createParamsString(finalParams)}`);
+      }
+    }
+  };
+
+  const handleLocationSelect = (
+    selectedLocation: {
+      city: string;
+      barangay: string;
+      province: string;
+    } | null
+  ) => {
+    setLocation(selectedLocation);
+    // Clear search when location is selected
+    setSearch('');
+
+    if (selectedLocation) {
+      // Location search - add location params and remove search term
+      const currentParams = getAllParams();
+      const { search, ...paramsWithoutLocation } = currentParams;
+
+      const finalParams = {
+        ...paramsWithoutLocation,
+        city: selectedLocation.city,
+        barangay: selectedLocation.barangay,
+        province: selectedLocation.province,
+      };
+
+      push(`/property?${createParamsString(finalParams)}`);
+    } else {
+      const paramsString = deleteParams(['city', 'barangay', 'province']);
       push(`/property?${paramsString}`);
     }
   };
@@ -147,14 +229,16 @@ export default function PropertyTopBar({
 
       {/* Search Bar */}
       <div className='h-10 gap-1 sm:h-12 md:flex-1 flex items-center min-w-0 bg-neutral-light rounded-2xl px-4 sm:px-6 py-3 text-xl w-full md:w-auto lg:flex-1'>
-        <input
-          type='text'
-          placeholder='Search properties...'
-          className='w-full bg-transparent outline-none text-neutral-text text-base font-light'
-          value={search || ''}
-          onChange={handleSearchChange}
-          onKeyDown={handleSearchKeyDown}
+        {/* Unified Search Input */}
+        <LocationInput
+          setLocation={handleLocationSelect}
+          placeholder='Search properties or locations...'
+          onPropertySearch={handleSearchKeyDown}
+          searchValue={search}
+          onSearchChange={handleSearchChange}
+          initialLocationValue={getInitialLocationValue()}
         />
+
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
@@ -170,6 +254,7 @@ export default function PropertyTopBar({
           />
         </svg>
       </div>
+
       {/* Buy/Rent Toggle */}
       <div className='flex items-center bg-neutral-light rounded-2xl p-1 gap-1 w-full md:w-auto justify-center h-10 sm:h-12'>
         {listingTypes?.map(option => {

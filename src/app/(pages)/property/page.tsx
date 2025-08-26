@@ -42,7 +42,6 @@ export default async function Page({
     }),
   };
 
-  console.log('enhancedSearchParams', enhancedSearchParams);
   const [properties, listingTypes, priceRanges] = await Promise.all([
     getProperties(enhancedSearchParams, session?.sessionId),
     getListingTypes(),

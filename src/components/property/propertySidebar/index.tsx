@@ -20,7 +20,11 @@ import { MultiSelectOption } from '@/components/ui/multi-select';
 import { useAmenitiesAndFeatures } from '@/lib/queries/hooks/use-amenities';
 import { PriceRangeResponse } from '@/lib/queries/server/propety/type';
 
-const PropertySidebar = ({ priceRanges }: { priceRanges: PriceRangeResponse  }) => {
+const PropertySidebar = ({
+  priceRanges,
+}: {
+  priceRanges: PriceRangeResponse;
+}) => {
   const router = useRouter();
   const { getParam, updateParams, deleteParams } = useUrlParams();
   const {
@@ -54,7 +58,7 @@ const PropertySidebar = ({ priceRanges }: { priceRanges: PriceRangeResponse  }) 
   const [isApplying, setIsApplying] = useState(false);
 
   const propertyType = getParam('property');
-  
+
   const isLotProperty = propertyType === 'vacant-lot';
 
   const showBedroomBathroomFilters =
@@ -148,6 +152,9 @@ const PropertySidebar = ({ priceRanges }: { priceRanges: PriceRangeResponse  }) 
         'search',
         'minLotSize',
         'maxLotSize',
+        'city',
+        'barangay',
+        'province',
       ]);
       router.push(`/property?${params}`);
     } finally {
@@ -184,111 +191,111 @@ const PropertySidebar = ({ priceRanges }: { priceRanges: PriceRangeResponse  }) 
 
   return (
     <div className='py-3 lg:max-h-[calc(100vh-2.5rem)] lg:sticky top-5 border border-neutral-mid rounded-2xl h-fit'>
-    <aside className='overflow-y-auto pt-5 flex flex-col lg:max-w-74 lg:max-h-[calc(100vh-4.1rem)] xl:max-w-85 gap-6  bottom-10 h-fit  p-5'>
-      {showBedroomBathroomFilters && (
-        <>
+      <aside className='overflow-y-auto pt-5 flex flex-col lg:max-w-74 lg:max-h-[calc(100vh-4.1rem)] xl:max-w-85 gap-6  bottom-10 h-fit  p-5'>
+        {showBedroomBathroomFilters && (
+          <>
+            <NumberFilter
+              label='Bedrooms'
+              options={BEDROOM_OPTIONS}
+              activeValue={getActiveBedroomValue()}
+              onChange={handleBedroomChange}
+            />
+
+            <NumberFilter
+              label='Bathrooms'
+              options={BATHROOM_OPTIONS}
+              activeValue={getActiveBathroomValue()}
+              onChange={handleBathroomChange}
+            />
+          </>
+        )}
+
+        {showParkingFilters && (
           <NumberFilter
-            label='Bedrooms'
-            options={BEDROOM_OPTIONS}
-            activeValue={getActiveBedroomValue()}
-            onChange={handleBedroomChange}
+            label='Parking'
+            options={PARKING_OPTIONS}
+            activeValue={getActiveParkingValue()}
+            onChange={handleParkingChange}
           />
+        )}
 
-          <NumberFilter
-            label='Bathrooms'
-            options={BATHROOM_OPTIONS}
-            activeValue={getActiveBathroomValue()}
-            onChange={handleBathroomChange}
-          />
-        </>
-      )}
-
-      {showParkingFilters && (
-        <NumberFilter
-          label='Parking'
-          options={PARKING_OPTIONS}
-          activeValue={getActiveParkingValue()}
-          onChange={handleParkingChange}
-        />
-      )}
-
-      <RangeSlider
-        priceRanges={priceRanges}
-        minPrice={Number(filters.minPrice)}
-        maxPrice={Number(filters.maxPrice)}
-        onPriceRangeChange={(min, max) => {
-          updateMultipleFilters({
-            minPrice: min.toString(),
-            maxPrice: max.toString(),
-          });
-        }}
-      />
-
-      {isLotProperty ? (
-        <InputFilter
-          minFloorArea={filters.minLotSize || ''}
-          maxFloorArea={filters.maxLotSize || ''}
-          onFloorAreaChange={(min, max) => {
+        <RangeSlider
+          priceRanges={priceRanges}
+          minPrice={Number(filters.minPrice)}
+          maxPrice={Number(filters.maxPrice)}
+          onPriceRangeChange={(min, max) => {
             updateMultipleFilters({
-              minLotSize: min || undefined,
-              maxLotSize: max || undefined,
+              minPrice: min.toString(),
+              maxPrice: max.toString(),
             });
           }}
         />
-      ) : (
-        <InputFilter
-          minFloorArea={filters.minFloorArea || ''}
-          maxFloorArea={filters.maxFloorArea || ''}
-          onFloorAreaChange={(min, max) => {
-            updateMultipleFilters({
-              minFloorArea: min || undefined,
-              maxFloorArea: max || undefined,
-            });
+
+        {isLotProperty ? (
+          <InputFilter
+            minFloorArea={filters.minLotSize || ''}
+            maxFloorArea={filters.maxLotSize || ''}
+            onFloorAreaChange={(min, max) => {
+              updateMultipleFilters({
+                minLotSize: min || undefined,
+                maxLotSize: max || undefined,
+              });
+            }}
+          />
+        ) : (
+          <InputFilter
+            minFloorArea={filters.minFloorArea || ''}
+            maxFloorArea={filters.maxFloorArea || ''}
+            onFloorAreaChange={(min, max) => {
+              updateMultipleFilters({
+                minFloorArea: min || undefined,
+                maxFloorArea: max || undefined,
+              });
+            }}
+          />
+        )}
+
+        <SelectFilter
+          placeholder='Amenities'
+          options={amenitiesOptions}
+          isLoading={isLoading}
+          selectedFeatures={filters.amenityIds || []}
+          onFeaturesChange={amenities => {
+            updateFilter('amenityIds', amenities);
           }}
         />
-      )}
 
-      <SelectFilter
-        placeholder='Amenities'
-        options={amenitiesOptions}
-        isLoading={isLoading}
-        selectedFeatures={filters.amenityIds || []}
-        onFeaturesChange={amenities => {
-          updateFilter('amenityIds', amenities);
-        }}
-      />
+        <SelectFilter
+          placeholder='Features'
+          options={featuresOptions}
+          isLoading={isLoading}
+          selectedFeatures={filters.featureIds || []}
+          onFeaturesChange={features => {
+            updateFilter('featureIds', features);
+          }}
+        />
 
-      <SelectFilter
-        placeholder='Features'
-        options={featuresOptions}
-        isLoading={isLoading}
-        selectedFeatures={filters.featureIds || []}
-        onFeaturesChange={features => {
-          updateFilter('featureIds', features);
-        }}
-      />
-
-      <div className='flex flex-col xl:flex-row gap-2'>
-        <Button
-          className={`flex px-4 justify-center relative ${hasChanges ? 'bg-primary-main' : ''}`}
-          onClick={handleApplyFilters}
-          disabled={isApplying}
-        >
-          {isApplying ? 'Applying...' : 'Apply Filters'}
-          {hasChanges && (
-            <span className='absolute -top-1 -right-1 w-3 h-3 rounded-full'></span>
-          )}
-        </Button>
-        <Button
-          variant='outlined'
-          className='flex px-4 justify-center'
-          onClick={handleResetFilters}
-          disabled={isApplying}
-        >
-          {isApplying ? 'Resetting...' : 'Reset Filters'}
-        </Button>
-      </div>
-    </aside>
+        <div className='flex flex-col xl:flex-row gap-2'>
+          <Button
+            className={`flex px-4 justify-center relative ${hasChanges ? 'bg-primary-main' : ''}`}
+            onClick={handleApplyFilters}
+            disabled={isApplying}
+          >
+            {isApplying ? 'Applying...' : 'Apply Filters'}
+            {hasChanges && (
+              <span className='absolute -top-1 -right-1 w-3 h-3 rounded-full'></span>
+            )}
+          </Button>
+          <Button
+            variant='outlined'
+            className='flex px-4 justify-center'
+            onClick={handleResetFilters}
+            disabled={isApplying}
+          >
+            {isApplying ? 'Resetting...' : 'Reset Filters'}
+          </Button>
+        </div>
+      </aside>
     </div>
   );
 };

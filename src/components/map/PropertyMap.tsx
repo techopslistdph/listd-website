@@ -169,6 +169,21 @@ const PropertyMap: React.FC<IMapProps> = ({
     setMapInstance(map);
   };
 
+  // // Add this function to reconstruct polygon from bounding box coordinates
+  // const createPolygonFromBoundingBox = (
+  //   minLat: number,
+  //   maxLat: number,
+  //   minLng: number,
+  //   maxLng: number
+  // ): { latitude: number; longitude: number }[] => {
+  //   return [
+  //     { latitude: minLat, longitude: minLng },
+  //     { latitude: minLat, longitude: maxLng },
+  //     { latitude: maxLat, longitude: maxLng },
+  //     { latitude: maxLat, longitude: minLng },
+  //   ];
+  // };
+
   // Determine polygon path to display
   let polygon_path: { lat: number; lng: number }[] = [];
 
@@ -181,6 +196,27 @@ const PropertyMap: React.FC<IMapProps> = ({
       lat: coord.latitude,
       lng: coord.longitude,
     }));
+  } else {
+    // Check URL parameters for bounding box coordinates
+    const urlParams = getAllParams();
+    const minLat = urlParams.minLatitude;
+    const maxLat = urlParams.maxLatitude;
+    const minLng = urlParams.minLongitude;
+    const maxLng = urlParams.maxLongitude;
+
+    if (minLat && maxLat && minLng && maxLng) {
+      // Reconstruct polygon from URL bounding box coordinates (for page refresh)
+      // const reconstructedPath = createPolygonFromBoundingBox(
+      //   parseFloat(minLat as string),
+      //   parseFloat(maxLat as string),
+      //   parseFloat(minLng as string),
+      //   parseFloat(maxLng as string)
+      // );
+      // polygon_path = reconstructedPath.map(coord => ({
+      //   lat: coord.latitude,
+      //   lng: coord.longitude,
+      // }));
+    }
   }
 
   // When geojson changes, create the polygon once
@@ -223,7 +259,7 @@ const PropertyMap: React.FC<IMapProps> = ({
 
           {/* No properties message */}
           {properties.length === 0 && (
-            <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-lg shadow-lg p-6 text-center max-w-sm'>
+            <div className='absolute top-5 left-5 right-5 transform   z-10 bg-white rounded-lg shadow-lg p-6 text-center max-w-sm'>
               <h3 className='text-lg font-semibold text-gray-800 mb-2'>
                 No Properties Found
               </h3>

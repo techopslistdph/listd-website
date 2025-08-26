@@ -310,8 +310,6 @@ export const getProperties = async (
     }
   });
 
-  console.log('queryParams', queryParams);
-
   try {
     const response = (await fetchProperties(
       queryParams.toString(),
