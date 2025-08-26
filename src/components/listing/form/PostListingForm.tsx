@@ -24,7 +24,7 @@ import { toast } from 'sonner';
 import {
   buildPropertyPrompt,
   validateRequiredFields,
-} from '@/lib/utils/propertyPrompBuilder';
+} from '@/utils/propertyPrompBuilder';
 import { useAiValuate } from '@/lib/queries/hooks/use-ai-generate';
 import { AiValuation } from '@/lib/queries/hooks/types/ai-generate';
 import { useUser } from '@clerk/nextjs';

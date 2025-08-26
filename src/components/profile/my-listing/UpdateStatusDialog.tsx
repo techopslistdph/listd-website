@@ -15,7 +15,7 @@ import { FeatureAndAmenity } from '.';
 import { TitleDescriptionStep } from '../../listing/form/TitleDescriptionStep';
 import { PaymentStep } from '../../listing/form/PaymentStep';
 import { ImageUpload } from '../../listing/form/ImageUpload';
-import { transformPropertyData } from '@/lib/utils/transformPropertyData';
+import { transformPropertyData } from '@/utils/transformPropertyData';
 import { useListingSubmission } from '@/hooks/useListingSubmission';
 import { ListingType } from '@/lib/queries/server/home/type';
 

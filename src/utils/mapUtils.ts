@@ -1,17 +1,12 @@
+import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import pointInPolygon from 'point-in-polygon';
+import { formatPrice } from './formatPriceUtils';
+import { SearchParams } from 'next/dist/server/request/search-params';
+import { RootStoreType } from '@/models/RootStore';
 
 export interface LatLng {
   latitude: number;
   longitude: number;
-}
-
-interface BoundingBox {
-  centerX: number;
-  centerY: number;
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
 }
 
 export const euclideanDistance = (
@@ -21,6 +16,49 @@ export const euclideanDistance = (
   y2: number
 ): number => {
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const calculateBoundingBoxFromGeojson = (geojson: any) => {
+  if (!geojson?.data?.[0]?.coordinates) {
+    return null;
+  }
+
+  const coordinates = geojson.data?.[0]?.coordinates;
+
+  // Handle different GeoJSON polygon structures
+  let coordArray: number[][];
+  if (Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0])) {
+    // Multi-polygon or polygon with holes
+    coordArray = coordinates[0];
+  } else if (Array.isArray(coordinates[0])) {
+    // Simple polygon
+    coordArray = coordinates;
+  } else {
+    return null;
+  }
+
+  let minLat = Infinity;
+  let maxLat = -Infinity;
+  let minLng = Infinity;
+  let maxLng = -Infinity;
+
+  coordArray.forEach(coord => {
+    const [lng, lat] = coord;
+    minLat = Math.min(minLat, lat);
+    maxLat = Math.max(maxLat, lat);
+    minLng = Math.min(minLng, lng);
+    maxLng = Math.max(maxLng, lng);
+  });
+
+  // set url params
+
+  return {
+    minLatitude: minLat,
+    maxLatitude: maxLat,
+    minLongitude: minLng,
+    maxLongitude: maxLng,
+  };
 };
 
 export const calculateDistanceStatistics = (
@@ -81,97 +119,236 @@ export const haversineDistance = (point1: LatLng, point2: LatLng): number => {
   return R * c; // Distance in kilometers
 };
 
-export const generatePointsInsidePolygon = (polygon: LatLng[]): LatLng[] => {
-  const bounds = getBoundingBox(polygon);
-  const points: LatLng[] = [];
-  const stepSize = 0.01; // Adjust based on required precision
-  const polygonCoords = polygon.map(coord => [coord.longitude, coord.latitude]);
-  for (let lat = bounds.minLat; lat <= bounds.maxLat; lat += stepSize) {
-    for (let lng = bounds.minLng; lng <= bounds.maxLng; lng += stepSize) {
-      if (pointInPolygon([lng, lat], polygonCoords)) {
-        points.push({ latitude: lat, longitude: lng });
-      }
-    }
-  }
-  return points;
-};
-
 export const getBoundingBox = (polygon: LatLng[]) => {
   let minLat = polygon[0].latitude;
   let maxLat = polygon[0].latitude;
   let minLng = polygon[0].longitude;
   let maxLng = polygon[0].longitude;
+
   polygon.forEach(coord => {
-    if (coord.latitude < minLat) minLat = coord.latitude;
-    if (coord.latitude > maxLat) maxLat = coord.latitude;
-    if (coord.longitude < minLng) minLng = coord.longitude;
-    if (coord.longitude > maxLng) maxLng = coord.longitude;
+    minLat = Math.min(minLat, coord.latitude);
+    maxLat = Math.max(maxLat, coord.latitude);
+    minLng = Math.min(minLng, coord.longitude);
+    maxLng = Math.max(maxLng, coord.longitude);
   });
+
   return { minLat, maxLat, minLng, maxLng };
 };
 
-export const getBoundingBoxCenter = (bounds: {
-  minLat: number;
-  maxLat: number;
-  minLng: number;
-  maxLng: number;
-}): LatLng => {
-  const centerLat = (bounds.minLat + bounds.maxLat) / 2;
-  const centerLng = (bounds.minLng + bounds.maxLng) / 2;
-  return { latitude: centerLat, longitude: centerLng };
-};
+export function groupPropertiesByLocation(properties: PropertyDetail[]) {
+  const groups = new Map<string, PropertyDetail[]>();
 
-export const getPolylineCenter = (polyline: LatLng[]): LatLng => {
-  const totalPoints = polyline.length;
-  const sumLat = polyline.reduce((sum, point) => sum + point.latitude, 0);
-  const sumLng = polyline.reduce((sum, point) => sum + point.longitude, 0);
+  properties.forEach(property => {
+    const lat = Number(property.property.latitude);
+    const lng = Number(property.property.longitude);
+    const key = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+
+    if (!groups.has(key)) {
+      groups.set(key, []);
+    }
+    groups.get(key)!.push(property);
+  });
+
+  return Array.from(groups.values());
+}
+
+export function createMarkerConfig(
+  property: PropertyDetail,
+  groupProperties: boolean = false,
+  baseLat: number,
+  baseLng: number,
+  selectedLocation: LatLng | null
+) {
+  const formatted = formatPrice(property.property.listingPrice);
+  const content = '₱' + formatted;
+  const baseWidth = 30;
+  const charWidth = 12;
+  const width = Math.max(baseWidth, content.length * charWidth);
+  const height = 30;
+
+  let offsetLat: number | null = null;
+  let offsetLng: number | null = null;
+
+  if (groupProperties) {
+    const offset = 0.0025;
+    // Use property ID as seed for consistent positioning
+    const seed = property.id
+      .toString()
+      .split('')
+      .reduce((a, b) => a + b.charCodeAt(0), 0);
+    const randomAngle = (seed % 360) * (Math.PI / 180); // Convert to radians
+    const randomDistance = ((seed % 100) / 100) * offset; // Use seed for distance too
+    offsetLat = baseLat + randomDistance * Math.cos(randomAngle);
+    offsetLng = baseLng + randomDistance * Math.sin(randomAngle);
+  }
+
+  const lat = Number(property.property.latitude);
+  const lng = Number(property.property.longitude);
+
+  const primaryMain =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--primary-main')
+      .trim() || '#350f9d';
+  const neutralMain =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue('--icon-map')
+      .trim() || '#6B21A8';
+
+  const isSelected =
+    selectedLocation &&
+    lat === selectedLocation.latitude &&
+    lng === selectedLocation.longitude;
+
   return {
-    latitude: sumLat / totalPoints,
-    longitude: sumLng / totalPoints,
+    content,
+    width,
+    height,
+    offsetLat,
+    offsetLng,
+    lat,
+    lng,
+    primaryMain,
+    neutralMain,
+    isSelected,
   };
+}
+
+export interface Geojson {
+  type: string;
+  coordinates: number[][];
+}
+
+// Convert GeoJSON coordinates to polygon path format
+export const getGeojsonPolygonPath = (geojson: Geojson[]) => {
+  if (!geojson) return null;
+
+  const coordinates = geojson?.[0]?.coordinates;
+  if (!coordinates || !Array.isArray(coordinates[0])) return null;
+
+  // Handle different GeoJSON polygon structures
+  const coordArray = Array.isArray(coordinates[0][0])
+    ? coordinates[0]
+    : coordinates;
+
+  return (coordArray as number[][]).map((coord: number[]) => ({
+    lat: coord[1],
+    lng: coord[0],
+  }));
 };
 
-export const calculateAverageBoundingBoxRadius = (
-  boundingBox: BoundingBox
-): number => {
-  const { centerX, centerY, minX, minY, maxX, maxY } = boundingBox;
+export const onPolygonComplete = (
+  drawnPolygon: google.maps.Polygon,
+  setEnableDraw: (enable: boolean) => void,
+  setShowControls: (show: boolean) => void,
+  setShowInstructionNote: (show: boolean) => void,
+  mapInstance: google.maps.Map
+) => {
+  setEnableDraw(false);
+  setShowControls(true);
+  setShowInstructionNote(false);
 
-  // Conversion factor from degrees to kilometers
-  const degreesToKilometers = 111.32;
+  // Zoom to the drawn polygon
+  if (mapInstance) {
+    const bounds = new google.maps.LatLngBounds();
+    const path = drawnPolygon.getPath();
+    const points = path.getArray();
 
-  // Calculate the distances from the center point to each corner of the bounding box in degrees
-  const distance1 = Math.sqrt((centerX - minX) ** 2 + (centerY - minY) ** 2);
-  const distance2 = Math.sqrt((centerX - maxX) ** 2 + (centerY - minY) ** 2);
-  const distance3 = Math.sqrt((centerX - minX) ** 2 + (centerY - maxY) ** 2);
-  const distance4 = Math.sqrt((centerX - maxX) ** 2 + (centerY - maxY) ** 2);
+    // Extend bounds to include all polygon points
+    points.forEach(point => {
+      bounds.extend(point);
+    });
 
-  // Convert distances to kilometers
-  const distance1Kilometers = distance1 * degreesToKilometers;
-  const distance2Kilometers = distance2 * degreesToKilometers;
-  const distance3Kilometers = distance3 * degreesToKilometers;
-  const distance4Kilometers = distance4 * degreesToKilometers;
+    // Add some padding around the polygon
+    mapInstance.fitBounds(bounds, 50);
 
-  // Calculate the average distance in kilometers
-  const averageDistance =
-    (distance1Kilometers +
-      distance2Kilometers +
-      distance3Kilometers +
-      distance4Kilometers) /
-    4;
-
-  // Return the average distance rounded to two decimal points
-  return Number.parseFloat(averageDistance.toFixed(2));
+    // Limit the zoom level if it's too high
+    const currentZoom = mapInstance.getZoom();
+    if (currentZoom && currentZoom > 9) {
+      mapInstance.setZoom(11.5);
+    }
+  }
 };
 
-export const convertBoundingBoxToString = (
-  boundingBox: {
-    minLat: number;
-    maxLat: number;
-    minLng: number;
-    maxLng: number;
-  } | null
-): string => {
-  if (!boundingBox) return '';
-  const { minLat, maxLat, minLng, maxLng } = boundingBox;
-  return `${minLat}::${maxLat}::${minLng}::${maxLng}`;
+export const handleMarkerClick = (
+  lat: number,
+  lng: number,
+  mapInstance: google.maps.Map,
+  setOriginalZoom: (zoom: number) => void,
+  setClickedMarkers: (updater: (prev: Set<string>) => Set<string>) => void,
+  originalZoom: number
+) => {
+  if (mapInstance) {
+    // Save current zoom level before zooming in
+    setOriginalZoom(mapInstance.getZoom() || 8);
+    // Zoom to level 13 (close-up view) and center on the marker
+    if (originalZoom < 13) {
+      mapInstance.setZoom(13);
+      mapInstance.panTo({ lat: lat - 0.025, lng });
+    }
+  }
+
+  // Add marker to clicked markers set
+  const markerKey = `${lat},${lng}`;
+  setClickedMarkers((prev: Set<string>) => new Set(prev).add(markerKey));
+};
+
+export const handleZoomChange = (
+  mapInstance: google.maps.Map,
+  setZoom: (zoom: number) => void
+) => {
+  if (mapInstance) {
+    const newZoom = mapInstance.getZoom() || 8;
+    setZoom(newZoom);
+  }
+};
+
+export const triggerSearchWithCoordinates = (
+  coordinates: { latitude: number; longitude: number }[],
+  allParams: SearchParams
+) => {
+  const boundingBox = getBoundingBox(coordinates);
+  const minLatitude = boundingBox.minLat;
+  const maxLatitude = boundingBox.maxLat;
+  const minLongitude = boundingBox.minLng;
+  const maxLongitude = boundingBox.maxLng;
+
+  // Get current parameters and remove city, barangay, province
+  const currentParams = allParams;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { city, barangay, province, ...paramsWithoutLocation } = currentParams;
+
+  // Add the new coordinates to the cleaned parameters
+  const finalParams = {
+    ...paramsWithoutLocation,
+    minLatitude,
+    maxLatitude,
+    minLongitude,
+    maxLongitude,
+  };
+
+  return finalParams;
+};
+
+export const handleDrawToSearchBtn = (
+  onCancelHandle: () => void,
+  setEnableDraw: (enable: boolean) => void,
+  setShowInstructionNote: (show: boolean) => void,
+  setShowDrawButton: (show: boolean) => void
+) => {
+  onCancelHandle();
+  setEnableDraw(true);
+  setShowInstructionNote(true);
+  setShowDrawButton(false);
+};
+
+export const handleCancelHandle = (
+  rootStore: RootStoreType,
+  setEnableDraw: (enable: boolean) => void,
+  setShowControls: (show: boolean) => void,
+  setShowDrawButton: (show: boolean) => void
+) => {
+  rootStore.propertyListingQuery.resetCoordinates();
+  setEnableDraw(false);
+  setShowControls(false);
+  setShowDrawButton(true);
 };

@@ -2,7 +2,7 @@ import Image, { StaticImageData } from 'next/image';
 import verified from '@/../public/images/icons/verified.png';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '../ui/button';
-import { draftConversation } from '@/lib/utils/draftConversation';
+import { draftConversation } from '@/utils/draftConversation';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { useGetProfile } from '@/lib/queries/hooks/use-user-profile';
 import { useRouter } from 'next/navigation';

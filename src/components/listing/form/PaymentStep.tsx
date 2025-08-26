@@ -10,7 +10,7 @@ import GenerateButton from './GenerateButton';
 import {
   buildPropertyPrompt,
   validateRequiredFields,
-} from '@/lib/utils/propertyPrompBuilder';
+} from '@/utils/propertyPrompBuilder';
 import { toast } from 'sonner';
 import { useAiGenerate } from '@/lib/queries/hooks/use-ai-generate';
 import { useState } from 'react';

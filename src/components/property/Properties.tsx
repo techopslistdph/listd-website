@@ -14,11 +14,11 @@ import { SearchParams } from '@/lib/queries/server/propety';
 import PropertyMap from '../map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
-import { filterProperties } from '@/lib/utils/filterProperty';
+import { filterProperties } from '@/utils/filterProperty';
 import { PropertyPagination } from './PropertyPagination';
 import { useRouter } from 'next/navigation';
 import { useUrlParams } from '@/hooks/useUrlParams';
-
+import { Geojson } from '@/utils/mapUtils';
 export type View = 'list' | 'map';
 
 export function Properties({
@@ -26,11 +26,13 @@ export function Properties({
   listingTypes,
   propertyType,
   priceRanges,
+  geojson,
 }: {
   properties: PropertyListResponse;
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
   priceRanges: PriceRangeResponse;
+  geojson: Geojson[];
 }) {
   const [view, setView] = useState<View>('list');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -92,27 +94,29 @@ export function Properties({
           </div>
         )}
         {/* Property Cards Grid */}
-        {filteredProperties?.length === 0 && properties.success && (
-          <>
-            <div className='flex flex-col items-center justify-center mt-12 lg:mt-42 pb-10'>
-              <Image
-                src={'/images/icons/empty.svg'}
-                alt='Error loading properties'
-                width={150}
-                height={50}
-                className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
-              />
-              <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
-                {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
+        {filteredProperties?.length === 0 &&
+          properties.success &&
+          view != 'map' && (
+            <>
+              <div className='flex flex-col items-center justify-center mt-12 lg:mt-42 pb-10'>
+                <Image
+                  src={'/images/icons/empty.svg'}
+                  alt='Error loading properties'
+                  width={150}
+                  height={50}
+                  className='mb-4 lg:mb-8 lg:w-[204px] lg:h-[67px]'
+                />
+                <div className='text-xl lg:text-2xl font-bold text-primary-main mb-2 text-center'>
+                  {`Oops! We couldn\'t find any ${propertyType} matching your search.`}
+                </div>
+                <div className='text-sm lg:text-base text-gray-400 text-center'>
+                  {
+                    'Please check your spelling or adjust your filters and try again.'
+                  }
+                </div>
               </div>
-              <div className='text-sm lg:text-base text-gray-400 text-center'>
-                {
-                  'Please check your spelling or adjust your filters and try again.'
-                }
-              </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
         {view === 'list' ? (
           <div className='flex flex-col gap-8'>
             <div className='grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 gap-6'>
@@ -135,28 +139,11 @@ export function Properties({
             />
           </div>
         ) : (
-          <div className='flex flex-col gap-6'>
-            {/* Property Cards Column */}
-            <div className='rounded-xl w-full\ h-[480px] overflow-hidden'>
-              <PropertyMap properties={filteredProperties} minHeight='480px' />
-            </div>
-            <div className='space-y-6'>
-              {filteredProperties?.map((property, idx) => (
-                <PropertyCard
-                  user={user as unknown as User}
-                  key={idx}
-                  propertyDetail={property}
-                  view='map'
-                  propertyType={propertyType}
-                />
-              ))}
-            </div>
-            {/* Pagination for map view */}
-            <PropertyPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className='mt-8'
+          <div className='rounded-2xl w-full h-screen overflow-hidden'>
+            <PropertyMap
+              properties={filteredProperties}
+              minHeight='700px'
+              geojson={geojson}
             />
           </div>
         )}

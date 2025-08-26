@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
 import { Heart, Share2 } from 'lucide-react';
-import { handleShareProperty } from '@/lib/utils/ShareProperty';
+import { handleShareProperty } from '@/utils/ShareProperty';
 import pinIcon from '../../../public/images/icons/pin.svg';
 import { formatPrice } from '@/utils/formatPriceUtils';
 

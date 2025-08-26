@@ -13,7 +13,7 @@ import {
 import { Input } from '../ui/input';
 import send from '@/../public/images/icons/send.svg';
 import { useMessageActions } from '@/hooks/useMessageActions';
-import { DraftConversation } from '@/lib/utils/draftConversation';
+import { DraftConversation } from '@/utils/draftConversation';
 import {
   combineMessages,
   Conversations,
@@ -21,7 +21,7 @@ import {
   Selected,
   shouldRemoveOptimisticMessage,
   transformMessages,
-} from '@/lib/utils/Message';
+} from '@/utils/Message';
 import {
   ChatSkeletonDesktop,
   ConversationsSkeletonMobile,

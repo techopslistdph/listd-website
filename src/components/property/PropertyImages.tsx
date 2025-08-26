@@ -48,7 +48,6 @@ export function PropertyImages({
 
   const mainImage = images[0];
   const gridImages = images.slice(1, 5);
-  const remainingCount = images.length - 5;
 
   const handlePrevious = useCallback(() => {
     if (isTransitioning) return;
@@ -145,7 +144,7 @@ export function PropertyImages({
 
   if (mapMode) {
     return (
-      <div className='relative w-full h-[200px] overflow-hidden'>
+      <div className='relative w-full h-[250px] overflow-hidden'>
         {images.length > 1 ? (
           <img
             src={images[currentIndex]?.imageUrl}

@@ -11,7 +11,7 @@ import { useState } from 'react';
 import {
   buildPropertyPrompt,
   validateRequiredFields,
-} from '@/lib/utils/propertyPrompBuilder';
+} from '@/utils/propertyPrompBuilder';
 
 interface TitleDescriptionStepProps {
   onChange: (field: keyof ListingFormData, value: unknown) => void;

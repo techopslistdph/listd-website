@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import PropertyDetailsDisplay from '@/components/property/PropertyDetailsDisplay';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
-import { parsePropertyDescription } from '@/lib/utils/property';
+import { parsePropertyDescription } from '@/utils/property';
 
 interface PropertyDescriptionProps {
   description: string;

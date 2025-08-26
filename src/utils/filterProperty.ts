@@ -1,4 +1,7 @@
-import { PropertyDetail, PropertyImage } from '../queries/server/propety/type';
+import {
+  PropertyDetail,
+  PropertyImage,
+} from '@/lib/queries/server/propety/type';
 
 export const filterProperties = (properties: PropertyDetail[]) => {
   return properties?.filter(property => {
@@ -25,7 +28,7 @@ export const filterProperties = (properties: PropertyDetail[]) => {
             imageUrl.startsWith('https://') ||
             imageUrl.startsWith('data:image'))
         );
-      },
+      }
     );
 
     return allImagesValid;

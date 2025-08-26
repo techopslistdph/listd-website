@@ -10,7 +10,7 @@ import { Heart, MapPin, PhoneIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 
 import { useGetUserLikedProperties } from '@/lib/queries/hooks/use-user-profile';
-import { filterProperties } from '@/lib/utils/filterProperty';
+import { filterProperties } from '@/utils/filterProperty';
 import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { useLikeProperty } from '@/lib/queries/hooks/use-property';
 import PropertySkeleton from './PropertySkeleton';

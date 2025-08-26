@@ -1,12 +1,12 @@
 import { StaticImageData } from 'next/image';
-import { PropertyDetail } from '../queries/server/propety/type';
+import { PropertyDetail } from '../lib/queries/server/propety/type';
 
 // Import all available icons
-import areaIcon from '../../../public/images/icons/squaremeter.svg';
-import bedIcon from '../../../public/images/icons/bedroom.svg';
-import bathIcon from '../../../public/images/icons/bath.svg';
-import fullyFurnishedIcon from '../../../public/images/icons/fully-furnished.svg';
-import parkingIcon from '../../../public/images/icons/car.svg';
+import areaIcon from '../../public/images/icons/squaremeter.svg';
+import bedIcon from '../../public/images/icons/bedroom.svg';
+import bathIcon from '../../public/images/icons/bath.svg';
+import fullyFurnishedIcon from '../../public/images/icons/fully-furnished.svg';
+import parkingIcon from '../../public/images/icons/car.svg';
 import { LucideIcon } from 'lucide-react';
 
 export interface PropertyDetailItem {

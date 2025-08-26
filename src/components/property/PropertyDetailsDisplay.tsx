@@ -5,7 +5,7 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import {
   getAllPropertyDetails,
   PropertyDetailItem,
-} from '@/lib/utils/propertyDetailsWithIcons';
+} from '@/utils/propertyDetailsWithIcons';
 import { LucideIcon } from 'lucide-react';
 
 interface PropertyDetailsDisplayProps {

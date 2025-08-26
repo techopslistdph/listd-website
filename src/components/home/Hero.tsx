@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
 import { Container } from '@/components/common/Container';
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectTrigger,
@@ -16,6 +15,7 @@ import Button from '@/components/common/Button';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { PropertyType } from '@/lib/queries/server/home/type';
 import { ListingType } from '@/lib/queries/server/home/type';
+import LocationInput from '../common/LocationInput';
 
 export default function Hero({
   listingTypes,
@@ -29,7 +29,11 @@ export default function Hero({
   const [propertyAction, setPropertyAction] = useState(listingTypes[0].id);
   const [property, setProperty] = useState(propertyTypes[0].name);
   const [propertyTypeId, setPropertyTypeId] = useState(propertyTypes[0].id);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState<{
+    city: string;
+    barangay: string;
+    province: string;
+  } | null>(null);
 
   useEffect(() => {
     const propertyType = propertyTypes.find(type => type.name === property);
@@ -42,7 +46,9 @@ export default function Hero({
     e.preventDefault();
 
     const paramsString = createParamsString({
-      search: location.trim(),
+      ...(location?.city && { city: location.city }),
+      ...(location?.province && { province: location.province }),
+      ...(location?.barangay && { barangay: location.barangay }),
       property,
       propertyTypeId: propertyTypeId,
       listingTypeId: propertyAction,
@@ -125,13 +131,14 @@ export default function Hero({
           <div className='flex-1 w-full'>
             <label className='block font-medium mb-1'>Location</label>
             <div className='relative'>
-              <Input
+              <LocationInput setLocation={setLocation} />
+              {/* <Input
                 type='text'
                 placeholder='Search for Location'
                 className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black text-neutral-text outline-none border-0 shadow-none text-sm lg:text-base'
                 value={location}
                 onChange={e => setLocation(e.target.value)}
-              />
+              /> */}
               <span className='absolute right-4 top-1/2 -translate-y-1/2 text-primary-main'>
                 {/* Search Icon */}
                 <svg
