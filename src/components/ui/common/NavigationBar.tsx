@@ -1,7 +1,12 @@
 import Link from 'next/link';
 import React from 'react';
 import { Button } from './Button';
-import { Sheet, SheetTrigger, SheetContent, SheetTitle } from '../ui/sheet';
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import UserProfileCard from './UserProfileCard';
 import { UserProfile } from '@/lib/queries/hooks/types/user';

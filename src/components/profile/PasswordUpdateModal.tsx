@@ -7,7 +7,7 @@ import * as z from 'zod';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { FormInput } from '../ui/form-input';
-import Button from '../common/Button';
+import Button from '@/components/ui/common/Button';
 import { useUpdatePassword } from '@/lib/queries/hooks/use-account';
 import { Eye, EyeOff } from 'lucide-react';
 import { FormProvider } from 'react-hook-form';

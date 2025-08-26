@@ -1,6 +1,6 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { Container } from '../common/Container';
+import { Container } from '../ui/common/Container';
 import Icon from '../../../public/images/listing-icon.png';
 
 export interface FeatureCardData {

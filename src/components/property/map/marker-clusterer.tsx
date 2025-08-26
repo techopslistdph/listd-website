@@ -6,14 +6,14 @@ import { PropertyDetail } from '@/lib/queries/server/propety/type';
 import { formatPrice } from '@/utils/formatPriceUtils';
 import { Location } from './PropertyMap';
 import Image from 'next/image';
-import { PropertyImages } from '../property/PropertyImages';
-import pinIcon from '../../../public/images/icons/pin.svg';
+import pinIcon from '@/../public/images/icons/pin.svg';
 import Link from 'next/link';
-import PropertyDetailsDisplay from '../property/PropertyDetailsDisplay';
+import PropertyDetailsDisplay from '../PropertyDetailsDisplay';
 import {
   createMarkerConfig,
   groupPropertiesByLocation,
 } from '@/utils/mapUtils';
+import { PropertyImages } from '../PropertyImages';
 
 interface MarkerClustererProps {
   data: PropertyDetail[];

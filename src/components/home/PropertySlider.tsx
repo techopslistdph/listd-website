@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-import Button from '../common/Button';
+import Button from '@/components/ui/common/Button';
 import Link from 'next/link';
 import { useNearbyProperties } from '@/lib/queries/hooks/use-property';
 import { PropertyDetails } from '@/lib/queries/server/propety/type';
@@ -26,13 +26,15 @@ export default function PropertySlider() {
     lng: number | null;
   }>({ lat: null, lng: null });
   const [error, setError] = useState<string | null>(null);
-  const [permission, setPermission] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
+  const [permission, setPermission] = useState<
+    'granted' | 'denied' | 'prompt' | 'unknown'
+  >('unknown');
   const [hasRequestedPermission, setHasRequestedPermission] = useState(false);
 
   const requestLocation = () => {
     setError(null);
     setHasRequestedPermission(true);
-    
+
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by your browser.');
       return;
@@ -54,23 +56,34 @@ export default function PropertySlider() {
           if (hasRequestedPermission && !navigator.permissions) {
             // For browsers without Permissions API, assume it's a dismissed prompt
             setPermission('prompt');
-            setError('Location access needed. Please allow location permissions to see nearby properties.');
+            setError(
+              'Location access needed. Please allow location permissions to see nearby properties.'
+            );
           } else {
             // Check if it's actually permanently denied
-            navigator.permissions?.query({ name: 'geolocation' }).then(result => {
-              if (result.state === 'denied') {
-                setPermission('denied');
-                setError('Location access denied. Please enable location permissions to see nearby properties.');
-              } else {
-                // It's a dismissed prompt, not permanently denied
+            navigator.permissions
+              ?.query({ name: 'geolocation' })
+              .then(result => {
+                if (result.state === 'denied') {
+                  setPermission('denied');
+                  setError(
+                    'Location access denied. Please enable location permissions to see nearby properties.'
+                  );
+                } else {
+                  // It's a dismissed prompt, not permanently denied
+                  setPermission('prompt');
+                  setError(
+                    'Location access needed. Please allow location permissions to see nearby properties.'
+                  );
+                }
+              })
+              .catch(() => {
+                // Fallback: assume it's a dismissed prompt
                 setPermission('prompt');
-                setError('Location access needed. Please allow location permissions to see nearby properties.');
-              }
-            }).catch(() => {
-              // Fallback: assume it's a dismissed prompt
-              setPermission('prompt');
-              setError('Location access needed. Please allow location permissions to see nearby properties.');
-            });
+                setError(
+                  'Location access needed. Please allow location permissions to see nearby properties.'
+                );
+              });
           }
         } else if (err.code === 2) {
           setPermission('prompt');
@@ -87,11 +100,10 @@ export default function PropertySlider() {
       {
         enableHighAccuracy: false,
         timeout: 15000,
-        maximumAge: 300000
+        maximumAge: 300000,
       }
     );
   };
-
 
   const handleRequestLocation = () => {
     requestLocation();
@@ -160,12 +172,12 @@ export default function PropertySlider() {
         </Link>
       </div>
 
-      {(!location.lat && !location.lng) && (
+      {!location.lat && !location.lng && (
         <PropertySliderFallback
-        permission={permission}
-        error={error}
-        onRequestLocation={handleRequestLocation}
-      />
+          permission={permission}
+          error={error}
+          onRequestLocation={handleRequestLocation}
+        />
       )}
 
       {/* Show skeleton when loading */}

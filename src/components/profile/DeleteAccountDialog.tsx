@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import Button from '../common/Button';
+import Button from '@/components/ui/common/Button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { useDeleteAccount } from '@/lib/queries/hooks/use-account';

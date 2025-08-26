@@ -1,6 +1,6 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { Container } from '../common/Container';
+import { Container } from '@/components/ui/common/Container';
 import Link from 'next/link';
 
 export interface ValuationCardData {

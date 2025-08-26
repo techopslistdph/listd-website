@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -43,6 +44,13 @@ export type Location = {
   longitude: number;
 } | null;
 
+// Static libraries array to prevent unnecessary reloads
+const GOOGLE_MAPS_LIBRARIES: ('places' | 'drawing' | 'geometry')[] = [
+  'places',
+  'drawing',
+  'geometry',
+];
+
 const PropertyMap: React.FC<IMapProps> = ({
   minHeight = '600px',
   properties = [],
@@ -51,7 +59,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
     id: 'google-map-script',
-    libraries: ['places', 'drawing', 'geometry'],
+    libraries: GOOGLE_MAPS_LIBRARIES, // Use static array
   });
 
   const rootStore = useStore();
@@ -80,6 +88,9 @@ const PropertyMap: React.FC<IMapProps> = ({
   );
   // Track clicked markers - store as string keys for easy comparison
   const [clickedMarkers, setClickedMarkers] = useState<Set<string>>(new Set());
+  // Track if we should auto-fit to properties
+  const [shouldAutoFitProperties, setShouldAutoFitProperties] =
+    useState<boolean>(true);
 
   const triggerSearch = (path: { latitude: number; longitude: number }[]) => {
     const allParams = getAllParams();
@@ -92,40 +103,75 @@ const PropertyMap: React.FC<IMapProps> = ({
     router.push(`/property?${paramsString}`);
   };
 
+  // Auto-fit to properties only when no polygon is active and we have properties
   useEffect(() => {
-    // Only auto-fit if not currently drawing and we have properties
-    if (mapInstance && properties.length > 0 && !enableDraw) {
+    if (
+      mapInstance &&
+      properties.length > 0 &&
+      shouldAutoFitProperties &&
+      !polygon &&
+      !geojson
+    ) {
       const validProperties = properties.filter(
         property => property.property?.latitude && property.property?.longitude
       );
 
       if (validProperties.length === 0) return;
 
-      // Always center on the first property
-      const firstProperty = validProperties[0];
-      mapInstance.setCenter({
-        lat: firstProperty.property!.latitude,
-        lng: firstProperty.property!.longitude,
+      // Create bounds to fit all properties
+      const bounds = new google.maps.LatLngBounds();
+      validProperties.forEach(property => {
+        bounds.extend({
+          lat: property.property!.latitude,
+          lng: property.property!.longitude,
+        });
       });
-      mapInstance.setZoom(11.5);
+
+      // Fit bounds with padding
+      mapInstance.fitBounds(bounds, 50);
+
+      // Set a reasonable zoom level if bounds are too small
+      const currentZoom = mapInstance.getZoom();
+      if (currentZoom && currentZoom > 15) {
+        mapInstance.setZoom(11.5);
+      }
     }
-  }, [mapInstance, properties, enableDraw]);
+  }, [mapInstance, properties, shouldAutoFitProperties, polygon, geojson]);
 
   // Load saved polygon on component mount (only if no geojson)
   useEffect(() => {
+    // If geojson exists, clear any existing polygon and local storage
+    if (geojson && geojson.length > 0) {
+      // Clear any existing polygon from the map
+      if (polygon) {
+        polygon.setMap(null);
+        setPoligon(null);
+      }
+      // Clear local storage
+      clearPolygonFromStorage();
+      // Reset UI state
+      setShowControls(false);
+      setShowDrawButton(true);
+      setShouldAutoFitProperties(false);
+      return;
+    }
+
+    // Only restore from localStorage if no geojson
     restorePolygonFromStorage(
       mapInstance,
       setPoligon,
       setShowControls,
       setShowDrawButton,
-      geojson // Pass geojson to prevent localStorage restoration when geojson exists
+      geojson
     );
-  }, [mapInstance, geojson]); // Add geojson to dependencies
+  }, [mapInstance, geojson]); // Remove polygon from dependencies
 
   // Function to handle polygon completion with storage
   const handlePolygonComplete = (polygon: google.maps.Polygon) => {
     setPoligon(polygon);
     savePolygonToStorage(polygon); // Save to localStorage
+    setShouldAutoFitProperties(false); // Disable auto-fitting when polygon is drawn
+
     onPolygonComplete(
       polygon,
       setEnableDraw,
@@ -184,6 +230,9 @@ const PropertyMap: React.FC<IMapProps> = ({
     // Clear saved polygon
     clearPolygonFromStorage();
 
+    // Re-enable auto-fitting to properties
+    setShouldAutoFitProperties(true);
+
     // Remove bounding box params from URL
     const paramsString = deleteParams([
       'minLatitude',
@@ -215,9 +264,15 @@ const PropertyMap: React.FC<IMapProps> = ({
     }));
   }
 
-  // When geojson changes, create the polygon once
+  // When geojson changes, create the polygon once and zoom to fit
   useEffect(() => {
     if (!geojson || !mapInstance) return;
+
+    // Clear any existing polygon first
+    if (polygon) {
+      polygon.setMap(null);
+      setPoligon(null);
+    }
 
     const geojsonPath = getGeojsonPolygonPath(geojson);
     if (!geojsonPath) return;
@@ -236,12 +291,28 @@ const PropertyMap: React.FC<IMapProps> = ({
 
     polygonInstance.setMap(mapInstance);
     setPoligon(polygonInstance);
+    setShouldAutoFitProperties(false); // Disable auto-fitting when geojson is loaded
+
+    // Zoom to fit the geojson polygon
+    const bounds = new google.maps.LatLngBounds();
+    geojsonPath.forEach(point => {
+      bounds.extend(point);
+    });
+
+    // Add padding and fit bounds
+    mapInstance.fitBounds(bounds, 50);
+
+    // Set a reasonable zoom level if bounds are too small
+    const currentZoom = mapInstance.getZoom();
+    if (currentZoom && currentZoom > 15) {
+      mapInstance.setZoom(11.5);
+    }
 
     // cleanup old polygon if geojson changes
     return () => {
       polygonInstance.setMap(null);
     };
-  }, [geojson, mapInstance]);
+  }, [geojson, mapInstance]); // Remove polygon from dependencies
 
   return (
     <div className='h-92'>
@@ -357,8 +428,7 @@ const PropertyMap: React.FC<IMapProps> = ({
                   lng,
                   mapInstance as google.maps.Map,
                   setOriginalZoom,
-                  setClickedMarkers,
-                  originalZoom
+                  setClickedMarkers
                 )
               }
               properties={properties}

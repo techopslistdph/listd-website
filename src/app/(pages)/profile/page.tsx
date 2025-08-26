@@ -1,4 +1,4 @@
-import { Container } from '@/components/common/Container';
+import { Container } from '@/components/ui/common/Container';
 import Tab from '@/components/profile/Tab';
 import TabSkeleton from '@/components/profile/TabSkeleton';
 import { getListingTypes } from '@/lib/queries/server/home';

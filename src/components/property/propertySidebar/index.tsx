@@ -14,7 +14,7 @@ import { RangeSlider } from './RangeSlider';
 import { InputFilter } from './InputFilter';
 import { SelectFilter } from './SelectFilter';
 import { NumberFilter } from './NumberFilter';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/common/Button';
 import { usePropertyFilters } from '@/hooks/usePropertyFilters';
 import { MultiSelectOption } from '@/components/ui/multi-select';
 import { useAmenitiesAndFeatures } from '@/lib/queries/hooks/use-amenities';

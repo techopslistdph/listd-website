@@ -11,7 +11,7 @@ import {
 import { ListingType } from '@/lib/queries/server/home/type';
 import PropertySidebar from './propertySidebar';
 import { SearchParams } from '@/lib/queries/server/propety';
-import PropertyMap from '../map/PropertyMap';
+import PropertyMap from '@/components/property/map/PropertyMap';
 import { useUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { filterProperties } from '@/utils/filterProperty';
