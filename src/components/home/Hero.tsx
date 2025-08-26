@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'nextjs-toploader/app';
-import { Container } from '@/components/common/Container';
+import { Container } from '@/components/ui/common/Container';
 import {
   Select,
   SelectTrigger,
@@ -11,11 +11,11 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import background from '@/../public/images/hero-background.png';
-import Button from '@/components/common/Button';
+import Button from '@/components/ui/common/Button';
 import { useUrlParams } from '@/hooks/useUrlParams';
 import { PropertyType } from '@/lib/queries/server/home/type';
 import { ListingType } from '@/lib/queries/server/home/type';
-import LocationInput from '../common/LocationInput';
+import LocationInput from '@/components/ui/common/LocationInput';
 
 export default function Hero({
   listingTypes,

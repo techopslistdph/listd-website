@@ -170,7 +170,7 @@ export function createMarkerConfig(
   let offsetLng: number | null = null;
 
   if (groupProperties) {
-    const offset = 0.0005;
+    const offset = 0.0009;
     // Use property ID as seed for consistent positioning
     const seed = property.id
       .toString()
@@ -247,7 +247,7 @@ export const onPolygonComplete = (
   setShowControls(true);
   setShowInstructionNote(false);
 
-  // Zoom to the drawn polygon
+  // Zoom to the drawn polygon with better bounds calculation
   if (mapInstance) {
     const bounds = new google.maps.LatLngBounds();
     const path = drawnPolygon.getPath();
@@ -258,12 +258,12 @@ export const onPolygonComplete = (
       bounds.extend(point);
     });
 
-    // Add some padding around the polygon
+    // Add padding around the polygon (50 pixels)
     mapInstance.fitBounds(bounds, 50);
 
-    // Limit the zoom level if it's too high
+    // Set a reasonable zoom level if the polygon is too small
     const currentZoom = mapInstance.getZoom();
-    if (currentZoom && currentZoom > 9) {
+    if (currentZoom && currentZoom > 15) {
       mapInstance.setZoom(11.5);
     }
   }
@@ -274,14 +274,15 @@ export const handleMarkerClick = (
   lng: number,
   mapInstance: google.maps.Map,
   setOriginalZoom: (zoom: number) => void,
-  setClickedMarkers: (updater: (prev: Set<string>) => Set<string>) => void,
-  originalZoom: number
+  setClickedMarkers: (updater: (prev: Set<string>) => Set<string>) => void
 ) => {
   if (mapInstance) {
     // Save current zoom level before zooming in
-    setOriginalZoom(mapInstance.getZoom() || 8);
-    // Zoom to level 13 (close-up view) and center on the marker
-    if (originalZoom < 13) {
+    const currentZoom = mapInstance.getZoom() || 8;
+    setOriginalZoom(currentZoom);
+
+    // Only zoom in if we're not already at a close zoom level
+    if (currentZoom < 13) {
       mapInstance.setZoom(13);
       mapInstance.panTo({ lat: lat - 0.025, lng });
     }
@@ -402,10 +403,13 @@ export const restorePolygonFromStorage = (
   setPolygon: (polygon: google.maps.Polygon | null) => void,
   setShowControls: (show: boolean) => void,
   setShowDrawButton: (show: boolean) => void,
-  geojson?: Geojson[] // Add geojson parameter
+  geojson?: Geojson[]
 ) => {
-  // If geojson exists, don't restore from localStorage
+  // If geojson exists, clear localStorage and don't restore
   if (geojson && geojson.length > 0) {
+    clearPolygonFromStorage();
+    setShowControls(false);
+    setShowDrawButton(true);
     return null;
   }
 

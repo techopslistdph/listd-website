@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import Button from '../common/Button';
+import Button from '@/components/ui/common/Button';
 import { useDeactivateAccount } from '@/lib/queries/hooks/use-account';
 import { AlertTriangle } from 'lucide-react';
 

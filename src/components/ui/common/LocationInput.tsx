@@ -2,7 +2,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { BuildingSuggestion } from '@/lib/queries/hooks/types/building';
 import { useAddressSuggestions } from '@/lib/queries/hooks/use-building';
 import React, { useEffect, useRef, useState } from 'react';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 
 interface LocationInputProps {
   setLocation: (

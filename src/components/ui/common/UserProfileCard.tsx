@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useClerk } from '@clerk/nextjs';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut, User } from 'lucide-react';
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { getInitials, toTitleCase } from '@/lib/utils';
 import Link from 'next/link';
 import { UserProfile } from '@/lib/queries/hooks/types/user';

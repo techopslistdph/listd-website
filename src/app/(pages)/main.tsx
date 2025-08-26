@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import NavigationBar from '@/components/common/NavigationBar';
-import Footer from '@/components/common/Footer';
+import NavigationBar from '@/components/ui/common/NavigationBar';
+import Footer from '@/components/ui/common/Footer';
 import {
   navigationlinks,
   footerLinks,

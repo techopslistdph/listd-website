@@ -9,7 +9,7 @@ import { useRouter } from 'nextjs-toploader/app';
 
 import { cn } from '@/lib/utils';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import LocationInput from '../common/LocationInput';
+import LocationInput from '@/components/ui/common/LocationInput';
 
 interface PropertyTopBarProps {
   onViewChange: (view: View) => void;

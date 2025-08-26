@@ -2,12 +2,12 @@
 import { testimonialCards } from '@/app/data';
 import Testimonial from '@/components/home/Testimonial';
 import React, { useEffect, useState, Suspense } from 'react';
-import FAQ from '@/components/common/FAQ';
+import FAQ from '@/components/ui/common/FAQ';
 import Image from 'next/image';
 import { PropertyType } from '@/components/listing/types';
 import { useSearchParams } from 'next/navigation';
 import { backgroundImage } from '@/lib/getBackgroundImage';
-import Advantages from '@/components/common/Advantages';
+import Advantages from '@/components/ui/common/Advantages';
 import ValuationHero from '@/components/valuation/ValuationHero';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 
