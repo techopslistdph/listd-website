@@ -5,12 +5,14 @@ interface LoadingSpinnerProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   showLogo?: boolean;
+  text?: string;
 }
 
 export function LoadingSpinner({
   className,
   size = 'md',
   showLogo = true,
+  text,
 }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'w-6 h-6',
@@ -62,6 +64,7 @@ export function LoadingSpinner({
           />
         </svg>
       </div>
+      {text && <p className='text-sm text-gray-600'>{text}</p>}
     </div>
   );
 }

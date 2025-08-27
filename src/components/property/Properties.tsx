@@ -1,7 +1,7 @@
 'use client';
 import PropertyCard from '@/components/property/PropertyCard';
 import PropertyTopBar from '@/components/property/PropertyTopBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import {
@@ -29,18 +29,20 @@ export function Properties({
   propertyType,
   priceRanges,
   geojson,
+  hasCoordinates,
 }: {
   properties: PropertyListResponse;
   listingTypes: ListingType[];
   propertyType: SearchParams['property'];
   priceRanges: PriceRangeResponse;
   geojson: Geojson[];
+  hasCoordinates?: boolean;
 }) {
   const [view, setView] = useState<View>(
-    geojson && geojson.length > 0 ? 'map' : 'list'
+    hasCoordinates ? 'map' : geojson && geojson.length > 0 ? 'map' : 'list'
   );
   const [sidebarOpen, setSidebarOpen] = useState(
-    !(geojson && geojson.length > 0)
+    hasCoordinates ? false : !(geojson && geojson.length > 0)
   );
   const { user } = useUser();
   const router = useRouter();
@@ -62,19 +64,23 @@ export function Properties({
 
   const handlePageChangeWrapper = (page: number) => {
     if (hasBackendPagination) {
-      // Backend pagination - update URL and trigger new request
       const params = updateParams({ page: page });
       router.push(`/property?${params}`);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Frontend pagination - just update state
       handlePageChange(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
+  // if view is map then scroll to id=map
+  useEffect(() => {
+    if (view === 'map') {
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    }
+  }, [view]);
   return (
-    <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row pb-10 px-5 py-5 sm:pt-5'>
+    <div className='min-h-screen xl:max-w-[1300px] mx-auto flex flex-col gap-5 lg:flex-row mb-10 px-5 py-5 sm:pt-5'>
       <div className='sm:block lg:hidden'>
         <PropertyTopBar
           listingTypes={listingTypes}
@@ -163,12 +169,8 @@ export function Properties({
             )}
           </div>
         ) : (
-          <div className='rounded-2xl w-full h-screen overflow-hidden'>
-            <PropertyMap
-              properties={filteredProperties} // Always use all properties for map
-              minHeight='700px'
-              geojson={geojson}
-            />
+          <div className=''>
+            <PropertyMap properties={filteredProperties} geojson={geojson} />
           </div>
         )}
       </main>
