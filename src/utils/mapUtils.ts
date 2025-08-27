@@ -241,7 +241,8 @@ export const onPolygonComplete = (
   setEnableDraw: (enable: boolean) => void,
   setShowControls: (show: boolean) => void,
   setShowInstructionNote: (show: boolean) => void,
-  mapInstance: google.maps.Map
+  mapInstance: google.maps.Map,
+  setShouldAutoFitProperties: (shouldAutoFit: boolean) => void
 ) => {
   setEnableDraw(false);
   setShowControls(true);
@@ -262,10 +263,11 @@ export const onPolygonComplete = (
     mapInstance.fitBounds(bounds, 50);
 
     // Set a reasonable zoom level if the polygon is too small
-    const currentZoom = mapInstance.getZoom();
-    if (currentZoom && currentZoom > 15) {
-      mapInstance.setZoom(11.5);
-    }
+    // const currentZoom = mapInstance.getZoom();
+    // if (currentZoom && currentZoom > 15) {
+    //   mapInstance.setZoom(11.5);
+    // }
+    setShouldAutoFitProperties(true);
   }
 };
 
@@ -331,27 +333,80 @@ export const triggerSearchWithCoordinates = (
 };
 
 export const handleDrawToSearchBtn = (
-  onCancelHandle: () => void,
   setEnableDraw: (enable: boolean) => void,
   setShowInstructionNote: (show: boolean) => void,
-  setShowDrawButton: (show: boolean) => void
+  setShowDrawButton: (show: boolean) => void,
+  setPoligon: (polygon: google.maps.Polygon | null) => void,
+  setShouldAutoFitProperties: (shouldAutoFit: boolean) => void,
+  setShowControls: (show: boolean) => void,
+  polygon: google.maps.Polygon | null,
+  clearPolygonFromStorage: () => void
 ) => {
-  onCancelHandle();
+  if (polygon) {
+    polygon.setMap(null);
+    setPoligon(null);
+  }
+  clearPolygonFromStorage();
   setEnableDraw(true);
   setShowInstructionNote(true);
   setShowDrawButton(false);
+  setShowControls(false);
+  setShouldAutoFitProperties(true);
 };
 
 export const handleCancelHandle = (
   rootStore: RootStoreType,
   setEnableDraw: (enable: boolean) => void,
   setShowControls: (show: boolean) => void,
-  setShowDrawButton: (show: boolean) => void
+  setShowDrawButton: (show: boolean) => void,
+  setShouldAutoFitProperties: (shouldAutoFit: boolean) => void,
+  clearPolygonFromStorage: () => void,
+  setPoligon: (polygon: google.maps.Polygon | null) => void,
+  polygon: google.maps.Polygon | null,
+  mapInstance?: google.maps.Map | null,
+  properties?: PropertyDetail[]
 ) => {
   rootStore.propertyListingQuery.resetCoordinates();
   setEnableDraw(false);
   setShowControls(false);
   setShowDrawButton(true);
+
+  if (polygon) {
+    polygon.setMap(null);
+    setPoligon(null);
+  }
+
+  // Clear saved polygon
+  clearPolygonFromStorage();
+
+  // Re-enable auto-fitting to properties
+  setShouldAutoFitProperties(true);
+
+  // Zoom out to show all properties if map instance and properties are provided
+  if (mapInstance && properties && properties.length > 0) {
+    const validProperties = properties.filter(
+      property => property.property?.latitude && property.property?.longitude
+    );
+
+    if (validProperties.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      validProperties.forEach(property => {
+        bounds.extend({
+          lat: property.property!.latitude,
+          lng: property.property!.longitude,
+        });
+      });
+
+      // Fit bounds with padding
+      mapInstance.fitBounds(bounds, 50);
+
+      // Ensure reasonable zoom level
+      const currentZoom = mapInstance.getZoom();
+      if (currentZoom && currentZoom > 15) {
+        mapInstance.setZoom(11.5);
+      }
+    }
+  }
 };
 
 const POLYGON_STORAGE_KEY = 'listd_drawn_polygon';

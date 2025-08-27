@@ -98,7 +98,7 @@ export default function LocationInput({
       city: suggestion.addressComponents.city,
       province: suggestion.addressComponents.province,
     });
-    setInputValue(`${suggestion.address} - ${suggestion.formattedAddress}`);
+    setInputValue(`${suggestion.formattedAddress}`);
     setShowSuggestions(false);
     setIsUserTyping(false); // Prevent loading state after selection
   };

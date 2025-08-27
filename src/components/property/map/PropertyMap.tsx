@@ -59,7 +59,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || '',
     id: 'google-map-script',
-    libraries: GOOGLE_MAPS_LIBRARIES, // Use static array
+    libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
   const rootStore = useStore();
@@ -91,6 +91,7 @@ const PropertyMap: React.FC<IMapProps> = ({
   // Track if we should auto-fit to properties
   const [shouldAutoFitProperties, setShouldAutoFitProperties] =
     useState<boolean>(true);
+  const [isCancelling, setIsCancelling] = useState<boolean>(false);
 
   const triggerSearch = (path: { latitude: number; longitude: number }[]) => {
     const allParams = getAllParams();
@@ -138,8 +139,13 @@ const PropertyMap: React.FC<IMapProps> = ({
     }
   }, [mapInstance, properties, shouldAutoFitProperties, polygon, geojson]);
 
-  // Load saved polygon on component mount (only if no geojson)
+  // Load saved polygon on component mount (only if no geojson and there are coordinate search parameters)
   useEffect(() => {
+    // Don't restore polygon if we're in the middle of cancelling
+    if (isCancelling) {
+      return;
+    }
+
     // If geojson exists, clear any existing polygon and local storage
     if (geojson && geojson.length > 0) {
       // Clear any existing polygon from the map
@@ -156,15 +162,47 @@ const PropertyMap: React.FC<IMapProps> = ({
       return;
     }
 
-    // Only restore from localStorage if no geojson
-    restorePolygonFromStorage(
-      mapInstance,
-      setPoligon,
-      setShowControls,
-      setShowDrawButton,
-      geojson
+    // Check if there are coordinate-based search parameters that indicate a drawn area search
+    const allParams = getAllParams();
+    const hasCoordinateSearch =
+      (allParams.minLatitude && allParams.minLatitude !== '') ||
+      (allParams.maxLatitude && allParams.maxLatitude !== '') ||
+      (allParams.minLongitude && allParams.minLongitude !== '') ||
+      (allParams.maxLongitude && allParams.maxLongitude !== '') ||
+      (allParams.latitude && allParams.latitude !== '') ||
+      (allParams.longitude && allParams.longitude !== '') ||
+      (allParams.radius && allParams.radius !== '');
+
+    console.log(
+      'hasCoordinateSearch',
+      hasCoordinateSearch,
+      'allParams',
+      allParams
     );
-  }, [mapInstance, geojson]); // Remove polygon from dependencies
+
+    // Only restore from localStorage if there's a coordinate-based search
+    if (hasCoordinateSearch) {
+      console.log('Restoring polygon from localStorage');
+      restorePolygonFromStorage(
+        mapInstance,
+        setPoligon,
+        setShowControls,
+        setShowDrawButton,
+        geojson
+      );
+    } else {
+      console.log('no coordinate search');
+      // If no coordinate search, clear any existing polygon and localStorage
+      if (polygon) {
+        polygon.setMap(null);
+        setPoligon(null);
+      }
+      clearPolygonFromStorage();
+      setShowControls(false);
+      setShowDrawButton(true);
+      setShouldAutoFitProperties(true);
+    }
+  }, [mapInstance, geojson, getAllParams, isCancelling]); // Add isCancelling to dependencies
 
   // Function to handle polygon completion with storage
   const handlePolygonComplete = (polygon: google.maps.Polygon) => {
@@ -177,8 +215,12 @@ const PropertyMap: React.FC<IMapProps> = ({
       setEnableDraw,
       setShowControls,
       setShowInstructionNote,
-      mapInstance as google.maps.Map
+      mapInstance as google.maps.Map,
+      setShouldAutoFitProperties
     );
+
+    // Ensure draw button is hidden when polygon is completed
+    setShowDrawButton(false);
   };
 
   const containerStyle = {
@@ -214,36 +256,35 @@ const PropertyMap: React.FC<IMapProps> = ({
 
   // Update the onCancelHandle function
   const onCancelHandle = () => {
+    setIsCancelling(true);
+
+    // First handle the cancel operation (this clears localStorage and polygon)
     handleCancelHandle(
       rootStore,
       setEnableDraw,
       setShowControls,
-      setShowDrawButton
+      setShowDrawButton,
+      setShouldAutoFitProperties,
+      clearPolygonFromStorage,
+      setPoligon,
+      polygon,
+      mapInstance,
+      properties
     );
 
-    // Remove the drawn polygon from the map
-    if (polygon) {
-      polygon.setMap(null);
-      setPoligon(null);
-    }
-
-    // Clear saved polygon
-    clearPolygonFromStorage();
-
-    // Re-enable auto-fitting to properties
-    setShouldAutoFitProperties(true);
-
-    // Remove bounding box params from URL
+    // Then remove bounding box params from URL
     const paramsString = deleteParams([
       'minLatitude',
       'maxLatitude',
       'minLongitude',
       'maxLongitude',
-      'latitude',
-      'longitude',
-      'radius',
     ]);
     router.push(`/property?${paramsString}`);
+
+    // Reset the cancelling flag after a short delay
+    setTimeout(() => {
+      setIsCancelling(false);
+    }, 100);
   };
 
   const onMapLoad = (map: google.maps.Map) => {
@@ -347,10 +388,14 @@ const PropertyMap: React.FC<IMapProps> = ({
               )}
               onClick={() =>
                 handleDrawToSearchBtn(
-                  onCancelHandle,
                   setEnableDraw,
                   setShowInstructionNote,
-                  setShowDrawButton
+                  setShowDrawButton,
+                  setPoligon,
+                  setShouldAutoFitProperties,
+                  setShowControls,
+                  polygon,
+                  clearPolygonFromStorage
                 )
               }
             >

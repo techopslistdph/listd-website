@@ -36,8 +36,12 @@ export function Properties({
   priceRanges: PriceRangeResponse;
   geojson: Geojson[];
 }) {
-  const [view, setView] = useState<View>('list');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [view, setView] = useState<View>(
+    geojson && geojson.length > 0 ? 'map' : 'list'
+  );
+  const [sidebarOpen, setSidebarOpen] = useState(
+    !(geojson && geojson.length > 0)
+  );
   const { user } = useUser();
   const router = useRouter();
   const { updateParams } = useUrlParams();
