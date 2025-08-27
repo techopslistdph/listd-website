@@ -287,6 +287,7 @@ export type SearchParams = {
   city?: string;
   barangay?: string;
   province?: string;
+  region?: string;
   minLatitude?: string;
   maxLatitude?: string;
   minLongitude?: string;

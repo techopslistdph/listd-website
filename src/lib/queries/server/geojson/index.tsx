@@ -37,13 +37,15 @@ export interface GeojsonData {
 export const getGeojson = async (
   city?: string,
   barangay?: string,
-  province?: string
+  province?: string,
+  region?: string
 ) => {
   try {
     const queryParams = {
       ...(city && { city }),
       ...(barangay && { barangay }),
       ...(province && { province }),
+      ...(region && { region }),
     };
 
     const response = await api.get<GeojsonResponse>(

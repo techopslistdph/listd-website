@@ -33,6 +33,7 @@ export default function Hero({
     city: string;
     barangay: string;
     province: string;
+    region: string;
   } | null>(null);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function Hero({
       ...(location?.city && { city: location.city }),
       ...(location?.province && { province: location.province }),
       ...(location?.barangay && { barangay: location.barangay }),
+      ...(location?.region && { region: location.region }),
       property,
       propertyTypeId: propertyTypeId,
       listingTypeId: propertyAction,
@@ -132,15 +134,7 @@ export default function Hero({
             <label className='block font-medium mb-1'>Location</label>
             <div className='relative'>
               <LocationInput setLocation={setLocation} />
-              {/* <Input
-                type='text'
-                placeholder='Search for Location'
-                className='w-full rounded-full bg-neutral-light px-6 py-6 pr-12 text-body placeholder:text-black text-neutral-text outline-none border-0 shadow-none text-sm lg:text-base'
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-              /> */}
               <span className='absolute right-4 top-1/2 -translate-y-1/2 text-primary-main'>
-                {/* Search Icon */}
                 <svg
                   width='24'
                   height='24'

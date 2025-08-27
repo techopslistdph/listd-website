@@ -20,11 +20,17 @@ export default async function Page({
 
   const session = await auth();
   let geojson = null;
-  if (searchParams.city || searchParams.barangay || searchParams.province) {
+  if (
+    searchParams.city ||
+    searchParams.barangay ||
+    searchParams.province ||
+    searchParams.region
+  ) {
     geojson = await getGeojson(
       searchParams.city,
       searchParams.barangay,
-      searchParams.province
+      searchParams.province,
+      searchParams.region
     );
   }
 

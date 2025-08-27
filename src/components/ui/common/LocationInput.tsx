@@ -10,6 +10,7 @@ interface LocationInputProps {
       city: string;
       barangay: string;
       province: string;
+      region: string;
     } | null
   ) => void;
   placeholder?: string;
@@ -97,6 +98,7 @@ export default function LocationInput({
       barangay: suggestion.addressComponents.barangay,
       city: suggestion.addressComponents.city,
       province: suggestion.addressComponents.province,
+      region: suggestion.addressComponents.region,
     });
     setInputValue(`${suggestion.formattedAddress}`);
     setShowSuggestions(false);
@@ -106,7 +108,7 @@ export default function LocationInput({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-    setIsUserTyping(true); // User is typing again
+    setIsUserTyping(true);
 
     // Call parent's search change handler if provided
     if (onSearchChange) {
