@@ -19,7 +19,7 @@ interface MarkerClustererProps {
   data: PropertyDetail[];
   setSelectedLocation: (location: (Location & { id: string }) | null) => void;
   selectedLocation: (Location & { id: string }) | null;
-  onMarkerClick?: (lat: number, lng: number) => void;
+  onMarkerClick?: (propertyId: string, lat: number, lng: number) => void; // Updated signature
   properties: PropertyDetail[];
   onCloseCard?: () => void;
   clickedMarkers: Set<string>;
@@ -97,8 +97,6 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
             content,
             width,
             height,
-            lat,
-            lng,
             primaryMain,
             neutralMain,
             isSelected,
@@ -109,7 +107,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
             baseLng,
             selectedLocation
           );
-          const markerKey = `${lat},${lng}`;
+          const markerKey = `${property.id}`;
 
           const isClicked = clickedMarkers.has(markerKey);
 
@@ -143,7 +141,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
                 });
 
                 if (onMarkerClick) {
-                  onMarkerClick(lat, lng);
+                  onMarkerClick(property.id, lat, lng); // Pass property ID first
                 }
               }}
               position={{
@@ -163,8 +161,6 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
             height,
             offsetLat,
             offsetLng,
-            lat,
-            lng,
             primaryMain,
             neutralMain,
             isSelected,
@@ -175,7 +171,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
             baseLng,
             selectedLocation
           );
-          const markerKey = `${lat},${lng}`;
+          const markerKey = `${property.id}`;
 
           const isClicked = clickedMarkers.has(markerKey);
 
@@ -209,7 +205,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
                 });
 
                 if (onMarkerClick) {
-                  onMarkerClick(lat, lng);
+                  onMarkerClick(property.id, lat, lng); // Pass property ID first
                 }
               }}
               position={{
@@ -230,7 +226,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
         >
           {/* Card */}
           <div
-            className='bg-white shadow-lg w-64 md:w-86 md:h-full overflow-hidden overflow-y-auto border border-gray-200 relative'
+            className='bg-white shadow-lg w-64 md:w-86 md:h-auto overflow-hidden overflow-y-auto border border-gray-200 relative'
             onWheel={e => {
               e.stopPropagation();
             }}
@@ -241,12 +237,7 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
             {/* Property content */}
             {(() => {
               const selectedProperty = properties.find(
-                item =>
-                  Number(item.property.latitude) ===
-                    selectedLocation.latitude &&
-                  Number(item.property.longitude) ===
-                    selectedLocation.longitude &&
-                  item.id === selectedLocation.id
+                item => item.id === selectedLocation.id
               );
 
               if (!selectedProperty) return null;

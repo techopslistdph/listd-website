@@ -42,6 +42,14 @@ export default async function Page({
     }),
   };
 
+  // Check if coordinate parameters are present
+  const hasCoordinates = !!(
+    searchParams.minLatitude ||
+    searchParams.maxLatitude ||
+    searchParams.minLongitude ||
+    searchParams.maxLongitude
+  );
+
   const [properties, listingTypes, priceRanges] = await Promise.all([
     getProperties(enhancedSearchParams, session?.sessionId),
     getListingTypes(),
@@ -59,6 +67,7 @@ export default async function Page({
       propertyType={searchParams.property}
       priceRanges={priceRanges}
       geojson={geojson?.data as unknown as Geojson[]}
+      hasCoordinates={hasCoordinates}
     />
   );
 }
