@@ -30,7 +30,6 @@ export default async function Page({
 
   // Calculate bounding box from GeoJSON if available
   const boundingBox = calculateBoundingBoxFromGeojson(geojson);
-
   // Merge search params with bounding box coordinates if available
   const enhancedSearchParams = {
     ...searchParams,

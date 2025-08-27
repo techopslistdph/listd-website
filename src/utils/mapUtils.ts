@@ -28,12 +28,28 @@ export const calculateBoundingBoxFromGeojson = (geojson: any) => {
 
   // Handle different GeoJSON polygon structures
   let coordArray: number[][];
-  if (Array.isArray(coordinates[0]) && Array.isArray(coordinates[0][0])) {
-    // Multi-polygon or polygon with holes
-    coordArray = coordinates[0];
-  } else if (Array.isArray(coordinates[0])) {
-    // Simple polygon
-    coordArray = coordinates;
+
+  // Case 1: Complex nested structure like [[Array(237)], [Array(190)], ...]
+  if (Array.isArray(coordinates) && coordinates.length > 0) {
+    if (
+      Array.isArray(coordinates[0]) &&
+      coordinates[0].length === 1 &&
+      Array.isArray(coordinates[0][0])
+    ) {
+      // Handle [[Array(237)], [Array(190)], ...] structure
+      coordArray = coordinates.flatMap(coord => coord[0]);
+    } else if (
+      Array.isArray(coordinates[0]) &&
+      Array.isArray(coordinates[0][0])
+    ) {
+      // Multi-polygon or polygon with holes
+      coordArray = coordinates[0];
+    } else if (Array.isArray(coordinates[0])) {
+      // Simple polygon
+      coordArray = coordinates;
+    } else {
+      return null;
+    }
   } else {
     return null;
   }
@@ -44,14 +60,26 @@ export const calculateBoundingBoxFromGeojson = (geojson: any) => {
   let maxLng = -Infinity;
 
   coordArray.forEach(coord => {
-    const [lng, lat] = coord;
-    minLat = Math.min(minLat, lat);
-    maxLat = Math.max(maxLat, lat);
-    minLng = Math.min(minLng, lng);
-    maxLng = Math.max(maxLng, lng);
+    if (Array.isArray(coord) && coord.length >= 2) {
+      const [lng, lat] = coord;
+      if (typeof lat === 'number' && typeof lng === 'number') {
+        minLat = Math.min(minLat, lat);
+        maxLat = Math.max(maxLat, lat);
+        minLng = Math.min(minLng, lng);
+        maxLng = Math.max(maxLng, lng);
+      }
+    }
   });
 
-  // set url params
+  // Check if we found valid coordinates
+  if (
+    minLat === Infinity ||
+    maxLat === -Infinity ||
+    minLng === Infinity ||
+    maxLng === -Infinity
+  ) {
+    return null;
+  }
 
   return {
     minLatitude: minLat,
@@ -225,14 +253,38 @@ export const getGeojsonPolygonPath = (geojson: Geojson[]) => {
   if (!geojson) return null;
 
   const coordinates = geojson?.[0]?.coordinates;
-  if (!coordinates || !Array.isArray(coordinates[0])) return null;
+  if (!coordinates || !Array.isArray(coordinates)) return null;
 
   // Handle different GeoJSON polygon structures
-  const coordArray = Array.isArray(coordinates[0][0])
-    ? coordinates[0]
-    : coordinates;
+  let coordArray: number[][];
 
-  return (coordArray as number[][]).map((coord: number[]) => ({
+  // Case 1: Complex nested structure like [[Array(237)], [Array(190)], ...]
+  if (
+    Array.isArray(coordinates[0]) &&
+    coordinates[0].length === 1 &&
+    Array.isArray(coordinates[0][0])
+  ) {
+    // Handle [[Array(237)], [Array(190)], ...] structure
+    coordArray = [];
+    for (const coord of coordinates) {
+      if (Array.isArray(coord) && coord.length > 0 && Array.isArray(coord[0])) {
+        coordArray.push(...(coord[0] as number[][]));
+      }
+    }
+  } else if (
+    Array.isArray(coordinates[0]) &&
+    Array.isArray(coordinates[0][0])
+  ) {
+    // Multi-polygon or polygon with holes
+    coordArray = coordinates[0] as unknown as number[][];
+  } else if (Array.isArray(coordinates[0])) {
+    // Simple polygon
+    coordArray = coordinates as unknown as number[][];
+  } else {
+    return null;
+  }
+
+  return coordArray.map((coord: number[]) => ({
     lat: coord[1],
     lng: coord[0],
   }));
@@ -560,7 +612,6 @@ export const handlePolygonRestoration = (
 
   const hasLocalStoragePolygon = localStorage.getItem('listd_drawn_polygon');
   if (hasLocalStoragePolygon) {
-    console.log('hasLocalStoragePolygon', hasLocalStoragePolygon);
     restorePolygonFromStorage(
       mapInstance,
       setPoligon,
