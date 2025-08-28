@@ -26,8 +26,9 @@ export default function Controls({
   geojson,
   showControls,
   setIsLoading,
-  setIsCancelling,
   rootStore,
+  setHasDrawnPolygon,
+  setIsCancelling,
 }: {
   showDrawButton: boolean;
   setEnableDraw: (enable: boolean) => void;
@@ -42,6 +43,7 @@ export default function Controls({
   setIsLoading: (loading: boolean) => void;
   setIsCancelling: (cancelling: boolean) => void;
   rootStore: RootStoreType;
+  setHasDrawnPolygon: (hasDrawn: boolean) => void;
 }) {
   const { deleteParams, getAllParams, createParamsString } = useUrlParams();
   const router = useRouter();
@@ -63,6 +65,9 @@ export default function Controls({
     );
     const paramsString = createParamsString(finalParams);
 
+    // Reset the hasDrawnPolygon state when search is clicked
+    setHasDrawnPolygon(false);
+
     // Set loading to true before navigation
     setIsLoading(true);
     router.push(`/property?${paramsString}`);
@@ -81,20 +86,22 @@ export default function Controls({
       polygon
     );
 
-    // Then remove bounding box params from URL
+    setHasDrawnPolygon(false);
+    setIsLoading(true);
+
     const paramsString = deleteParams([
       'minLatitude',
       'maxLatitude',
       'minLongitude',
       'maxLongitude',
+      'region',
+      'province',
+      'city',
+      'barangay',
     ]);
     router.push(`/property?${paramsString}`);
-
-    // Reset the cancelling flag after a short delay
-    setTimeout(() => {
-      setIsCancelling(false);
-    }, 100);
   };
+
   return (
     <>
       {showDrawButton && (

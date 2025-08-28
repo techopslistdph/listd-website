@@ -40,6 +40,7 @@ export default function PropertyTopBar({
   const cityQuery = getParam('city');
   const barangayQuery = getParam('barangay');
   const provinceQuery = getParam('province');
+  const regionQuery = getParam('region');
 
   const activeListingType = listingTypes?.find(type => type.id === typeId);
   const [search, setSearch] = useState<string>(searchQuery || '');
@@ -47,26 +48,49 @@ export default function PropertyTopBar({
     city: string;
     barangay: string;
     province: string;
+    region: string;
   } | null>(null);
 
   // Initialize location from URL params
   useEffect(() => {
-    if (cityQuery || barangayQuery || provinceQuery) {
+    if (cityQuery || barangayQuery || provinceQuery || regionQuery) {
       setLocation({
         city: cityQuery || '',
         barangay: barangayQuery || '',
         province: provinceQuery || '',
+        region: regionQuery || '',
       });
     }
-  }, [cityQuery, barangayQuery, provinceQuery]);
+  }, [cityQuery, barangayQuery, provinceQuery, regionQuery]);
 
   // Create initial location value string for display
   const getInitialLocationValue = () => {
     if (cityQuery || barangayQuery || provinceQuery) {
       const parts = [];
-      if (barangayQuery) parts.push(barangayQuery.replace('-', ' '));
-      if (cityQuery) parts.push(cityQuery.replace('-', ' '));
-      if (provinceQuery) parts.push(provinceQuery.replace('-', ' '));
+      if (barangayQuery)
+        parts.push(
+          barangayQuery.replace('-', ' ')
+            ? decodeURIComponent(barangayQuery.replace('-', ' '))
+            : ''
+        );
+      if (cityQuery)
+        parts.push(
+          cityQuery.replace('-', ' ')
+            ? decodeURIComponent(cityQuery.replace('-', ' '))
+            : ''
+        );
+      if (provinceQuery)
+        parts.push(
+          provinceQuery.replace('-', ' ')
+            ? decodeURIComponent(provinceQuery.replace('-', ' '))
+            : ''
+        );
+      if (regionQuery)
+        parts.push(
+          regionQuery.replace('-', ' ')
+            ? decodeURIComponent(regionQuery.replace('-', ' '))
+            : ''
+        );
       return parts.join(', ');
     }
     return '';
@@ -103,6 +127,7 @@ export default function PropertyTopBar({
       city: string;
       barangay: string;
       province: string;
+      region: string;
     } | null
   ) => {
     setLocation(selectedLocation);
@@ -116,14 +141,28 @@ export default function PropertyTopBar({
 
       const finalParams = {
         ...paramsWithoutLocation,
-        city: selectedLocation.city,
-        barangay: selectedLocation.barangay,
-        province: selectedLocation.province,
+        city: selectedLocation.city
+          ? decodeURIComponent(selectedLocation.city)
+          : '',
+        barangay: selectedLocation.barangay
+          ? decodeURIComponent(selectedLocation.barangay)
+          : '',
+        province: selectedLocation.province
+          ? decodeURIComponent(selectedLocation.province)
+          : '',
+        region: selectedLocation.region
+          ? decodeURIComponent(selectedLocation.region)
+          : '',
       };
 
       push(`/property?${createParamsString(finalParams)}`);
     } else {
-      const paramsString = deleteParams(['city', 'barangay', 'province']);
+      const paramsString = deleteParams([
+        'city',
+        'barangay',
+        'province',
+        'region',
+      ]);
       push(`/property?${paramsString}`);
     }
   };

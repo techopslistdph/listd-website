@@ -69,8 +69,8 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
   const [clickedMarkers, setClickedMarkers] = useState<Set<string>>(new Set());
   const [shouldAutoFitProperties, setShouldAutoFitProperties] =
     useState<boolean>(true);
-  const [isCancelling, setIsCancelling] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasDrawnPolygon, setHasDrawnPolygon] = useState<boolean>(false);
 
   useEffect(() => {
     if (properties.length > 0 || geojson) {
@@ -116,7 +116,7 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
   // Load saved polygon on component mount (only if no geojson and there are coordinate search parameters)
   useEffect(() => {
     handlePolygonRestoration(
-      isCancelling,
+      isLoading,
       geojson,
       polygon,
       mapInstance,
@@ -138,6 +138,7 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
       setShouldAutoFitProperties,
       setShowDrawButton
     );
+    setHasDrawnPolygon(true); // Set this to true when polygon is drawn
   };
 
   const containerStyle = {
@@ -148,7 +149,7 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
   };
 
   const onMapLoad = (map: google.maps.Map) => {
-    if (isCancelling) {
+    if (isLoading) {
       return;
     }
     setMapInstance(map);
@@ -207,8 +208,9 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
             geojson={geojson || []}
             showControls={showControls}
             setIsLoading={setIsLoading}
-            setIsCancelling={setIsCancelling}
+            setIsCancelling={setIsLoading}
             rootStore={rootStore}
+            setHasDrawnPolygon={setHasDrawnPolygon}
           />
 
           <GoogleMap
@@ -263,6 +265,9 @@ const PropertyMap: React.FC<IMapProps> = ({ properties = [], geojson }) => {
               properties={properties}
               clickedMarkers={clickedMarkers}
               polygon={polygon}
+              enableDraw={enableDraw}
+              hasDrawnPolygon={hasDrawnPolygon}
+              isLoading={isLoading}
             />
           </GoogleMap>
         </div>

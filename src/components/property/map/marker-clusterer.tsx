@@ -24,6 +24,9 @@ interface MarkerClustererProps {
   onCloseCard?: () => void;
   clickedMarkers: Set<string>;
   polygon?: google.maps.Polygon | null;
+  enableDraw?: boolean; // Add this prop
+  hasDrawnPolygon?: boolean; // Add this prop
+  isLoading?: boolean; // Keep only this loading state
 }
 
 function filterPropertiesInPolygon(
@@ -50,6 +53,9 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
   onCloseCard,
   clickedMarkers,
   polygon,
+  enableDraw = false, // Add this prop with default value
+  hasDrawnPolygon = false, // Add this prop with default value
+  isLoading = false, // Keep only this loading state
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -82,6 +88,11 @@ const MarkerClustererComponent: React.FC<MarkerClustererProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [selectedLocation, setSelectedLocation, onCloseCard]);
+
+  // Don't render markers if drawing is enabled, polygon is drawn but not searched, or loading
+  if (enableDraw || hasDrawnPolygon || isLoading) {
+    return null;
+  }
 
   return (
     <>

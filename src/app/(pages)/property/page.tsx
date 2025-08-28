@@ -27,10 +27,14 @@ export default async function Page({
     searchParams.region
   ) {
     geojson = await getGeojson(
-      searchParams.city,
-      searchParams.barangay,
-      searchParams.province,
-      searchParams.region
+      searchParams.city ? decodeURIComponent(searchParams.city) : undefined,
+      searchParams.barangay
+        ? decodeURIComponent(searchParams.barangay)
+        : undefined,
+      searchParams.province
+        ? decodeURIComponent(searchParams.province)
+        : undefined,
+      searchParams.region ? decodeURIComponent(searchParams.region) : undefined
     );
   }
 
