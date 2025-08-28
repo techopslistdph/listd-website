@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { FormInput } from '@/components/ui/form-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Eye, EyeIcon, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -29,6 +29,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const { signIn, isLoaded, setActive } = useSignIn();
+  const { user, isLoaded: isUserLoaded } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginFormData>({
@@ -39,6 +40,14 @@ export default function LoginPage() {
       remember: false,
     },
   });
+
+  // Check if user is already logged in and redirect to home
+  useEffect(() => {
+    if (isUserLoaded && user) {
+      toast.info('You are already logged in. Redirecting to home...');
+      router.push('/');
+    }
+  }, [isUserLoaded, user, router]);
 
   const onSubmit = async (data: LoginFormData) => {
     if (!isLoaded) return;
@@ -60,6 +69,20 @@ export default function LoginPage() {
         const errorObj = (err as { errors?: Array<{ longMessage?: string }> })
           .errors?.[0];
         const message = errorObj?.longMessage || 'Login failed';
+
+        // Check if error indicates user is already logged in
+        const isAlreadyLoggedInError =
+          message.toLowerCase().includes('already logged in') ||
+          message.toLowerCase().includes('already authenticated') ||
+          message.toLowerCase().includes('session already exists') ||
+          message.toLowerCase().includes('user already signed in');
+
+        if (isAlreadyLoggedInError) {
+          toast.info('You are already logged in. Redirecting to home...');
+          router.push('/');
+          return;
+        }
+
         toast.error(message);
       } else {
         toast.error('Login failed');
